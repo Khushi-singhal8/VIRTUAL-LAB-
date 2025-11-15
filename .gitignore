@@ -1,0 +1,12 @@
+# .gitignore for a web/static project
+
+# OS files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDEs / editors
+.vscode/
+.idea/
+
