@@ -1,0 +1,282 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("posttest").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+     
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name</a>
+              </li>
+              <li class="active">Post Test</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory" >
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+          
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                    To study and operate micrometer Screw Gauge for dimensional measurement
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Post Test </h3>
+                    <p style="font-size:130%; margin-top:2%">
+
+                   <div class="question" data-correct="C">
+                        <p class="question-title">Q1. The fixed measuring face is called:</p>
+                        <label><input type="radio" name="pq1" value="A" /> A) Spindle</label><br>
+                        <label><input type="radio" name="pq1" value="B" /> B) Sleeve</label><br>
+                        <label><input type="radio" name="pq1" value="C" /> C) Anvil</label><br>
+                        <label><input type="radio" name="pq1" value="D" /> D) Frame</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="A">
+                        <p class="question-title">Q2. The circular scale is engraved on:</p>
+                        <label><input type="radio" name="pq2" value="A" /> A) Thimble</label><br>
+                        <label><input type="radio" name="pq2" value="B" /> B) Sleeve</label><br>
+                        <label><input type="radio" name="pq2" value="C" /> C) Anvil</label><br>
+                        <label><input type="radio" name="pq2" value="D" /> D) Ratchet</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="B">
+                        <p class="question-title">Q3. Pitch means:</p>
+                        <label><input type="radio" name="pq3" value="A" /> A) No. of divisions per mm</label><br>
+                        <label><input type="radio" name="pq3" value="B" /> B) Distance moved by spindle in one rotation</label><br>
+                        <label><input type="radio" name="pq3" value="C" /> C) Smallest division on thimble</label><br>
+                        <label><input type="radio" name="pq3" value="D" /> D) None</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="B">
+                        <p class="question-title">Q4. In one rotation of thimble, spindle moves:</p>
+                        <label><input type="radio" name="pq4" value="A" /> A) 0.25 mm</label><br>
+                        <label><input type="radio" name="pq4" value="B" /> B) 0.5 mm</label><br>
+                        <label><input type="radio" name="pq4" value="C" /> C) 1 mm</label><br>
+                        <label><input type="radio" name="pq4" value="D" /> D) 2 mm</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="B">
+                        <p class="question-title">Q5. Accuracy of a micrometer is up to:</p>
+                        <label><input type="radio" name="pq5" value="A" /> A) 0.1 mm</label><br>
+                        <label><input type="radio" name="pq5" value="B" /> B) 0.01 mm</label><br>
+                        <label><input type="radio" name="pq5" value="C" /> C) 0.02 mm</label><br>
+                        <label><input type="radio" name="pq5" value="D" /> D) 1 mm</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="A">
+                        <p class="question-title">Q6. Zero error is checked when:</p>
+                        <label><input type="radio" name="pq6" value="A" /> A) Jaws are closed without workpiece</label><br>
+                        <label><input type="radio" name="pq6" value="B" /> B) Workpiece is measured</label><br>
+                        <label><input type="radio" name="pq6" value="C" /> C) Spindle is half-rotated</label><br>
+                        <label><input type="radio" name="pq6" value="D" /> D) After reading is noted</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="B">
+                        <p class="question-title">Q7. Ratchet is provided for:</p>
+                        <label><input type="radio" name="pq7" value="A" /> A) Locking</label><br>
+                        <label><input type="radio" name="pq7" value="B" /> B) Uniform pressure</label><br>
+                        <label><input type="radio" name="pq7" value="C" /> C) Fast movement</label><br>
+                        <label><input type="radio" name="pq7" value="D" /> D) Large range</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="A">
+                        <p class="question-title">Q8. External micrometer is best for measuring:</p>
+                        <label><input type="radio" name="pq8" value="A" /> A) Wire diameter</label><br>
+                        <label><input type="radio" name="pq8" value="B" /> B) Hole</label><br>
+                        <label><input type="radio" name="pq8" value="C" /> C) Slot depth</label><br>
+                        <label><input type="radio" name="pq8" value="D" /> D) Angle</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="A">
+                        <p class="question-title">Q9. If sleeve reads 8.5 mm and thimble shows 25 divisions, LC = 0.01 mm, total = ?</p>
+                        <label><input type="radio" name="pq9" value="A" /> A) 8.75 mm</label><br>
+                        <label><input type="radio" name="pq9" value="B" /> B) 8.025 mm</label><br>
+                        <label><input type="radio" name="pq9" value="C" /> C) 25.8 mm</label><br>
+                        <label><input type="radio" name="pq9" value="D" /> D) 9.25 mm</label><br>
+                    </div><br>
+
+                    <div class="question" data-correct="B">
+                        <p class="question-title">Q10. Main disadvantage of micrometer:</p>
+                        <label><input type="radio" name="pq10" value="A" /> A) Low accuracy</label><br>
+                        <label><input type="radio" name="pq10" value="B" /> B) Limited range</label><br>
+                        <label><input type="radio" name="pq10" value="C" /> C) Difficult to use</label><br>
+                        <label><input type="radio" name="pq10" value="D" /> D) Heavy weight</label><br>
+                    </div><br>
+
+                    <button type="submit" id="posttest-submit-btn">Submit</button>
+                </form>
+                    </p>
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>
