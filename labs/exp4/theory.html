@@ -1,0 +1,263 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("theory").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse" >
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+      
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name</a>
+              </li>
+              <li class="active">Theory</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory" onclick="theory()">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+             
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                     Measure the tapered angle using a Sine Bar
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Theory </h3>
+                    <p style="font-size:130%; margin-top:2%">
+                
+                   <p>A sine bar is a precision measurement tool used to set or measure small angles accurately by converting angular values into linear heights using the trigonometric sine function. The sine bar consists of a hardened and ground bar having two precision cylindrical rollers fixed at its ends; the distance between the centers of these rollers is a known length (commonly 100 mm or 200 mm). When one end of the sine bar is raised by a known height (usually by stacking gauge blocks under that end), the bar forms an angle θ with the horizontal such that the relation sin θ = h / L holds, where h is the height difference between the roller centers and L is the center-to-center distance of the rollers. By measuring h precisely with gauge blocks and knowing L, one can calculate θ = sin-1(h/L). This principle allows accurate measurement of small angles without needing direct protractors or optical equipment. </p>
+
+            <p>Measuring a tapered angle (or taper per unit length) generally involves placing the tapered workpiece on a sine bar aligned so that the taper axis is parallel to the rollers. The sine bar is adjusted until the contacting surface (often a reference flat on the workpiece) is level with a datum or gauge; the height required to achieve this level condition corresponds to the taper angle. From the measured angle θ and the known length over which the taper occurs, the taper per unit length (for example, mm per 100 mm or mm per inch) can be computed. Accuracy depends on the precision of gauge blocks, the flatness and cleanliness of contact surfaces, the exactness of the sine bar’s center distance, and elimination of sources of error such as parallax when reading scales or imperfect seating of blocks. In modern virtual-lab implementations, the same physical principles are simulated: users choose a sine-bar length, add gauge blocks from a calibrated set, and the system computes h, θ, and taper per length — while visually illustrating alignment, errors from sloppy setup, and the sensitivity of angle to small height changes. </p>
+
+            <p><b>Apparatus & Materials:</b></p>
+
+            <ul>
+
+            <li>Sine bar (center-to-center distance L = 100 mm or 200 mm). </li>
+
+            <li>Slip gauge (gauge block) set (calibrated) to build required heights.</li> 
+
+            <li>Surface plate (granite) — clean and level.</li>
+
+            <li>V-blocks or parallels (to support cylindrical or irregular components).</li> 
+
+            <li>Dial gauge or height gauge (optional, for verifying gauge-block stack).</li> 
+
+            <li>Spirit level (precision) — optional for coarse leveling. </li>
+
+            <li>Workpiece with taper (or a tapered test specimen).</li> 
+
+            <li>Engineer’s square and cleaning tissue/solvent for removing dust/oil.</li> 
+
+            <li>Vernier caliper or micrometer (to measure taper length if needed).</li> 
+
+            <li>Marker or scribe for datum lines.</li> 
+
+            <li>Safety gloves and goggles (for handling heavy blocks). </li>
+            
+        </ul>
+
+        <div class="home-img">
+            <img src="images/WORKPIECE.png" width="450px" alt="" />
+        </div>
+
+        <p><b>Worked example</b></p>
+        <p>Suppose you use L = 100.000 mm and you stack gauge blocks to get h = 1.745 mm. Then: </p>
+
+        <ul>
+            <li>Calculate sin θ = h / L = 1.745 / 100.000 = 0.01745 </li>
+            <li>Find θ = sin-1(0.01745) ≈ 1.000° </li>
+            <li>tan θ ≈ 0.01746 mm/mm, so taper per 100 mm = 0.01746 × 100 ≈ 1.746 mm/100 mm. </li>
+        </ul>
+        <p>This means over 100 mm length the diameter/height would change by ≈1.746 mm according to that angle.</p>
+
+        <p><b>Precautions:</b></p>
+
+        <ul>
+            <li>Ensure the surface plate and roller seating surfaces are clean and free of dust or burrs; a tiny particle can introduce significant error. </li>
+            <li>Use calibrated gauge blocks and wring them properly (in a physical lab). In simulation, ensure “wringing quality” is set to good for best accuracy. </li>
+            <li>Keep the sine bar center distance L known precisely (use its certified value). </li>
+            <li>Align the workpiece so the taper axis is exactly parallel to the roller axis — any misalignment introduces cosine/sine projection errors. </li>
+            <li>Avoid parallax when reading scales; use a dial gauge or digital readout where possible. </li>
+            <li>Repeat the measurement and average multiple trials to reduce random error.</li>
+        </ul>
+
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+<script>
+ function theory(){
+   document.getElementById("theory").style.backgroundColor = "#009dff";
+ 
+ }
+
+
+</script>
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>

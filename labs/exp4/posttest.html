@@ -1,0 +1,282 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("posttest").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+     
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name</a>
+              </li>
+              <li class="active">Post Test</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory" >
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+          
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                    Measure the tapered angle using a Sine Bar
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Post Test </h3>
+                    <p style="font-size:130%; margin-top:2%">
+
+                    <div class="question" data-correct="B">
+                    <p class="question-title">Q1. If you used L = 200 mm and h = 3.49 mm, θ is approximately:</p>
+                    <label><input type="radio" name="pq11" value="A" /> A) 1°</label><br>
+                    <label><input type="radio" name="pq11" value="B" /> B) 2°</label><br>
+                    <label><input type="radio" name="pq11" value="C" /> C) 0.5°</label><br>
+                    <label><input type="radio" name="pq11" value="D" /> D) 5°</label><br>
+                </div><br>
+
+                <div class="question" data-correct="B">
+                    <p class="question-title">Q2. Which instrument can be used to verify the gauge-block stack height?</p>
+                    <label><input type="radio" name="pq12" value="A" /> A) Vernier caliper</label><br>
+                    <label><input type="radio" name="pq12" value="B" /> B) Height or dial gauge</label><br>
+                    <label><input type="radio" name="pq12" value="C" /> C) Micrometer for thin sheets</label><br>
+                    <label><input type="radio" name="pq12" value="D" /> D) Protractor</label><br>
+                </div><br>
+
+                <div class="question" data-correct="B">
+                    <p class="question-title">Q3. To express taper as mm per 100 mm, you compute:</p>
+                    <label><input type="radio" name="pq13" value="A" /> A) sin θ × 100</label><br>
+                    <label><input type="radio" name="pq13" value="B" /> B) tan θ × 100</label><br>
+                    <label><input type="radio" name="pq13" value="C" /> C) θ × 100 (degrees)</label><br>
+                    <label><input type="radio" name="pq13" value="D" /> D) h × 100</label><br>
+                </div><br>
+
+                <div class="question" data-correct="C">
+                    <p class="question-title">Q4. If measured h is slightly larger than nominal due to dirt, the computed angle will be:</p>
+                    <label><input type="radio" name="pq14" value="A" /> A) Underestimated</label><br>
+                    <label><input type="radio" name="pq14" value="B" /> B) Unchanged</label><br>
+                    <label><input type="radio" name="pq14" value="C" /> C) Overestimated</label><br>
+                    <label><input type="radio" name="pq14" value="D" /> D) Negative</label><br>
+                </div><br>
+
+                <div class="question" data-correct="A">
+                    <p class="question-title">Q5. Why is using a larger L (e.g., 200 mm) sometimes preferred?</p>
+                    <label><input type="radio" name="pq15" value="A" /> A) For less sensitivity to small height errors</label><br>
+                    <label><input type="radio" name="pq15" value="B" /> B) For more sensitivity to small height errors</label><br>
+                    <label><input type="radio" name="pq15" value="C" /> C) To make the setup heavier</label><br>
+                    <label><input type="radio" name="pq15" value="D" /> D) To avoid gauge blocks</label><br>
+                </div><br>
+
+                <div class="question" data-correct="C">
+                    <p class="question-title">Q6. When averaging multiple trials, which of the following reduces random error?</p>
+                    <label><input type="radio" name="pq16" value="A" /> A) Changing sine-bar length between trials</label><br>
+                    <label><input type="radio" name="pq16" value="B" /> B) Using the same stack and readjusting each time</label><br>
+                    <label><input type="radio" name="pq16" value="C" /> C) Repeating measurement and taking mean of θ values</label><br>
+                    <label><input type="radio" name="pq16" value="D" /> D) Increasing dust under rollers</label><br>
+                </div><br>
+
+                <div class="question" data-correct="B">
+                    <p class="question-title">Q7. If h = 0.8727 mm and L = 100 mm, θ in degrees ≈:</p>
+                    <label><input type="radio" name="pq17" value="A" /> A) 1.0°</label><br>
+                    <label><input type="radio" name="pq17" value="B" /> B) 0.5°</label><br>
+                    <label><input type="radio" name="pq17" value="C" /> C) 2.0°</label><br>
+                    <label><input type="radio" name="pq17" value="D" /> D) 5.0°</label><br>
+                </div><br>
+
+                <div class="question" data-correct="C">
+                    <p class="question-title">Q8. The sine-bar method requires accurate knowledge of:</p>
+                    <label><input type="radio" name="pq18" value="A" /> A) Roller diameter only</label><br>
+                    <label><input type="radio" name="pq18" value="B" /> B) Surface plate paint color</label><br>
+                    <label><input type="radio" name="pq18" value="C" /> C) Center-to-center distance L and the stack height h</label><br>
+                    <label><input type="radio" name="pq18" value="D" /> D) The temperature of the room only</label><br>
+                </div><br>
+
+                <div class="question" data-correct="C">
+                    <p class="question-title">Q9. If θ is 1°, the approximate linear rise per 100 mm is about:</p>
+                    <label><input type="radio" name="pq19" value="A" /> A) 0.017 mm</label><br>
+                    <label><input type="radio" name="pq19" value="B" /> B) 0.1745 mm</label><br>
+                    <label><input type="radio" name="pq19" value="C" /> C) 1.745 mm</label><br>
+                    <label><input type="radio" name="pq19" value="D" /> D) 17.45 mm</label><br>
+                </div><br>
+
+                <div class="question" data-correct="B">
+                    <p class="question-title">Q10. What should you do if the workpiece cannot be aligned parallel to the rollers?</p>
+                    <label><input type="radio" name="pq20" value="A" /> A) Proceed and accept error</label><br>
+                    <label><input type="radio" name="pq20" value="B" /> B) Use shims or reposition using parallels or v-blocks to correct alignment</label><br>
+                    <label><input type="radio" name="pq20" value="C" /> C) Increase h to compensate</label><br>
+                    <label><input type="radio" name="pq20" value="D" /> D) Use a different sine-bar length arbitrarily</label><br>
+                </div><br>
+
+                    <button type="submit" id="posttest-submit-btn">Submit</button>
+                </form>
+                    </p>
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>
