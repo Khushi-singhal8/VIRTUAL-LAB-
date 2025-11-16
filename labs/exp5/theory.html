@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("theory").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse" >
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+      
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name</a>
+              </li>
+              <li class="active">Theory</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory" onclick="theory()">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+             
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                     To study the bending process of a metal specimen and evaluate spring back effect.
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Theory </h3>
+                    <p style="font-size:130%; margin-top:2%">
+
+                        <p>Bending is a fundamental forming process in which force is applied to a material to induce permanent plastic deformation, causing it to bend at a desired angle. It is widely used in sheet metal fabrication, piping, structural steel work, and various industrial applications. The process involves both elastic and plastic deformation of the material.</p>
+             
+            <div class="home-img">
+                <img src="images/spring back.png" width="500px" alt="" />
+
+            </div>
+            <p>When the load is first applied, the material deforms elastically (reversible), and as the stress exceeds the yield strength, plastic deformation (permanent) begins. Upon release of the load, the material tends to recover some of its original shape due to elastic recovery. This results in the phenomenon known as spring back. The strain in the bent material increases with decrease in the radius of curvature. The stretching of the bend causes the neutral axis of the section towards the inner surface. In most cases the distance of the neutral axis to the inside of the bend is 0.3t - 0.5t where t is the thickness of the part.</p>
+
+            <div class="home-img">
+                <img src="images/springback effect.png" width="800px" alt="" />
+
+            </div>
+            <p>Spring back refers to the partial elastic return of a material to its original shape after the bending force is removed. This effect is critical in precision bending operations as it can lead to deviations in the final angle or radius. The extent of spring back depends on factors such as:</p>
+
+            <ul>
+                <li><b>Material properties</b> (modulus of elasticity, yield strength)</li>
+                <li><b>Bend radius</b></li>
+                <li><b>Sheet thickness</b></li>
+                <li><b>Bend angle</b></li>
+                <li><b>Method of bending</b> (V-bending, air bending, bottoming, etc.)</li>
+            </ul>
+            <p><b>Spring Back Angle = Angle after release - Angle before release</b></p>
+
+            <p>For example, aluminum exhibits more spring back than mild steel due to its lower modulus of elasticity. Harder materials typically show greater spring back.</p>
+
+            <p>To compensate for spring back, bending tools are designed with allowances or over-bending, where the material is bent beyond the desired angle so it returns to the correct final shape after elastic recovery.</p>
+
+            <p>Elastic recovery or spring back: In metal working processes, the total deformation imparted to a work piece will be the sum of elastic deformation and plastic deformation. We also know the elastic deformation is recoverable whereas plastic deformation is permanent. So, at the end of a metal working operation, when the pressure of metal is released, there is an elastic recovery by the material and the total deformation gets reduced a little. This phenomenon is called as "Spring back". This phenomenon is of more importance in cold working operations, especially in forming operations such as bending etc. Spring back depends upon the yield point strength of a metal. The higher the yield point strength of a metal, the greater the spring back. The amount of spring back for a forming operation is difficult to predict and cut and try methods are most satisfactory to account for it. To compensate for spring back, the cold deformation must always be carried beyond the desired limit by an amount equal to the spring back.</p>
+
+            <div class="home-img">
+                <img src="images/v-bending process.png" width="500px" alt="" />
+
+            </div>
+
+            <p><b>Apparatus required:</b></p>
+            <ul>
+                <li>Manual bending fixture</li>
+                <li>Mild steel strip or rod</li>
+                <li>Protractor</li>
+                <li>Clamps and holding jig</li>
+                <li>Bending die (for controlled angle)</li>
+                <li>Marker (for reference lines)</li>
+            </ul>
+
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+<script>
+ function theory(){
+   document.getElementById("theory").style.backgroundColor = "#009dff";
+ 
+ }
+
+
+</script>
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>

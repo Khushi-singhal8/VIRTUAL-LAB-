@@ -1,0 +1,284 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("pretest").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+    
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name <!-- Write your lab name --> </b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name <!-- Write your experiment name --> </a>
+              </li>
+              <li class="active">Pre Test</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+              
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                     To study the bending process of a metal specimen and evaluate spring back effect.
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Pre Test </h3>
+                    <p style="font-size:130%; margin-top:2%">
+                    
+                <div class="question" data-correct="B">
+                    <p><b>Q1.What is the main cause of spring back in bending?</b></p>
+                    <label><input type="radio" name="q1" value="A" /> A) Plastic deformation</label>
+                    <label><input type="radio" name="q1" value="B" /> B) Elastic recovery</label>
+                    <label><input type="radio" name="q1" value="C" /> C) Frictional force </label>
+                    <label><input type="radio" name="q1" value="D" /> D) Tool deflection</label>
+                </div>
+
+                <div class="question" data-correct="C">
+                    <p><b>Q2.Which material generally exhibits more spring back?</b></p>
+                    <label><input type="radio" name="q2" value="A" /> A)Mild steel</label>
+                    <label><input type="radio" name="q2" value="B" /> B)Cast iron</label>
+                    <label><input type="radio" name="q2" value="C" /> C)Aluminum</label>
+                    <label><input type="radio" name="q2" value="D" /> D)Lead</label>
+                </div>
+
+                <div class="question" data-correct="C">
+                    <p><b>Q3.The bending process is categorized as:</b></p>
+                    <label><input type="radio" name="q3" value="A" /> A)Casting</label>
+                    <label><input type="radio" name="q3" value="B" /> B)Machining</label>
+                    <label><input type="radio" name="q3" value="C" /> C)Forming</label>
+                    <label><input type="radio" name="q3" value="D" /> D)Joining</label>
+                </div>
+
+                <div class="question" data-correct="D">
+                    <p><b>Q4.Which of the following affects spring back?</b></p>
+                    <label><input type="radio" name="q4" value="A" /> A)Sheet thickness</label>
+                    <label><input type="radio" name="q4" value="B" /> B)Bend angle</label>
+                    <label><input type="radio" name="q4" value="C" /> C)Material properties</label>
+                    <label><input type="radio" name="q4" value="D" /> D)All of the above</label>
+                </div>
+
+                <div class="question" data-correct="C">
+                    <p><b>Q5.What is typically done to compensate for spring back?</b></p>
+                    <label><input type="radio" name="q5" value="A" /> A)Use softer materials</label>
+                    <label><input type="radio" name="q5" value="B" /> B)Avoid bending</label>
+                    <label><input type="radio" name="q5" value="C" /> C)Over-bend the sheet</label>
+                    <label><input type="radio" name="q5" value="D" /> D)Apply heat</label>
+                </div>
+
+                <div class="question" data-correct="C">
+                    <p><b>Q6.In V-bending, the shape of the die is:</b></p>
+                    <label><input type="radio" name="q6" value="A" /> A)U</label>
+                    <label><input type="radio" name="q6" value="B" /> B)L</label>
+                    <label><input type="radio" name="q6" value="C" /> C)V</label>
+                    <label><input type="radio" name="q6" value="D" /> D)T</label>
+                </div>
+
+                <div class="question" data-correct="A">
+                    <p><b>Q7.Which material will show the least spring back?</b></p>
+                    <label><input type="radio" name="q7" value="A" /> A) Copper</label>
+                    <label><input type="radio" name="q7" value="B" /> B) Aluminum</label>
+                    <label><input type="radio" name="q7" value="C" /> C) Stainless Steel</label>
+                    <label><input type="radio" name="q7" value="D" /> D) High carbon steel</label>
+                </div>
+
+                <div class="question" data-correct="B">
+                    <p><b>Q8.The spring back angle is always:</b></p>
+                    <label><input type="radio" name="q8" value="A" /> A) Zero</label>
+                    <label><input type="radio" name="q8" value="B" /> B) Positive </label>
+                    <label><input type="radio" name="q8" value="C" /> C) Negative</label>
+                    <label><input type="radio" name="q8" value="D" /> D) Random</label>
+                </div>
+
+                <div class="question" data-correct="C">
+                    <p><b>Q9.Which property affects elastic recovery?</b></p>
+                        <label><input type="radio" name="q9" value="A" /> A)Thermal conductivity</label>
+                        <label><input type="radio" name="q9" value="B" /> B)Melting point</label>
+                        <label><input type="radio" name="q9" value="C" /> C)Yield strength</label>
+                        <label><input type="radio" name="q9" value="D" /> D)Grain size</label>
+                </div>
+
+                <div class="question" data-correct="C">
+                    <p><b>Q10.What is the usual unit for measuring spring back?</b></p>
+                    <label><input type="radio" name="q10" value="A" /> A)mm</label>
+                    <label><input type="radio" name="q10" value="B" /> B)Newton</label>
+                    <label><input type="radio" name="q10" value="C" /> C)Degree</label>
+                    <label><input type="radio" name="q10" value="D" /> D)Pascal</label>
+                </div>
+
+                <button type="submit" id="submit-btn">Submit</button>
+            </form>
+
+
+                    </p>
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>
