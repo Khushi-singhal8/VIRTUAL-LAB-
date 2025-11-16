@@ -1,0 +1,284 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("pretest").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+    
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name <!-- Write your lab name --> </b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name <!-- Write your experiment name --> </a>
+              </li>
+              <li class="active">Pre Test</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+              
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                    To study joining of two metal sheets using the brazing process.
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Pre Test </h3>
+                    <p style="font-size:130%; margin-top:2%">
+                    
+                <div class="question" data-correct="C">
+    <p><b>Q1. Flux in brazing is used to: </b></p>
+    <label><input type="radio" name="pq1" value="A" /> A) Increase joint thickness</label><br>
+    <label><input type="radio" name="pq1" value="B" /> B) Add color to metal</label><br>
+    <label><input type="radio" name="pq1" value="C" /> C) Remove oxides and clean surface</label><br>
+    <label><input type="radio" name="pq1" value="D" /> D) Reduce melting point of base metal</label><br>
+</div><br>
+
+<div class="question" data-correct="C">
+    <p><b>Q2. Brazing is commonly used in: </b></p>
+    <label><input type="radio" name="pq2" value="A" /> A) Civil construction</label><br>
+    <label><input type="radio" name="pq2" value="B" /> B) Food processing</label><br>
+    <label><input type="radio" name="pq2" value="C" /> C) HVAC and electronic assemblies</label><br>
+    <label><input type="radio" name="pq2" value="D" /> D) Woodworking</label><br>
+</div><br>
+
+<div class="question" data-correct="C">
+    <p><b>Q3. Poor surface cleaning before brazing leads to: </b></p>
+    <label><input type="radio" name="pq3" value="A" /> A) Faster brazing</label><br>
+    <label><input type="radio" name="pq3" value="B" /> B) Higher melting point</label><br>
+    <label><input type="radio" name="pq3" value="C" /> C) Weak or failed joints</label><br>
+    <label><input type="radio" name="pq3" value="D" /> D) Smooth finish</label><br>
+</div><br>
+
+<div class="question" data-correct="C">
+    <p><b>Q4. Excessive joint gap during brazing results in: </b></p>
+    <label><input type="radio" name="pq4" value="A" /> A) Very strong bonding</label><br>
+    <label><input type="radio" name="pq4" value="B" /> B) Faster filler flow</label><br>
+    <label><input type="radio" name="pq4" value="C" /> C) Filler metal failing to fill the joint</label><br>
+    <label><input type="radio" name="pq4" value="D" /> D) Overheating</label><br>
+</div><br>
+
+<div class="question" data-correct="B">
+    <p><b>Q5. Borax-based flux is used mainly to: </b></p>
+    <label><input type="radio" name="pq5" value="A" /> A) Increase joint hardness</label><br>
+    <label><input type="radio" name="pq5" value="B" /> B) Remove oxide layers</label><br>
+    <label><input type="radio" name="pq5" value="C" /> C) Improve cooling rate</label><br>
+    <label><input type="radio" name="pq5" value="D" /> D) Add shine</label><br>
+</div><br>
+
+<div class="question" data-correct="B">
+    <p><b>Q6. The preferred cooling method after brazing is: </b></p>
+    <label><input type="radio" name="pq6" value="A" /> A) Water quenching</label><br>
+    <label><input type="radio" name="pq6" value="B" /> B) Natural air cooling</label><br>
+    <label><input type="radio" name="pq6" value="C" /> C) Forced cooling</label><br>
+    <label><input type="radio" name="pq6" value="D" /> D) Ice cooling</label><br>
+</div><br>
+
+<div class="question" data-correct="A">
+    <p><b>Q7. As compared to welding, brazing generally produces: </b></p>
+    <label><input type="radio" name="pq7" value="A" /> A) Less distortion</label><br>
+    <label><input type="radio" name="pq7" value="B" /> B) More distortion</label><br>
+    <label><input type="radio" name="pq7" value="C" /> C) Melting of base metal</label><br>
+    <label><input type="radio" name="pq7" value="D" /> D) No joint formation</label><br>
+</div><br>
+
+<div class="question" data-correct="D">
+    <p><b>Q8. Suitable filler metal for brazing steel is: </b></p>
+    <label><input type="radio" name="pq8" value="A" /> A) Lead</label><br>
+    <label><input type="radio" name="pq8" value="B" /> B) Copper</label><br>
+    <label><input type="radio" name="pq8" value="C" /> C) Aluminium</label><br>
+    <label><input type="radio" name="pq8" value="D" /> D) Brass alloy</label><br>
+</div><br>
+
+<div class="question" data-correct="C">
+    <p><b>Q9. Typical brazing temperature range is: </b></p>
+    <label><input type="radio" name="pq9" value="A" /> A) 100–200°C</label><br>
+    <label><input type="radio" name="pq9" value="B" /> B) 1200–1500°C</label><br>
+    <label><input type="radio" name="pq9" value="C" /> C) 450–900°C</label><br>
+    <label><input type="radio" name="pq9" value="D" /> D) 1800–2000°C</label><br>
+</div><br>
+
+<div class="question" data-correct="C">
+    <p><b>Q10. Brazing can join dissimilar metals because: </b></p>
+    <label><input type="radio" name="pq10" value="A" /> A) Both metals melt</label><br>
+    <label><input type="radio" name="pq10" value="B" /> B) Only base metal melts</label><br>
+    <label><input type="radio" name="pq10" value="C" /> C) Only filler metal melts</label><br>
+    <label><input type="radio" name="pq10" value="D" /> D) Metals dissolve in flux</label><br>
+</div><br>
+
+<button type="submit" id="posttest-submit-btn">Submit</button>
+</form>
+
+
+                    </p>
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>
