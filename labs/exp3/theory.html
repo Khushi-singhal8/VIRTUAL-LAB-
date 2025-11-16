@@ -1,0 +1,411 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("theory").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse" >
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+      
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header">
+            <ol class="breadcrumb">
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
+              </li>
+              <li>
+                <a href="#">Experiment Name</a>
+              </li>
+              <li class="active">Theory</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory" onclick="theory()">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+             
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                    To prepare the simple wooden pattern and study the basic pattern making process
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Theory </h3>
+                    <p style="font-size:130%; margin-top:2%">
+                
+                   <p>A pattern is a model of casting that is used to prepare the mold cavity. This is slightly larger than the final casting because various allowances are added to metal behavior and manufacturing conditions such as shrinkage, machining, drafts, and deformation. The accuracy of the pattern directly affects the quality of the final casting. It controls the shape and size of the final product and facilitates the formation of the mold cavity, playing an important role in obtaining defect-free casting. </p>
+            <p>A variety of patterns are used in casting based on the size and complexity of the component. A Single Piece Pattern is the simplest type, built in one piece and used for flat or straight shapes. A Split Pattern is divided into two parts with a visible line and is used for complex geometries. In a Match Plate Pattern, high accuracy and repeatability are offered by mounting both halves of the pattern on opposite edges of a match plate, which is often used in large-scale production. A Loose Piece Pattern contains detachable parts to deal with internal or external undercuts that cannot be removed directly. The Sweep Pattern is made by rotating a 2D profile around an axis and is suitable for large, symmetric castings. </p>
+            <p>In making patterns, allowances are important. The Shrinkage Allowance compensates for metal contraction during solidification. It is calculated using the formula: </p>
+            <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><msub> <mi mathvariant="bold">A</mi> <mi mathvariant="bold">S</mi></msub><mo>=</mo> <mi mathvariant="bold">L</mi><mo>*</mo><mo>(</mo> <mi mathvariant="bold">S</mi><mo>/</mo><mn>100</mn><mo>)</mo></math>
+            <p>Where <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px"><msub><mi>A</mi><mi>S</mi></msub></math> is the shrinkage allowance (in mm), <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>L</mi></math> is the original casting dimension, and <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>S</mi></math> is the shrinkage rate in percentage. Different metals have different shrinkage allowances. For example: </p>
+            <table>
+                <tr>
+                    <th>Material</th>
+                    <th>Shrinkage Allowance (mm/mm)</th>
+                </tr>
+                <tr>
+                    <td>Aluminium</td>
+                    <td>0.013</td>
+                </tr>
+
+                <tr>
+                    <td>Brass</td>
+                    <td>0.0155</td>
+                </tr>
+
+                <tr>
+                    <td>Bronze</td>
+                    <td>0.0155 to 0.022</td>
+                </tr>
+
+                <tr>
+                    <td>Cast Iron</td>
+                    <td>0.0104 </td>
+                </tr>
+
+                <tr>
+                    <td>Steel</td>
+                    <td>0.0208</td>
+                </tr>
+
+                <tr>
+                    <td>Copper</td>
+                    <td>0.016 </td>
+                </tr>
+
+                <tr>
+                    <td>Gunmetal</td>
+                    <td>0.010 to 0.016 </td>
+                </tr>
+
+                <tr>
+                    <td>Lead</td>
+                    <td>0.026</td>
+                </tr>
+
+                <tr>
+                    <td>Magnesium</td>
+                    <td>0.013</td>
+                </tr>
+            </table>
+
+            <p><b>Example:</b> For a 200 mm long casting and shrinkage rate of 1.5%, the shrinkage allowance would be: As = 200 * (1.5/100) = 3 mm So, the pattern length should be 203 mm</p>
+            <p>The<b> draft allowance</b> is the taper provided on the vertical faces of the pattern to allow easy removal from the mould. It is calculated as:</p>
+            <p><b>Draft Height = <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;">
+                <mi>H</mi>
+                <mo>*</mo>
+                <mi>tan</mi>
+                <mo>(</mo>
+                <mi>&#x3b8;</mi>
+                <mo>)</mo>
+            </math>
+            </b></p>
+            <p>Where <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>H</mi></math> is the height and <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>&#x3b8;</mi></math> is the draft angle. For example, for <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>H</mi></math> = 50 mm and <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>&#x3b8;</mi></math> = 2 degree, the draft height will be approximately 1.75 mm. Draft angles vary with pattern materials: </p>
+            <table>
+                <thead>
+                <tr>
+                    <th>Pattern Material</th>
+                    <th>Outer Draft (°)</th>
+                    <th>Inner Draft (°)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Wood</td>
+                    <td>0.25 to 3.00</td>
+                    <td>0.50 to 3.00</td>
+                </tr>
+                <tr>
+                    <td>Metal</td>
+                    <td>0.35 to 1.50</td>
+                    <td>0.50 to 3.00</td>
+                </tr>
+                <tr>
+                    <td>Plastic</td>
+                    <td>0.25 to 1.00</td>
+                    <td>0.35 to 2.25</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <p>The <b>Machining Allowance</b> is added to allow extra material for post-casting machining operations. This is typically between 1-5 mm depending on the size and complexity.</p>
+            <p><b>Example:</b> For a 100 mm casting with 2 mm machining allowance:  </p>
+            <p>Pattern Length = 100 + 2 = 102 mm. </p>
+            <p>The <b>Shake Allowance</b> is a negative allowance to compensate for slight enlargement of the mould cavity caused by pattern rapping or shaking during withdrawal. This typically ranges from <b>−0.2 to −0.5 mm. </b></p>
+            <P>The <b>Distortion Allowance</b> compensates for warping or bending in castings, especially those with long, thin sections or asymmetrical geometry. This value is determined by experience or experimental results. </P>
+            <div class="home-img">
+                <img src="images/allowance.png" width="617px" alt="">
+            </div>
+            <p>Common materials used for patterns include: </p>
+            <ul>
+                <li><b>Wood:</b> Lightweight, easy to shape, and ideal for prototypes or educational purposes. </li>
+                <li><b>Aluminium:</b> Durable and dimensionally accurate, suitable for mass production. </li>
+                <li><b>Plastic:</b> Offers a smooth surface finish and is useful in low-volume production. </li>
+                <li><b>Wax:</b> Used in investment casting; melts away during moulding, enabling highly precise components</li>
+            </ul>
+            <p>The method of making patterns also depends on their complexity:</p>
+            <ul>
+                <li><b>Simple Patterns:</b> such as blocks can be made using hand tools like saws, chisels, and files.  </li>
+                <li><b>Round Patterns:</b>are best produced on a lathe machine for accuracy. </li>
+                <li><b>Complex Patterns:</b> require advanced tools like CNC routers, manual shaping, or jigs and match plates to maintain precision.  </li>
+            </ul>
+            <p>Understanding and correctly applying these principles significantly improves the efficiency, dimensional accuracy, and surface quality of the final casting. </p>
+            <p><b>Apparatus</b></p>
+            <ol class="apparatus-list">
+                <li class="tool-name">Wood piece</li><br>
+                <div class="home-img">
+                    <img src="images/wood.png" width="300px" alt="">
+                </div>
+                <p>Used as raw material for the pattern. A simply block is selected for its easy machinability, light weight, and suitability for lathe operations. </p>
+
+                <li class="tool-name">Marking Tool - Scriber</li><br>
+                <div class="home-img">
+                    <img src="images/Screenshot (598).png" width="300px" alt="">
+                </div>
+                <p> A pointed tool used to mark layout lines, centerlines, and reference points on the wood surface before cutting. </p>
+                <b>Tools include:</b>
+                <ul style="padding-bottom: 15px">
+                    <li>Straight Scriber –for marking straight layout lines.</li>
+                    <li>Bent-tip Scriber –for marking in hard-to-reach spots.</li>
+                    <li>Hook Scriber / L-shaped Scriber – for marking around edges or inside holes.</li>
+                    <li>Awl-type Scriber –for piercing and marking.</li>
+                    <li>Curved Hook Scriber –  for internal markings.</li>
+                    <li>Right-angle Scriber –for marking perpendicular lines or tight corners.</li>
+                </ul>
+
+                <li class="tool-name">Vernier Calliper</li><br>
+                <div class="home-img">
+                    <img src="images/vernier calliper.png" width="450px" alt="">
+                </div>
+                <p>As depicted in the image, the Vernier caliper is a precision instrument with several parts: </p>
+                <ul>
+                    <li><b>External Jaws</b> – for measuring outside dimensions. </li>
+                    <li><b>Internal Jaws</b> – for measuring inside dimensions. </li>
+                    <li><b>Depth Probe</b> – for measuring depth. </li>
+                    <li><b>Main Scale (Metric & Imperial) </b> – provides the primary reading.</li>
+                    <li><b>Vernier Scale</b> – allows readings up to 0.02 mm accuracy</li>
+                    <li><b>Locking Screw </b>– fixes the sliding jaw in position during measurement.</li>
+                </ul>
+                <p>In the experiment, it is used to check the diameter, length, and other dimensions of the pattern during machining to ensure that shrinkage and machining allowances are maintained accurately.</p>
+                <li class="tool-name">Lathe Machine</li><br>
+                <div class="home-img">
+                    <img src="images/lathe machine..png" width="450px" alt="">
+                </div>
+                <p>The lathe machine is the main equipment used for shaping the cylindrical wooden pattern. As shown in the image, it consists of several key parts: </p>
+                <ul>
+                    <li><b>Headstock</b> – houses the spindle and drive mechanism that rotates the workpiece.</li>
+
+                    <li><b>Spindle</b> – transmits rotary motion to the chuck.</li>
+
+                    <li><b>Chuck (4-Jaw Independent)</b> – each jaw moves independently, allowing precise centering of irregular or cylindrical wooden blanks. </li><br>
+
+                    <li><b>Tool Post</b> – holds the cutting tool firmly and allows adjustment for proper cutting angle. </li>
+
+                    <li><b>Tailstock</b> – supports the free end of the workpiece and can hold tools like drills for axial operations.</li>
+
+                    <li><b>Bed</b> – the rigid base that holds and aligns all lathe components.</li>
+                </ul>
+                <p>This arrangement ensures stability, accurate cutting, and smooth operation when turning the pattern. </p>
+
+                <li class="tool-name">HSS Tool</li><br>
+                <div class="home-img">
+                    <img src="images/HSS TOOL..png" width="300px" alt="">
+                </div>
+                <p>Shown in the image, this device has a state-of-the-art and is usually made from high-speed steel (HSS) or carbide-sputum given steel that is for increased durability. This rotating removes the material in a controlled manner from the workpiece, performing both roughing and finishing operations. The state -of -the -art geometry (rake angle, withdrawal angle, nasal radius) is designed to produce accurate, smooth surfaces on wood, reduce wearing tools. </p><br>
+
+                <p><b>Safety:</b></p>
+                <table>
+                    <tr>
+                        <th>Gear</th>
+                        <th>Purpose</th>
+                    </tr>
+                    <tr>
+                        <td>Face Shield</td>
+                        <td>Protect from flying chips</td>
+                    </tr>
+                    <tr>
+                        <td>Hearing Protection</td>
+                        <td>Reduce noise from lathe</td>
+                    </tr>
+                    <tr>
+                        <td>Dust Mask</td>
+                        <td>Prevent inhalation of wood dust</td>
+                    </tr>
+                    <tr>
+                        <td>Apron & Gloves</td>
+                        <td>Operator safety</td>
+                    </tr>
+                </table>
+            </ol>
+
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+<script>
+ function theory(){
+   document.getElementById("theory").style.backgroundColor = "#009dff";
+ 
+ }
+
+
+</script>
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>
