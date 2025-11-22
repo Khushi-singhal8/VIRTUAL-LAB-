@@ -11,13 +11,15 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
         <!-- Theme style -->
         <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
-        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <!-- AdminLTE Skins -->
         <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+
         <script>
             window.onload = function () {
                 document.getElementById("theory").className = "active treeview";
             }
         </script>
+
         <style>
           #toggle_nav:hover{
             background-color: #1261A0;
@@ -28,6 +30,24 @@
           #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
           }
+
+          /* ---------- NEW CODE FOR CENTERING IMAGE ---------- */
+          .figure {
+              text-align: center;
+              margin: 25px 0;
+          }
+          .figure img {
+              width: 450px; 
+              height: auto;
+              display: block;
+              margin: 0 auto;
+          }
+          .caption {
+              font-weight: bold;
+              margin-top: 8px;
+              font-size: 16px;
+          }
+          /* --------------------------------------------------- */
         </style>
     </head>
 
@@ -50,194 +70,153 @@
   </div>
 </div>
         
-        <div class="wrapper">
-        	<header class="main-header">
-        <!-- Logo -->
-        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
-        <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
+<div class="wrapper">
+  <header class="main-header">
+    <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+      <p align="center" style="font-size:1em;"><b>Lab Name</b></p>
     </a>
-        <!-- Header Navbar: style can be found in header.less -->
-        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
-          <!-- Sidebar toggle button-->
-          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+
+    <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+      <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
         <span class="sr-only">Toggle navigation</span>
       </a>
-          <section class="content-header">
-            <ol class="breadcrumb">
-              <li>
-                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a>
-              </li>
-              <li>
-                <a href="#">Experiment Name</a>
-              </li>
-              <li class="active">Theory</li>
-            </ol>
-          </section>
-        </nav>
-      </header>
+
+      <section class="content-header">
+        <ol class="breadcrumb">
+          <li><a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name</a></li>
+          <li><a href="#">Experiment Name</a></li>
+          <li class="active">Theory</li>
+        </ol>
+      </section>
+    </nav>
+  </header>
             
-      <!-- Left side column. contains the logo and sidebar -->
-      <aside class="main-sidebar" style="background-color:#1261A0;">
-        <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
-          <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group"></div>
-          </form>
-          <!-- /.sear ch form -->
-          <!-- sidebar menu: : style can be found in sidebar.less -->
-            <ul class="sidebar-menu" style="background-color:#1261A0;">
-                <li class="treeview" id="aim">
-                    <a href="index.html" id="aim">
-                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+  <aside class="main-sidebar" style="background-color:#1261A0;">
+    <section class="sidebar">
 
-                    </a>
-                </li>
-                <li class="treeview" id="theory">
-                    <a href="theory.html" id="theory" onclick="theory()">
-                        <i class="fa fa-files-o" style="color:white;"></i>
-                        <span style="color:white;">Theory</span>
-                    </a>
-                </li>
-             <!--   <li class="treeview" id="numerical">
-                    <a href="numerical.php">
-                        <i class="fa fa-laptop"></i>
-                        <span>Numerical</span>
-                        <span class="pull-right-container">
-                        </span>
-                    </a>
-                </li>
-                <li class="treeview" id="program">
-                    <a href="program.php">
-                        <i class="fa fa-laptop"></i>
-                        <span>Program</span>
-                        <span class="pull-right-container">
-                        </span>
-                    </a>
-                </li> -->
-                <li class="treeview" id="pretest">
-                    <a href="pretest.html" id="pretest">
-                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+      <ul class="sidebar-menu" style="background-color:#1261A0;">
+        <li class="treeview" id="aim">
+          <a href="index.html" id="aim">
+            <i class="fa fa-files-o" style="color:white;"></i> 
+            <span style="color:white;">Aim</span>
+          </a>
+        </li>
 
-                    </a>
-                </li>
-                
-                <li class="treeview" id="procedure">
-                    <a href="procedure.html" id="procedure">
-                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
-                    </a>
-                </li>
-                <li class="treeview" id="simulation">
-                    <a href="simulation.html" id="simulation">
-                        <i class="fa fa-laptop" style="color:white;"></i>
-                        <span style="color:white;">Simulation</span>
-                        <span class="pull-right-container">
-                        </span>
-                    </a>
-                </li>
+        <li class="treeview" id="theory">
+          <a href="theory.html" id="theory">
+            <i class="fa fa-files-o" style="color:white;"></i>
+            <span style="color:white;">Theory</span>
+          </a>
+        </li>
 
-             
-                
-                <li class="treeview" id="posttest">
-                    <a href=" posttest.html" id="posttest">
-                        <i class=" fa fa-files-o" style="color:white;">
-                    </i>
-                    <span style="color:white;">Post Test</span>
-                    <span class="pull-right-container">
-                    </span>
-                    </a>
-                </li>
-                <li class="treeview" id="ref">
-                    <a href="references.html" id="references">
-                        <i class="fa fa-files-o" style="color:white;"></i>
-                        <span style="color:white;">References</span>
-                        <span class="pull-right-container">
-                        </span>
-                    </a>
-                </li>
-            </ul>
-        </section>
-        <!-- /.sidebar -->
-      </aside>
-
-   
-            <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-                <section class="content-header">
-                <h1 align="center">
-                   To study and operate micrometer Screw Gauge for dimensional measurement 
-                </h1>
-                </section>
-                    <!-- Main content -->
-                    <section class="content">
-                    <h3 style="margin-top:5%"> Theory </h3>
-                    <p style="font-size:130%; margin-top:2%">
-                
-                    <p>A micrometer screw gauge is a precision measuring instrument used to measure very small dimensions such as the diameter or thickness of thin wires, sheets, and small machine parts. It works on the screw principle: when the thimble rotates, the spindle advances linearly due to the screw thread inside.</p>
-
-            <p>Each full rotation of the thimble moves the spindle by a fixed distance called the pitch. In a standard metric micrometer, the pitch is 0.5 mm. The thimble has 25 divisions, so each division moves the spindle by: </p>
-
-            <p><b>LC = 0.5 mm / 25 = 0.02 mm </b></p>
-            <p>Some micrometers also have a vernier scale with 10 divisions, giving further precision. The vernier least count is: </p>
-            <p><b>VLC = 0.02 / 10 = 0.002 mm  </b></p>
-            <p><b>Main parts:</b> U-frame, anvil, spindle, sleeve (main scale), thimble (circular scale), ratchet stop, lock lever. The ratchet applies uniform pressure while measuring, and the lock lever holds the spindle in position for stable reading. </p>
-
-
-            <p><b>Applications:</b></p>
-
-            <ul>
-                <li>Measuring the thickness of metal sheets and wires.</li>
-                <li>Checking precision-machined components in workshops.</li>
-                <li>Measuring small parts in watch making and electronics.</li>
-             </ul>
-
-             <p><b>Advantages:</b></p>
-
-                <ul>
-                    <li>Very high accuracy (up to 0.001 mm).</li>
-                    <li>Easy to read and reliable with proper use.</li>
-                    <li>Compact and portable.</li>
-                </ul>
-
-                <p><b>Disadvantages:</b></p>
-
-                <ul>
-                    <li>Measures only small sizes and external dimensions (unless special type).</li>
-                    <li>More expensive than simple calipers.</li>
-                    <li>Needs careful handling to avoid damage or error.</li>
-                </ul>
-
-                <div class="home-img">
-                <img src="images/micrometer.png" width="650px" alt="">
-                   
-                </section>
-            <!-- /.content -->
-            </div>
-            <footer class="main-footer">
-                <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
-            </footer>
-        </div>
+        <li class="treeview" id="pretest">
+          <a href="pretest.html" id="pretest">
+            <i class="fa fa-files-o" style="color:white;"></i> 
+            <span style="color:white;">Pre Test</span>
+          </a>
+        </li>
         
-    </body>
-</html>
+        <li class="treeview" id="procedure">
+          <a href="procedure.html" id="procedure">
+            <i class="fa fa-files-o" style="color:white;"></i> 
+            <span style="color:white;">Procedure</span>
+          </a>
+        </li>
+
+        <li class="treeview" id="simulation">
+          <a href="simulation.html" id="simulation">
+            <i class="fa fa-laptop" style="color:white;"></i>
+            <span style="color:white;">Simulation</span>
+          </a>
+        </li>
+
+        <li class="treeview" id="posttest">
+          <a href=" posttest.html" id="posttest">
+            <i class=" fa fa-files-o" style="color:white;"></i>
+            <span style="color:white;">Post Test</span>
+          </a>
+        </li>
+
+        <li class="treeview" id="ref">
+          <a href="references.html" id="references">
+            <i class="fa fa-files-o" style="color:white;"></i>
+            <span style="color:white;">References</span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </aside>
+
+  <div class="content-wrapper">
+
+    <section class="content-header">
+      <h1 align="center">To study and operate micrometer Screw Gauge for dimensional measurement</h1>
+    </section>
+
+    <section class="content">
+
+      <h3 style="margin-top:5%"> Theory </h3>
+
+      <p style="font-size:130%; margin-top:2%">
+        A micrometer screw gauge is a precision measuring instrument used to measure very small dimensions...
+      </p>
+
+      <p>Each full rotation of the thimble moves the spindle by a fixed distance called the pitch...</p>
+
+      <p><b>LC = 0.5 mm / 25 = 0.02 mm </b></p>
+
+      <p><b>VLC = 0.02 / 10 = 0.002 mm</b></p>
+
+      <p><b>Main parts:</b> U-frame, anvil, spindle, sleeve, thimble, ratchet stop, lock lever.</p>
+
+      <p><b>Applications:</b></p>
+      <ul>
+        <li>Measuring wires</li>
+        <li>Measuring sheet thickness</li>
+        <li>Precision components</li>
+      </ul>
+
+      <p><b>Advantages:</b></p>
+      <ul>
+        <li>High accuracy</li>
+        <li>Easy to use</li>
+        <li>Portable</li>
+      </ul>
+
+      <p><b>Disadvantages:</b></p>
+      <ul>
+        <li>Measures small dimensions only</li>
+        <li>More expensive</li>
+        <li>Requires careful handling</li>
+      </ul>
+
+      
+      <div class="figure">
+          <img src="images/micrometer.png" alt="Micrometer Screw Gauge">
+          <div class="caption">Fig (a): Micrometer Screw Gauge</div>
+      </div>
+      
+
+    </section>
+  </div>
+
+  <footer class="main-footer">
+      <h4 align="center">Lab contributed by <!-- Institute Name --> </h4>
+  </footer>
+
+</div>
+
 <script>
  function theory(){
    document.getElementById("theory").style.backgroundColor = "#009dff";
- 
  }
-
-
 </script>
-<!-- ./wrapper -->
-<!-- jQuery 2.2.3 -->
+
 <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
 <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-<!-- Bootstrap 3.3.6 -->
 <script src="../../bootstrap/js/bootstrap.min.js"></script>
-<!-- Slimscroll -->
 <script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
-<!-- FastClick -->
 <script src="../../plugins/fastclick/fastclick.js"></script>
-<!-- AdminLTE App -->
 <script src="../../dist/js/app.min.js"></script>
+
+</html>
