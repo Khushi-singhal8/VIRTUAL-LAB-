@@ -1,3 +1,7 @@
+/* jshint esversion: 6 */
+/* global console */
+'use strict';
+
 document.addEventListener("DOMContentLoaded", function() {
     console.log('Simulation E10 script (multi-substeps) loaded');
 
@@ -22,7 +26,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 7.4, hotspot:{x: 0.1990924805531547, y: 0.0006798951703481843, w: 0.20717372515125324, h: 0.42057656308498687}, instruction:'Move workpiece to correct position.' },
                 { time: 9.5, hotspot:{x: 0.4445548833189283, y: 0.5368086858854362, w: 0.16222990492653414, h: 0.16}, instruction:'Move jaws using finger hook.' },
                 { time: 11.5, hotspot:{x: 0.4860414866032844, y: 0.37806664170722576, w: 0.0567847882454624, h: 0.09410707600149758}, instruction:'Tighten the lock screw.' },
-                { time: 24, instruction:'Take reading - Final reading: 26.08mm' }
+                { time: 23.3, instruction:'Top view' },
+                { time: 25, instruction:'Take reading:\nMSR = 26 mm, VSR = 4 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 26 + (4 × 0.02) = 26 + 0.08 = 26.08 mm' }
             ]
         },
         {
@@ -36,7 +41,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 5.6, hotspot:{x: 0.14347450302506481, y: 0.6306252339947586, w: 0.22717372515125323, h: 0.3387420441782104}, instruction:'Move workpiece to correct position.' },
                 { time: 7.65, hotspot:{x: 0.7254451166810718, y: 0.5767128416323475, w: 0.1597579948141746, h: 0.18}, instruction:'Move jaws using finger hook.' },
                 { time: 9.75, hotspot:{x: 0.6226015557476232, y: 0.2313051291651067, w: 0.0567847882454624, h: 0.09410707600149758}, instruction:'Tighten the lock screw.' },
-                { time: 25, instruction:'Take reading - Final reading: 30.1mm' }
+                { time: 19.30, instruction: 'Top view' },
+                { time: 25, instruction:'Take reading:\nMSR = 30 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm\nFinal Reading = 30 + (5 × 0.02) = 30 + 0.1 = 30.1 mm' }
             ]
         },
         {
@@ -50,7 +56,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 7.85, hotspot:{x: 0.4893690579083838, y: 0.20628378884312992, w: 0.25903197925669835, h: 0.42154249344814676}, instruction:'Move workpiece to correct position.' },
                 { time: 10.84, hotspot:{x: 0.3476231633535004, y: 0.6705293897416698, w: 0.11901469317199653, h: 0.11004867090977162}, instruction:'Move jaws using finger hook.' },
                 { time: 12.9, hotspot:{x: 0.6691443388072602, y: 0.7364223137401722, w: 0.061970613656006916, h: 0.11004867090977162}, instruction:'Tighten the lock screw.' },
-                { time: 25, instruction:'Take reading - Final reading 2.1mm' }
+                { time: 26.45, instruction:'Top view' },
+                { time: 30, instruction:'Take reading:\nMSR = 2 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 2 + (5 × 0.02) = 2 + 0.1 = 2.1 mm.' }
             ]
         },
         {
@@ -62,8 +69,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 1.03, hotspot:{x: 0.8568366464995678, y: 0.18019318607263196, w: 0.13901469317199655, h: 0.3447323099962561}, instruction:'Move workpiece to correct position.'},
                 { time: 3, hotspot:{x: 0.11408815903197926, y: 0.3958427555222763, w: 0.06468452895419188, h: 0.1021265443654062}, instruction:'Unscrew the lock screw.' },
                 { time: 4.98, hotspot:{x: 0.21607605877268798, y: 0.623472856608012, w: 0.13555747623163353, h: 0.12608760763758892}, instruction:'Move jaws using finger hook.' },
-                { time: 7.02, hotspot:{x: 0.20933448573898011, y: 0.35005016847622616, w: 0.06542783059636992, h: 0.11004867090977162}, instruction:'Tighten the lock screw.' },
-                { time: 25, instruction:'Take reading - Final reading 30.06mm' }
+                { time: 7.1, hotspot:{x: 0.20933448573898011, y: 0.35005016847622616, w: 0.06542783059636992, h: 0.11004867090977162}, instruction:'Tighten the lock screw.' },
+                { time: 14, instruction:'Top view' },
+                { time: 25, instruction:'Take reading:\nMSR = 30 mm, VSR = 3 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 30 + (3 × 0.02) = 30 + 0.06 = 30.06 mm' }
             ]
         }
     ];
@@ -142,6 +150,8 @@ document.addEventListener("DOMContentLoaded", function() {
         const video = document.getElementById('substep-video');
         const hotspot = document.getElementById('substep-hotspot');
         const instructionElem = document.getElementById('substep-instruction');
+        // Ensure newline characters ("\n") inside instruction text render as line breaks
+        if (instructionElem) instructionElem.style.whiteSpace = 'pre-line';
         const stage = document.getElementById('play-stage');
         if (hotspotDebug) hotspot.classList.add('debug-highlight');
 
@@ -264,6 +274,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
         const video = document.getElementById('simple-video');
+        const inst = document.getElementById('play-instruction');
+        if (inst) inst.style.whiteSpace = 'pre-line';
         video.addEventListener('loadedmetadata', () => { video.play().catch(()=>{}); }, { once:true });
         video.addEventListener('ended', () => { if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1); }, { once:true });
         cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_){} };
