@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", function() {
             substeps: [
                 { time: 1.65, hotspot:{x: 0.4674157303370786, y: 0.16657431673530512, w: 0.06258426966292134, h: 0.1021265443654062}, instruction:'Unscrew the lock screw.' },
                 { time: 3.65, hotspot:{x: 0.4229386343993085, y: 0.4209659303631599, w: 0.15630077787381158, h: 0.1740097341819543}, instruction:'Move jaws using finger hook.' },
-                { time: 5.6, hotspot:{x: 0.14347450302506481, y: 0.6306252339947586, w: 0.22717372515125323, h: 0.3387420441782104}, instruction:'Move workpiece to correct position.' },
+                { time: 5.68, hotspot:{x: 0.14347450302506481, y: 0.6306252339947586, w: 0.22717372515125323, h: 0.3387420441782104}, instruction:'Move workpiece to correct position.' },
                 { time: 7.65, hotspot:{x: 0.7254451166810718, y: 0.5767128416323475, w: 0.1597579948141746, h: 0.18}, instruction:'Move jaws using finger hook.' },
                 { time: 9.75, hotspot:{x: 0.6226015557476232, y: 0.2313051291651067, w: 0.0567847882454624, h: 0.09410707600149758}, instruction:'Tighten the lock screw.' },
                 { time: 19.30, instruction: 'Top view' },
@@ -51,11 +51,11 @@ document.addEventListener("DOMContentLoaded", function() {
             src: 'images/simulation/3.mp4',
             type: 'video',
             substeps: [
-                { time: 1.825, hotspot:{x: 0.6723768366464996, y: 0.7156510670160988, w: 0.06369922212618842, h: 0.12202920254586297}, instruction:'Unscrew the lock screw.' },
+                { time: 1.825, hotspot:{x: 0.67487625, y: 0.7423177777777777, w: 0.06369922212618842, h: 0.12202920254586297}, instruction:'Unscrew the lock screw.' },
                 { time: 4.85, hotspot:{x: 0.47035436473638725, y: 0.6345877948333957, w: 0.1, h: 0.10405840509172594}, instruction:'Move jaws using finger hook.' },
                 { time: 7.85, hotspot:{x: 0.4893690579083838, y: 0.20628378884312992, w: 0.25903197925669835, h: 0.42154249344814676}, instruction:'Move workpiece to correct position.' },
                 { time: 10.84, hotspot:{x: 0.3476231633535004, y: 0.6705293897416698, w: 0.11901469317199653, h: 0.11004867090977162}, instruction:'Move jaws using finger hook.' },
-                { time: 12.9, hotspot:{x: 0.6691443388072602, y: 0.7364223137401722, w: 0.061970613656006916, h: 0.11004867090977162}, instruction:'Tighten the lock screw.' },
+                { time: 12.9, hotspot:{x: 0.6716437500000001, y: 0.7564222222222222, w: 0.061970625, h: 0.11004866666666667}, instruction:'Tighten the lock screw.' },
                 { time: 26.45, instruction:'Top view' },
                 { time: 30, instruction:'Take reading:\nMSR = 2 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 2 + (5 × 0.02) = 2 + 0.1 = 2.1 mm.' }
             ]

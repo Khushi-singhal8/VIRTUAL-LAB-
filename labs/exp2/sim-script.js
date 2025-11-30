@@ -13,13 +13,27 @@ document.addEventListener("DOMContentLoaded", function() {
     const steps = [
         {
             id: 'step1',
-            title: 'Perform measurement',
+            title: 'Measure sheet thickness using micrometer',
             src: 'images/simulation/1.mp4',
             type: 'video',
             substeps: [
-                { time: 7.83, hotspot: {x: 0.5398516217837857, y: 0.48732976515565263, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open Micrometer, then place object between anvil and spindle.' },
-                { time: 11.83, hotspot: {x: 0.5647127519147284, y: 0.4967008192244675, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click.' },
-                { time: 13, hotspot: {x: 0.31808901281191543, y: 0.37990265818045676, w: 0.053811581676750216, h: 0.10618494945713217}, instruction: 'Lock the spindle using the lock lever.' },
+                { time: 3.7, hotspot: {x: 0.5398516217837857, y: 0.48732976515565263, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
+                { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Place sheet between anvil and spindle' },
+                { time: 11.7, hotspot: {x: 0.5647127519147284, y: 0.4967008192244675, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
+                { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
+                { time: 20 , instruction:'Take measurement.' }
+            ]
+        },
+        {
+            id: 'step2',
+            title: 'Measure wire diameter using micrometer',
+            src: 'images/simulation/2.mp4',
+            type: 'video',
+            substeps: [
+                { time: 3.9, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
+                { time: 8, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Place wire between anvil and spindle' },
+                { time: 12, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate thimble until slip click' },
+                { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
                 { time: 15, instruction:'Take measurement.' }
             ]
         }
