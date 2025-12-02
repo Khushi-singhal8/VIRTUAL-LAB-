@@ -21,7 +21,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Place sheet between anvil and spindle' },
                 { time: 11.7, hotspot: {x: 0.5647127519147284, y: 0.4967008192244675, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
                 { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
-                { time: 20 , instruction:'Take measurement.' }
+                { time: 20 , instruction:'Take reading:\n    Sleeve reading = 2 mm \n' +
+                        'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm \n' +
+                        'Vernier reading = 3 divisions → 3 × 0.002 = 0.006 mm \n' +
+                        'Total = 2 + 0.08 + 0.006 = 2.086 mm ' }
             ]
         },
         {
@@ -34,7 +37,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 8, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Place wire between anvil and spindle' },
                 { time: 12, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate thimble until slip click' },
                 { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
-                { time: 15, instruction:'Take measurement.' }
+                { time: 15, instruction: 'Take reading:\n    Sleeve reading = 2 mm \n' +
+    'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm \n' +
+    'Vernier reading = 3 divisions → 3 × 0.002 = 0.006 mm \n' +
+    'Total = 2 + 0.08 + 0.006 = 2.086 mm ' }
             ]
         }
     ];
@@ -110,7 +116,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     <video id="substep-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
                     <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
-                <div id="substep-instruction" class="drag-instructions"></div>
+                <div id="substep-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
             </div>`;
 
         const video = document.getElementById('substep-video');
