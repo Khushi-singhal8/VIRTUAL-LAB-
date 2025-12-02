@@ -13,13 +13,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const steps = [
         {
             id: 'step1',
-            title: 'Measure sheet thickness using micrometer',
+            title: '1. Measure sheet thickness using micrometer',
             src: 'images/simulation/1.mp4',
             type: 'video',
             substeps: [
-                { time: 3.7, hotspot: {x: 0.5398516217837857, y: 0.48732976515565263, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
+                { time: 3.7, hotspot: {x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778}, instruction: 'Rotate the thimble and open micrometer' },
                 { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Place sheet between anvil and spindle' },
-                { time: 11.7, hotspot: {x: 0.5647127519147284, y: 0.4967008192244675, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
+                { time: 11.7, hotspot: {x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
                 { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
                 { time: 20 , instruction:'Take reading:\n    Sleeve reading = 2 mm \n' +
                         'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm \n' +
@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         {
             id: 'step2',
-            title: 'Measure wire diameter using micrometer',
+            title: '2. Measure wire diameter using micrometer',
             src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
@@ -228,7 +228,6 @@ document.addEventListener("DOMContentLoaded", function() {
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
                     <video id="simple-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
                 </div>

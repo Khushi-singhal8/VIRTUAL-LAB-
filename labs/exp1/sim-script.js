@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const steps = [
         {
             id: 'step1',
-            title: 'Measure internal diameter of workpiece',
+            title: '1. Measure internal diameter of workpiece',
             src: 'images/simulation/1.mp4',
             type: 'video',
             substeps: [
@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         {
             id: 'step2',
-            title: 'Measure outer diameter of workpiece',
+            title: '2. Measure outer diameter of workpiece',
             src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         {
             id: 'step3',
-            title: 'Measure thickness',
+            title: '3. Measure thickness',
             src: 'images/simulation/3.mp4',
             type: 'video',
             substeps: [
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         {
             id: 'step4',
-            title: 'Measure depth',
+            title: '4. Measure depth',
             src: 'images/simulation/4.mp4',
             type: 'video',
             substeps: [
@@ -70,8 +70,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 3, hotspot:{x: 0.11408815903197926, y: 0.3958427555222763, w: 0.06468452895419188, h: 0.1021265443654062}, instruction:'Unscrew the lock screw.' },
                 { time: 4.98, hotspot:{x: 0.21607605877268798, y: 0.623472856608012, w: 0.13555747623163353, h: 0.12608760763758892}, instruction:'Move jaws using finger hook.' },
                 { time: 7.1, hotspot:{x: 0.20933448573898011, y: 0.35005016847622616, w: 0.06542783059636992, h: 0.11004867090977162}, instruction:'Tighten the lock screw.' },
-                { time: 14, instruction:'Top view' },
-                { time: 25, instruction:'Take reading:\nMSR = 30 mm, VSR = 3 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 30 + (3 × 0.02) = 30 + 0.06 = 30.06 mm' }
+                { time: 13.5, instruction:'Top view' },
+                { time: 14, instruction:'Take reading:\nMSR = 30 mm, VSR = 3 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 30 + (3 × 0.02) = 30 + 0.06 = 30.06 mm' }
             ]
         }
     ];
@@ -139,7 +139,6 @@ document.addEventListener("DOMContentLoaded", function() {
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width:100%;height:100%;">
                 <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
                     <video id="substep-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
                     <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
