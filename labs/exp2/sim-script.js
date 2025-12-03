@@ -33,8 +33,8 @@ document.addEventListener("DOMContentLoaded", function() {
             src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
-                { time: 3.9, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
-                { time: 8, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Place wire between anvil and spindle' },
+                { time: 4.1, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
+                { time: 8.2, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Place wire between anvil and spindle' },
                 { time: 12, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate thimble until slip click' },
                 { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
                 { time: 15, instruction: 'Take reading:\n    Sleeve reading = 2 mm \n' +
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", function() {
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width:100%;height:100%;">
                 <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+<!--                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>-->
                 <div class="play-stage" id="play-stage">
                     <video id="substep-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
                     <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
