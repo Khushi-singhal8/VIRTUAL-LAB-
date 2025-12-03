@@ -19,29 +19,59 @@ document.addEventListener("DOMContentLoaded", function() {
             substeps: [
                 { time: 3.7, hotspot: {x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778}, instruction: 'Rotate the thimble and open micrometer' },
                 { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Place sheet between anvil and spindle' },
-                { time: 11.7, hotspot: {x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
-                { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
-                { time: 20 , instruction:'Take reading:\n    Sleeve reading = 2 mm \n' +
-                        'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm \n' +
-                        'Vernier reading = 3 divisions → 3 × 0.002 = 0.006 mm \n' +
-                        'Total = 2 + 0.08 + 0.006 = 2.086 mm ' }
+                { time: 10.6, hotspot: {x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
+                { time: 11.7, hotspot: {x: 0.7797125, y: 0.5840888888888889, w: 0.077300625, h: 0.19304088888888887}, instruction: 'Rotate ratchet for fine tuning' },
+                { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' }
             ]
         },
         {
             id: 'step2',
+            title: '1. Measure sheet thickness using micrometer',
+            src: 'images/simulation/measurement1.1.png',
+            type: 'image',
+            instruction: 'Take reading:\n    Sleeve reading = 2 mm \n' +
+                'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm'
+        },
+        {
+            id: 'step3',
+            title: '1. Measure sheet thickness using micrometer',
+            src: 'images/simulation/measurement1.2.png',
+            type: 'image',
+            instruction: 'Take reading:\n    Sleeve reading = 2 mm \n' +
+                'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm\n' +
+                'Vernier reading = 3 divisions → 3 × 0.002 = 0.006 mm \n' +
+                'Final reading = 2 + 0.08 + 0.006 = 2.086 mm '
+        },
+        {
+            id: 'step4',
             title: '2. Measure wire diameter using micrometer',
             src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
-                { time: 4.1, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
+                { time: 4.1, hotspot: {x: 0.69735125, y: 0.6095799721835883, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
                 { time: 8.2, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Place wire between anvil and spindle' },
-                { time: 12, hotspot: {x: 0.61235125, y: 0.5895511111111111, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate thimble until slip click' },
-                { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' },
-                { time: 15, instruction: 'Take reading:\n    Sleeve reading = 2 mm \n' +
-    'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm \n' +
-    'Vernier reading = 3 divisions → 3 × 0.002 = 0.006 mm \n' +
-    'Total = 2 + 0.08 + 0.006 = 2.086 mm ' }
+                { time: 11, hotspot: {x: 0.71860125, y: 0.6162559109874827, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate thimble until slip click' },
+                { time: 12, hotspot: {x: 0.80485125, y: 0.6318331015299027, w: 0.06639875, h: 0.1802058414464534}, instruction: 'Rotate ratchet for fine tuning' },
+                { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' }
             ]
+        },
+        {
+            id: 'step5',
+            title: '2. Measure wire diameter using micrometer',
+            src: 'images/simulation/measurement2.1.png',
+            type: 'image',
+            instruction: 'Take reading:\n    Sleeve reading = 0.75 mm \n' +
+                'Thimble reading = 5 divisions → 5 × 0.02 = 0.1 mm'
+        },
+        {
+            id: 'step6',
+            title: '2. Measure wire diameter using micrometer',
+            src: 'images/simulation/measurement2.2.png',
+            type: 'image',
+            instruction: 'Take reading:\n    Sleeve reading = 0.75 mm \n' +
+                'Thimble reading = 5 divisions → 5 × 0.02 = 0.1 mm\n' +
+                'Vernier reading = 7 divisions → 7 × 0.002 = 0.014 mm \n' +
+                'Final reading = 0.75 + 0.1 + 0.014 = 0.864 mm '
         }
     ];
 
@@ -80,7 +110,9 @@ document.addEventListener("DOMContentLoaded", function() {
         const timestamp = Date.now();
         clearCleanup();
 
-        if (Array.isArray(step.substeps) && step.substeps.length) {
+        if (step.type === 'image') {
+            renderImage(step);
+        } else if (Array.isArray(step.substeps) && step.substeps.length) {
             renderSubstepVideo(step, timestamp);
         } else {
             renderSimpleVideo(step, timestamp);
@@ -237,6 +269,19 @@ document.addEventListener("DOMContentLoaded", function() {
         video.addEventListener('loadedmetadata', () => { video.play().catch(()=>{}); }, { once:true });
         video.addEventListener('ended', () => { if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1); }, { once:true });
         cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_){} };
+    }
+
+    function renderImage(step) {
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="play-stage" id="play-stage">
+                    <img id="step-image" src="${step.src}" style="width:100%;height:100%;object-fit:contain;" alt="${step.title}"/>
+                </div>
+                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;">${step.instruction || ''}</div>
+            </div>`;
+        if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+        cleanupCurrent = () => {};
     }
 
     if (prevButton) {
