@@ -191,115 +191,157 @@
                    <p>A pattern is a model of casting that is used to prepare the mold cavity. This is slightly larger than the final casting because various allowances are added to metal behavior and manufacturing conditions such as shrinkage, machining, drafts, and deformation. The accuracy of the pattern directly affects the quality of the final casting. It controls the shape and size of the final product and facilitates the formation of the mold cavity, playing an important role in obtaining defect-free casting. </p>
             <p>A variety of patterns are used in casting based on the size and complexity of the component. A Single Piece Pattern is the simplest type, built in one piece and used for flat or straight shapes. A Split Pattern is divided into two parts with a visible line and is used for complex geometries. In a Match Plate Pattern, high accuracy and repeatability are offered by mounting both halves of the pattern on opposite edges of a match plate, which is often used in large-scale production. A Loose Piece Pattern contains detachable parts to deal with internal or external undercuts that cannot be removed directly. The Sweep Pattern is made by rotating a 2D profile around an axis and is suitable for large, symmetric castings. </p>
             <p>In making patterns, allowances are important. The Shrinkage Allowance compensates for metal contraction during solidification. It is calculated using the formula: </p>
-            <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><msub> <mi mathvariant="bold">A</mi> <mi mathvariant="bold">S</mi></msub><mo>=</mo> <mi mathvariant="bold">L</mi><mo>*</mo><mo>(</mo> <mi mathvariant="bold">S</mi><mo>/</mo><mn>100</mn><mo>)</mo></math>
-            <p>Where <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px"><msub><mi>A</mi><mi>S</mi></msub></math> is the shrinkage allowance (in mm), <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>L</mi></math> is the original casting dimension, and <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>S</mi></math> is the shrinkage rate in percentage. Different metals have different shrinkage allowances. For example: </p>
-            <table>
-                <tr>
-                    <th>Material</th>
-                    <th>Shrinkage Allowance (mm/mm)</th>
-                </tr>
-                <tr>
-                    <td>Aluminium</td>
-                    <td>0.013</td>
-                </tr>
+            <p style="text-align: center; font-size: 20px; font-weight: bold;">
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <msub>
+      <mi>A</mi>
+      <mi>S</mi>
+    </msub>
+    <mo>=</mo>
+    <mi>L</mi>
+    <mo>&times;</mo>
+    <mo>(</mo>
+    <mi>S</mi>
+    <mo>/</mo>
+    <mn>100</mn>
+    <mo>)</mo>
+  </math>
+</p>
+<p>Where <b>As</b> is the shrinkage allowance (in mm), <b>L</b> is the original casting dimension, and <b>S</b> is the shrinkage rate in percentage.</p>
 
-                <tr>
-                    <td>Brass</td>
-                    <td>0.0155</td>
-                </tr>
+<p>Different metals have different shrinkage allowances. For example:</p>
+            <table style="
+    width: 30%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: center;
+">
+    <tr>
+        <th style="border: 2px solid black; padding: 10px;">Material</th>
+        <th style="border: 2px solid black; padding: 10px;">Shrinkage Allowance (mm/mm)</th>
+    </tr>
 
-                <tr>
-                    <td>Bronze</td>
-                    <td>0.0155 to 0.022</td>
-                </tr>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Aluminium</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.013</td>
+    </tr>
 
-                <tr>
-                    <td>Cast Iron</td>
-                    <td>0.0104 </td>
-                </tr>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Brass</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.0155</td>
+    </tr>
 
-                <tr>
-                    <td>Steel</td>
-                    <td>0.0208</td>
-                </tr>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Bronze</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.0155 to 0.022</td>
+    </tr>
 
-                <tr>
-                    <td>Copper</td>
-                    <td>0.016 </td>
-                </tr>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Cast Iron</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.0104</td>
+    </tr>
 
-                <tr>
-                    <td>Gunmetal</td>
-                    <td>0.010 to 0.016 </td>
-                </tr>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Steel</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.0208</td>
+    </tr>
 
-                <tr>
-                    <td>Lead</td>
-                    <td>0.026</td>
-                </tr>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Copper</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.016</td>
+    </tr>
 
-                <tr>
-                    <td>Magnesium</td>
-                    <td>0.013</td>
-                </tr>
-            </table>
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Gunmetal</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.010 to 0.016</td>
+    </tr>
+
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Lead</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.026</td>
+    </tr>
+
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Magnesium</td>
+        <td style="border: 1.5px solid black; padding: 8px;">0.013</td>
+    </tr>
+</table>
+
+<br>
+
 
             <p><b>Example:</b> For a 200 mm long casting and shrinkage rate of 1.5%, the shrinkage allowance would be: As = 200 * (1.5/100) = 3 mm So, the pattern length should be 203 mm</p>
             <p>The<b> draft allowance</b> is the taper provided on the vertical faces of the pattern to allow easy removal from the mould. It is calculated as:</p>
-            <p><b>Draft Height = <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;">
-                <mi>H</mi>
-                <mo>*</mo>
-                <mi>tan</mi>
-                <mo>(</mo>
-                <mi>&#x3b8;</mi>
-                <mo>)</mo>
-            </math>
-            </b></p>
-            <p>Where <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>H</mi></math> is the height and <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>&#x3b8;</mi></math> is the draft angle. For example, for <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>H</mi></math> = 50 mm and <math xmlns="http://www.w3.org/1998/Math/MathML" style="font-weight: bold; font-size: 25px;"><mi>&#x3b8;</mi></math> = 2 degree, the draft height will be approximately 1.75 mm. Draft angles vary with pattern materials: </p>
-            <table>
-                <thead>
-                <tr>
-                    <th>Pattern Material</th>
-                    <th>Outer Draft (°)</th>
-                    <th>Inner Draft (°)</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td>Wood</td>
-                    <td>0.25 to 3.00</td>
-                    <td>0.50 to 3.00</td>
-                </tr>
-                <tr>
-                    <td>Metal</td>
-                    <td>0.35 to 1.50</td>
-                    <td>0.50 to 3.00</td>
-                </tr>
-                <tr>
-                    <td>Plastic</td>
-                    <td>0.25 to 1.00</td>
-                    <td>0.35 to 2.25</td>
-                </tr>
-                </tbody>
-            </table>
+            <p style="text-align: center; font-size: 20px; font-weight: bold;">
+  Draft Height =
+  <math xmlns="http://www.w3.org/1998/Math/MathML">
+    <mi>H</mi>
+    <mo>&times;</mo>
+    <mi>tan</mi>
+    <mo>(</mo>
+    <mi>&#x3b8;</mi>
+    <mo>)</mo>
+  </math>
+</p>
+
+            <p>Where <b>H</b> is the height and theta <b>&#x3b8</b> is the draft angle. For example, for H = 50 mm and theta = 2 degree, the draft height will be approximately 1.75 mm.</p>
+            <p>Draft angles vary with pattern materials: </p>
+            <table style="
+    width: 35%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: center;
+">
+    <thead>
+        <tr>
+            <th style="border: 2px solid black; padding: 10px;">Pattern Material</th>
+            <th style="border: 2px solid black; padding: 10px;">Outer Draft (°)</th>
+            <th style="border: 2px solid black; padding: 10px;">Inner Draft (°)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr>
+            <td style="border: 1.5px solid black; padding: 8px;">Wood</td>
+            <td style="border: 1.5px solid black; padding: 8px;">0.25 to 3.00</td>
+            <td style="border: 1.5px solid black; padding: 8px;">0.50 to 3.00</td>
+        </tr>
+        <tr>
+            <td style="border: 1.5px solid black; padding: 8px;">Metal</td>
+            <td style="border: 1.5px solid black; padding: 8px;">0.35 to 1.50</td>
+            <td style="border: 1.5px solid black; padding: 8px;">0.50 to 3.00</td>
+        </tr>
+        <tr>
+            <td style="border: 1.5px solid black; padding: 8px;">Plastic</td>
+            <td style="border: 1.5px solid black; padding: 8px;">0.25 to 1.00</td>
+            <td style="border: 1.5px solid black; padding: 8px;">0.35 to 2.25</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
+
+
 
             <p>The <b>Machining Allowance</b> is added to allow extra material for post-casting machining operations. This is typically between 1-5 mm depending on the size and complexity.</p>
             <p><b>Example:</b> For a 100 mm casting with 2 mm machining allowance:  </p>
-            <p>Pattern Length = 100 + 2 = 102 mm. </p>
+            <p><b>Pattern Length</b> = 100 + 2 = 102 mm. </p>
             <p>The <b>Shake Allowance</b> is a negative allowance to compensate for slight enlargement of the mould cavity caused by pattern rapping or shaking during withdrawal. This typically ranges from <b>−0.2 to −0.5 mm. </b></p>
             <P>The <b>Distortion Allowance</b> compensates for warping or bending in castings, especially those with long, thin sections or asymmetrical geometry. This value is determined by experience or experimental results. </P>
            <div class="figure">
           <img src="images/allowance.png" alt="allowance">
           <div class="caption">Fig (a): allowance</div>
       </div>
-            <p>Common materials used for patterns include: </p>
+            <p><b>Common materials used for patterns include: </b></p>
             <ul>
                 <li><b>Wood:</b> Lightweight, easy to shape, and ideal for prototypes or educational purposes. </li>
                 <li><b>Aluminium:</b> Durable and dimensionally accurate, suitable for mass production. </li>
                 <li><b>Plastic:</b> Offers a smooth surface finish and is useful in low-volume production. </li>
                 <li><b>Wax:</b> Used in investment casting; melts away during moulding, enabling highly precise components</li>
             </ul>
-            <p>The method of making patterns also depends on their complexity:</p>
+            <p><b>The method of making patterns also depends on their complexity:</b></p>
             <ul>
                 <li><b>Simple Patterns:</b> such as blocks can be made using hand tools like saws, chisels, and files.  </li>
                 <li><b>Round Patterns:</b>are best produced on a lathe machine for accuracy. </li>
@@ -308,14 +350,14 @@
             <p>Understanding and correctly applying these principles significantly improves the efficiency, dimensional accuracy, and surface quality of the final casting. </p>
             <p><b>Apparatus</b></p>
             <ol class="apparatus-list">
-                <li class="tool-name">Wood piece</li><br>
+                <li><b>Wood piece</b></li><br>
                 <div class="figure">
           <img src="images/wood.png" alt="wood">
           <div class="caption">Fig (b): wood</div>
       </div>
                 <p>Used as raw material for the pattern. A simply block is selected for its easy machinability, light weight, and suitability for lathe operations. </p>
 
-                <li class="tool-name">Marking Tool - Scriber</li><br>
+                <li><b>Marking Tool - Scriber</b></li><br>
                 <div class="figure">
           <img src="images/Screenshot (598).png" alt="scriber">
           <div class="caption">Fig (c): scriber</div>
@@ -331,9 +373,9 @@
                     <li>Right-angle Scriber –for marking perpendicular lines or tight corners.</li>
                 </ul>
 
-                <li class="tool-name">Vernier Calliper</li><br>
+                <li><b>Vernier Calliper</b></li><br>
                 <div class="figure">
-          <img src="images/vernier calliper.png" alt="vernier calliper">
+          <img src="images/verneir.png" alt="vernier calliper">
           <div class="caption">Fig (d): Vernier Calliper</div>
       </div>
                 <p>As depicted in the image, the Vernier caliper is a precision instrument with several parts: </p>
@@ -344,11 +386,11 @@
                     <li><b>Main Scale (Metric & Imperial) </b> – provides the primary reading.</li>
                     <li><b>Vernier Scale</b> – allows readings up to 0.02 mm accuracy</li>
                     <li><b>Locking Screw </b>– fixes the sliding jaw in position during measurement.</li>
-                </ul>
+                </ul><br>
                 <p>In the experiment, it is used to check the diameter, length, and other dimensions of the pattern during machining to ensure that shrinkage and machining allowances are maintained accurately.</p>
-                <li class="tool-name">Lathe Machine</li><br>
+                <li><b>Lathe Machine</b></li><br>
                 <div class="figure">
-          <img src="images/lathe machine..png" alt="lathe machine">
+          <img src="images/lathe machine.png" alt="lathe machine">
           <div class="caption">Fig (e): lathe machine</div>
       </div>
                 <p>The lathe machine is the main equipment used for shaping the cylindrical wooden pattern. As shown in the image, it consists of several key parts: </p>
@@ -357,46 +399,66 @@
 
                     <li><b>Spindle</b> – transmits rotary motion to the chuck.</li>
 
-                    <li><b>Chuck (4-Jaw Independent)</b> – each jaw moves independently, allowing precise centering of irregular or cylindrical wooden blanks. </li><br>
+                    <li><b>Chuck (4-Jaw Independent)</b> – each jaw moves independently, allowing precise centering of irregular or cylindrical wooden blanks. </li>
 
                     <li><b>Tool Post</b> – holds the cutting tool firmly and allows adjustment for proper cutting angle. </li>
 
                     <li><b>Tailstock</b> – supports the free end of the workpiece and can hold tools like drills for axial operations.</li>
 
                     <li><b>Bed</b> – the rigid base that holds and aligns all lathe components.</li>
-                </ul>
+                </ul><br>
                 <p>This arrangement ensures stability, accurate cutting, and smooth operation when turning the pattern. </p>
 
-                <li class="tool-name">HSS Tool</li><br>
+                <li><b>Tools</b></li><br>
                 <div class="figure">
-          <img src="images/HSS TOOL..png" alt="Micrometer Screw Gauge">
-          <div class="caption">Fig (f): hss tool</div>
+          <img src="images/tools 1.png" alt="Micrometer Screw Gauge">
+          <div class="caption">Fig (f): tools</div>
       </div>
-                <p>Shown in the image, this device has a state-of-the-art and is usually made from high-speed steel (HSS) or carbide-sputum given steel that is for increased durability. This rotating removes the material in a controlled manner from the workpiece, performing both roughing and finishing operations. The state -of -the -art geometry (rake angle, withdrawal angle, nasal radius) is designed to produce accurate, smooth surfaces on wood, reduce wearing tools. </p><br>
+                <p>Shown in the image, these tools are high-quality wood-turning tools primarily used for shaping and finishing wooden workpieces. They are generally manufactured from high-speed steel (HSS) or carbide-tipped steel to ensure high durability and long tool life. These tools rotate along with the workpiece and remove material in a controlled manner to achieve smooth and accurate surfaces. The precise geometry of the cutting edge, including rake angle and clearance angle, enhances cutting efficiency, reduces tool wear, and improves surface finish during wood-turning operations.</p><br>
+                <div class="figure">
+                <img src="images/tools.png" alt="Micrometer Screw Gauge">
+          <div class="caption">Fig (e): tools(Chisels)</div>
+      </div>
+
+      <p>Shown in the image, these tools consist of various types of woodworking chisels used for cutting, shaping, carving, and finishing wooden materials. These chisels are usually made from hardened high-carbon steel or high-speed steel (HSS) to provide high strength, durability, and sharpness. Different types of chisels such as flat, beveled, mortise, and gouge chisels are used for specific woodworking operations. These tools help in precise material removal, edge finishing, and detailed carving, thereby improving accuracy and overall quality of the wooden product.</p><br>
 
                 <p><b>Safety:</b></p>
-                <table>
-                    <tr>
-                        <th>Gear</th>
-                        <th>Purpose</th>
-                    </tr>
-                    <tr>
-                        <td>Face Shield</td>
-                        <td>Protect from flying chips</td>
-                    </tr>
-                    <tr>
-                        <td>Hearing Protection</td>
-                        <td>Reduce noise from lathe</td>
-                    </tr>
-                    <tr>
-                        <td>Dust Mask</td>
-                        <td>Prevent inhalation of wood dust</td>
-                    </tr>
-                    <tr>
-                        <td>Apron & Gloves</td>
-                        <td>Operator safety</td>
-                    </tr>
-                </table>
+
+<table style="
+    width: 40%;
+    margin-top: 15px;
+    border-collapse: collapse;
+    font-size: 16px;
+    text-align: center;
+">
+    <tr>
+        <th style="border: 2px solid black; padding: 10px;">Gear</th>
+        <th style="border: 2px solid black; padding: 10px;">Purpose</th>
+    </tr>
+
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Face Shield</td>
+        <td style="border: 1.5px solid black; padding: 8px;">Protect from flying chips</td>
+    </tr>
+
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Hearing Protection</td>
+        <td style="border: 1.5px solid black; padding: 8px;">Reduce noise from lathe</td>
+    </tr>
+
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Dust Mask</td>
+        <td style="border: 1.5px solid black; padding: 8px;">Prevent inhalation of wood dust</td>
+    </tr>
+
+    <tr>
+        <td style="border: 1.5px solid black; padding: 8px;">Apron & Gloves</td>
+        <td style="border: 1.5px solid black; padding: 8px;">Operator safety</td>
+    </tr>
+</table>
+
+<br>
+
             </ol>
 
                 </section>
