@@ -21,7 +21,7 @@
 
         .gif-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 600px;
             margin: 0 auto;
         }
 
@@ -45,7 +45,6 @@
         .play-stage {
             position: relative;
             width: 100%;
-            background-color: #000;
             border-radius: 8px;
             overflow: hidden;
         }
@@ -136,6 +135,20 @@
         .step-item.active { background-color: #eafbea; border-left-color: #4CAF50; }
         .step-item:hover { background-color: #f5f5f5; }
         .step-item-title h3 { margin: 0; font-size: 16px; }
+        .wood-hotspot { background-color: transparent !important; border: none !important; opacity: 0 !important; pointer-events: auto; }
+        .wood-hotspot:hover { background-color: transparent !important; }
+    </style>
+    <style>
+        /* Overrides: larger media like exp1/exp2 and keep controls visible */
+        .gif-container { max-width: 800px; }
+        .gif-wrapper img.step-gif { max-width: 100%; height: auto; max-height: 480px; object-fit: contain; }
+        .gif-wrapper video#step-generic-video { max-height: 480px; object-fit: contain; }
+        .play-stage video { max-height: 480px; object-fit: contain; }
+        .button-container { position: sticky; bottom: 0; background: #fff; padding: 10px 0; z-index: 100; }
+
+        /* Ensure generic media wrapper boxes auto-size and avoid clipping */
+        .gif-wrapper > div[style*="height: 400px"] { height: auto !important; }
+        .gif-wrapper video { width: 100%; height: auto; }
     </style>
 </head>
 <body>
@@ -143,17 +156,15 @@
     <div class="container" id="experiment-view" style="display:flex;">
         <div class="experiment-panel-content" id="experiment-panel-content">
             <div class="experiment-panel active" id="panel-simulation">
-
-                <button onclick="window.location.href='simulation.html'"
-                        style="margin-bottom: 20px; padding: 10px 24px; font-size: 16px; border: none; border-radius: 5px; background-color: #2196F3; color: white; cursor: pointer;">
-                    ← Back to Lab
-                </button>
                 <h1>Simulation</h1>
                 <div class="row" style="display: flex; align-items: flex-start;">
                     <div class="container" id="simulation-container">
                         <div id="gif-container" class="gif-container">
-                            <div class="gif-placeholder">Use the navigation buttons below to view the steps</div>
+                            <div class="gif-placeholder">
+                                Use the navigation buttons below to view the steps
+                            </div>
                         </div>
+
                         <div class="button-container" style="margin-top: 20px;">
                             <button id="prev-btn" disabled><span style="color: inherit; visibility: visible;">← Previous</span></button>
                             <button id="next-btn"><span style="color: inherit; visibility: visible;">Next →</span></button>
