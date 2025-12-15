@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const baseSteps = [
         {
             id: 'step1',
-            title: 'These are the different types of wood used in pattern making',
+            title: 'Choose the type of wood to use for pattern making',
             src: 'images/simulation/1.png',
             isWoodSelection: true
         },
@@ -192,12 +192,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (nextButton) {
-            // nextButton.disabled = (currentStepIndex === totalSteps - 1) ||
-            //     (step.id === 'step2' && !step2Completed) ||
-            //     (step.id === 'step3' && !step3Completed) ||
-            //     (step.id === 'step5' && !step5Completed) ||
-            //     (step.isWoodSelection && !selectedWood);
-            nextButton.disabled = false;
+            nextButton.disabled = (currentStepIndex === totalSteps - 1) ||
+                (step.id === 'step2' && !step2Completed) ||
+                (step.id === 'step3' && !step3Completed) ||
+                (step.id === 'step5' && !step5Completed) ||
+                (step.isWoodSelection && !selectedWood);
+            // nextButton.disabled = false;
         }
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
@@ -209,11 +209,14 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderWoodSelection(timestamp) {
+        selectedWood = null; // Reset selection on entry
+        if (nextButton) nextButton.disabled = true; // Ensure button is disabled initially
+
         const imgSrc = 'images/simulation/1.png';
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
-                <h3>These are the different types of wood used in pattern making</h3>
+                <h3>Choose the type of wood to use for pattern making</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
                     <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%;height:100%;object-fit:contain;"/>
@@ -1154,7 +1157,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         // --- Phase 3: Wood Drag ---
-        const targetRel2 = { x: 0.47, y: 0.52 }; // Center of chuck roughly
+        const targetRel2 = { x: 0.473, y: 0.54 }; // Center of chuck roughly
         const layout2 = () => setDropZoneLayout(dragStage2, dropZone2, targetRel2, 0.15); // Bigger zone for wood
 
         function startWoodDragPhase() {
@@ -1179,9 +1182,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const t = video.currentTime;
 
             if (t >= target && t < target + 0.5) {
-                video.pause();
-                waitingForInteraction = true;
-                showHotspot();
+                if (substeps[currentSubstep].hotspot) {
+                    video.pause();
+                    waitingForInteraction = true;
+                    showHotspot();
+                } else {
+                    // No hotspot, just shows instruction or is a marker
+                    instructionElem.textContent = substeps[currentSubstep].instruction;
+                    currentSubstep++;
+                }
             }
         }
 
