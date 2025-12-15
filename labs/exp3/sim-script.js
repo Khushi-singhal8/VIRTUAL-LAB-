@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const baseSteps = [
         {
             id: 'step1',
-            title: 'These are the different types of wood used in pattern making',
+            title: 'Choose the type of wood to use for pattern making',
             src: 'images/simulation/1.png',
             isWoodSelection: true
         },
@@ -119,150 +119,120 @@ document.addEventListener("DOMContentLoaded", function () {
     function showCurrentStep() {
     if (!gifContainer) return;
 
-    const step = steps[currentStepIndex];
+        const step = steps[currentStepIndex];
+        const timestamp = new Date().getTime();
+        const currentSrc = getSimulationPath(step.src);
+        const isGif = currentSrc.endsWith('.gif');
 
-    // PRINT STEP
-    if (step.isPrintStep) {
-        renderPrintStep();
-        updateButtons();
-        return;
+        if (cleanupStep2) {
+            try { cleanupStep2(); } catch (e) { }
+            cleanupStep2 = null;
+        }
+        if (cleanupStep3) {
+            try { cleanupStep3(); } catch (e) { }
+            cleanupStep3 = null;
+        }
+        if (cleanupStep5) {
+            try { cleanupStep5(); } catch (e) { }
+            cleanupStep5 = null;
+        }
+        if (cleanupStep6) {
+            try { cleanupStep6(); } catch (e) { }
+            cleanupStep6 = null;
+        }
+        if (cleanupStep7) {
+            try { cleanupStep7(); } catch (e) { }
+            cleanupStep7 = null;
+        }
+
+        if (step.isWoodSelection) {
+            renderWoodSelection(timestamp);
+        } else if (step.id === 'step2') {
+            renderStep2(timestamp);
+        } else if (step.id === 'step3') {
+            renderStep3(timestamp);
+        } else if (step.id === 'step5') {
+            renderStep5(timestamp);
+        } else if (step.id === 'step6') {
+            renderStep6(timestamp);
+        } else if (step.id === 'step7') {
+            renderStep7(timestamp);
+        } else {
+            const srcLower = currentSrc.toLowerCase();
+            const isVideo = srcLower.endsWith('.mp4') || srcLower.endsWith('.webm') || srcLower.endsWith('.ogg');
+            if (isVideo) {
+                gifContainer.innerHTML = `
+                    <div class="gif-wrapper">
+                        <h3>${step.title}</h3>
+                        <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                        <div style="height: 400px; display: flex; align-items: center; justify-content: center; width: 100%;">
+                            <video id="step-generic-video" src="${currentSrc}?t=${timestamp}" style="width:100%; height:100%; object-fit: contain;" autoplay muted playsinline></video>
+                        </div>
+                    </div>
+                `;
+                const v = document.getElementById('step-generic-video');
+                if (v) {
+                    v.addEventListener('ended', () => {
+                        try {
+                            v.pause();
+                            if (!isNaN(v.duration) && isFinite(v.duration)) {
+                                const last = Math.max(0, v.duration - 0.05);
+                                if (Math.abs(v.currentTime - last) > 0.01) v.currentTime = last;
+                            }
+                        } catch (_) { }
+                    });
+                }
+            } else {
+                gifContainer.innerHTML = `
+                    <div class="gif-wrapper">
+                        <h3>${step.title}</h3>
+                        <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                        <div style="height: 400px; display: flex; align-items: center; justify-content: center;">
+                            <img src="${currentSrc}?t=${timestamp}" class="step-gif" alt="${step.title}">
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        if (currentStepElement) {
+            currentStepElement.textContent = currentStepIndex + 1;
+        }
+
+        if (prevButton) {
+            prevButton.disabled = currentStepIndex === 0;
+        }
+
+        if (nextButton) {
+            // nextButton.disabled = (currentStepIndex === totalSteps - 1) ||
+            //     (step.id === 'step2' && !step2Completed) ||
+            //     (step.id === 'step3' && !step3Completed) ||
+            //     (step.id === 'step5' && !step5Completed) ||
+            //     (step.isWoodSelection && !selectedWood);
+            nextButton.disabled = false;
+        }
+        if (stepsList) {
+            const items = stepsList.querySelectorAll('.step-item');
+            items.forEach((itm, idx) => {
+                if (idx === currentStepIndex) itm.classList.add('active');
+                else itm.classList.remove('active');
+            });
+        }
     }
 
-    const timestamp = new Date().getTime();
-    const currentSrc = getSimulationPath(step.src);
-
-    // Cleanup
-    if (cleanupStep2) { try { cleanupStep2(); } catch {} cleanupStep2 = null; }
-    if (cleanupStep3) { try { cleanupStep3(); } catch {} cleanupStep3 = null; }
-    if (cleanupStep5) { try { cleanupStep5(); } catch {} cleanupStep5 = null; }
-    if (cleanupStep6) { try { cleanupStep6(); } catch {} cleanupStep6 = null; }
-    if (cleanupStep7) { try { cleanupStep7(); } catch {} cleanupStep7 = null; }
-
-    // Step routing
-    if (step.isWoodSelection) {
-        renderWoodSelection(timestamp);
-    } else if (step.id === 'step2') {
-        renderStep2(timestamp);
-    } else if (step.id === 'step3') {
-        renderStep3(timestamp);
-    } else if (step.id === 'step5') {
-        renderStep5(timestamp);
-    } else if (step.id === 'step6') {
-        renderStep6(timestamp);
-    } else if (step.id === 'step7') {
-        renderStep7(timestamp);
-    } else {
-        const isVideo = currentSrc.endsWith('.mp4');
+    function renderWoodSelection(timestamp) {
+        const imgSrc = 'images/simulation/1.png';
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">
-                    Step ${currentStepIndex + 1} of ${totalSteps}
+            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+                <h3>These are the different types of wood used in pattern making</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="play-stage" id="play-stage">
+                    <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%;height:100%;object-fit:contain;"/>
                 </div>
-                <div style="height:400px;display:flex;align-items:center;justify-content:center;">
-                    ${
-                        isVideo
-                        ? `<video src="${currentSrc}?t=${timestamp}" autoplay muted playsinline style="width:100%;height:100%;object-fit:contain;"></video>`
-                        : `<img src="${currentSrc}?t=${timestamp}" class="step-gif">`
-                    }
-                </div>
+                <div class="drag-instructions">Click on a wood type to select it</div>
             </div>
         `;
-    }
-
-    updateButtons();
-}
-
-function renderPrintStep() {
-    gifContainer.innerHTML = `
-        <div class="gif-wrapper print-area">
-            <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
-            <hr>
-
-            <p><strong>Experiment:</strong> Pattern Making – Turning Operation</p>
-            <p><strong>Material Used:</strong> ${selectedWood || 'N/A'}</p>
-
-            <!-- MATERIAL IMAGE (ADD HERE) -->
-            ${
-                selectedWood
-                ? `<div style="text-align:center; margin: 15px 0;">
-                       <img 
-                           src="images/simulation/${selectedWood}/${selectedWood}.png"
-                           alt="${selectedWood}"
-                           style="max-width:300px; border:1px solid #000;"
-                       >
-                   </div>`
-                : ''
-            }
-<h3>Measurements</h3>
-<table border="1" width="100%" cellpadding="8">
-    <tr>
-        <th>Parameter</th>
-        <th>Value</th>
-    </tr>
-
-    <tr>
-        <td>Diameter – Part 1</td>
-        <td>50 mm</td>
-    </tr>
-    <tr>
-        <td>Diameter – Part 2</td>
-        <td>75 mm</td>
-    </tr>
-    <tr>
-        <td>Diameter – Part 3</td>
-        <td>100 mm</td>
-    </tr>
-
-    <tr>
-        <td>Length – Part 1</td>
-        <td>125 mm</td>
-    </tr>
-    <tr>
-        <td>Length – Part 2</td>
-        <td>125 mm</td>
-    </tr>
-    <tr>
-        <td>Length – Part 3</td>
-        <td>125 mm</td>
-    </tr>
-
-    <tr>
-        <td><strong>Total Length</strong></td>
-        <td><strong>375 mm</strong></td>
-    </tr>
-</table>
-
-
-            <h3 style="margin-top:20px;">Result</h3>
-            <p>
-                The turning operation was successfully completed and the diameter
-                was measured using a Vernier Caliper.
-            </p>
-
-            <div class="no-print" style="text-align:center; margin-top:30px;">
-                <button onclick="window.print()">🖨 Print Observation Sheet</button>
-            </div>
-        </div>
-    `;
-
-    if (nextButton) nextButton.disabled = true;
-}
-
-function renderWoodSelection(timestamp) {
-    const imgSrc = 'images/simulation/1.png';
-
-    gifContainer.innerHTML = `
-        <div class="gif-wrapper" style="width: 100%; height: 100%;">
-            <h3>These are the different types of wood used in pattern making</h3>
-            <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-            <div class="play-stage" id="play-stage">
-                <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%;height:100%;object-fit:contain;"/>
-            </div>
-            <div class="drag-instructions">Click on a wood type to select it</div>
-        </div>
-    `;
 
     const stage = document.getElementById('play-stage');
     const img = document.getElementById('wood-selection-img');
@@ -1198,7 +1168,7 @@ function renderWoodSelection(timestamp) {
         };
 
         // --- Phase 3: Wood Drag ---
-        const targetRel2 = { x: 0.47, y: 0.52 }; // Center of chuck roughly
+        const targetRel2 = { x: 0.473, y: 0.54 }; // Center of chuck roughly
         const layout2 = () => setDropZoneLayout(dragStage2, dropZone2, targetRel2, 0.15); // Bigger zone for wood
 
         function startWoodDragPhase() {
@@ -1223,9 +1193,15 @@ function renderWoodSelection(timestamp) {
             const t = video.currentTime;
 
             if (t >= target && t < target + 0.5) {
-                video.pause();
-                waitingForInteraction = true;
-                showHotspot();
+                if (substeps[currentSubstep].hotspot) {
+                    video.pause();
+                    waitingForInteraction = true;
+                    showHotspot();
+                } else {
+                    // No hotspot, just shows instruction or is a marker
+                    instructionElem.textContent = substeps[currentSubstep].instruction;
+                    currentSubstep++;
+                }
             }
         }
 
