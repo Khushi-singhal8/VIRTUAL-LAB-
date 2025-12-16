@@ -1198,7 +1198,7 @@ function renderWoodSelection(timestamp) {
         };
 
         // --- Phase 3: Wood Drag ---
-        const targetRel2 = { x: 0.47, y: 0.52 }; // Center of chuck roughly
+        const targetRel2 = { x: 0.473, y: 0.535 }; // Center of chuck roughly
         const layout2 = () => setDropZoneLayout(dragStage2, dropZone2, targetRel2, 0.15); // Bigger zone for wood
 
         function startWoodDragPhase() {
