@@ -17,6 +17,9 @@ document.addEventListener("DOMContentLoaded", function () {
     let step7Completed = false;
     let cleanupStep7 = null;
     let selectedWood = null;
+    let step1_5Completed = false;
+    let step6Completed = false;
+    let step8Completed = false;
 
     // Wood selection data
     const woodTypes = [
@@ -71,6 +74,11 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
             id: 'step9',
+            title: 'Remove the workpiece from the chuck.',
+            src: 'images/simulation/9.mp4'
+        },
+        {
+            id: 'step10',
             title: 'Observation & Result (Print)',
             isPrintStep: true
         }
@@ -82,15 +90,22 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentStepIndex = 0;
 
     function updateButtons() {
-    if (prevButton) {
-        prevButton.disabled = currentStepIndex === 0;
-    }
+        if (prevButton) {
+            prevButton.disabled = currentStepIndex === 0;
+        }
 
-    if (nextButton) {
-        const step = steps[currentStepIndex];
-        nextButton.disabled = step.isPrintStep === true;
+        if (nextButton) {
+            const step = steps[currentStepIndex];
+            // Only disable if it's the wood selection step and no wood is selected
+            if (step.isWoodSelection) {
+                nextButton.disabled = !selectedWood;
+            } else if (step.isPrintStep) {
+                nextButton.disabled = true;
+            } else {
+                nextButton.disabled = false;
+            }
+        }
     }
-}
     const totalSteps = steps.length;
     const stepsList = document.getElementById('steps-list');
     if (stepsList) {
@@ -117,80 +132,147 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showCurrentStep() {
-    if (!gifContainer) return;
+        if (!gifContainer) return;
 
-    const step = steps[currentStepIndex];
+        const step = steps[currentStepIndex];
 
-    // PRINT STEP
-    if (step.isPrintStep) {
-        renderPrintStep();
-        updateButtons();
-        return;
-    }
+        // PRINT STEP
+        if (step.isPrintStep) {
+            renderPrintStep();
+            updateButtons();
+            return;
+        }
 
-    const timestamp = new Date().getTime();
-    const currentSrc = getSimulationPath(step.src);
+        const timestamp = new Date().getTime();
+        const currentSrc = getSimulationPath(step.src);
 
-    // Cleanup
-    if (cleanupStep2) { try { cleanupStep2(); } catch {} cleanupStep2 = null; }
-    if (cleanupStep3) { try { cleanupStep3(); } catch {} cleanupStep3 = null; }
-    if (cleanupStep5) { try { cleanupStep5(); } catch {} cleanupStep5 = null; }
-    if (cleanupStep6) { try { cleanupStep6(); } catch {} cleanupStep6 = null; }
-    if (cleanupStep7) { try { cleanupStep7(); } catch {} cleanupStep7 = null; }
+        // Cleanup
+        if (cleanupStep2) { try { cleanupStep2(); } catch { } cleanupStep2 = null; }
+        if (cleanupStep3) { try { cleanupStep3(); } catch { } cleanupStep3 = null; }
+        if (cleanupStep5) { try { cleanupStep5(); } catch { } cleanupStep5 = null; }
+        if (cleanupStep6) { try { cleanupStep6(); } catch { } cleanupStep6 = null; }
+        if (cleanupStep7) { try { cleanupStep7(); } catch { } cleanupStep7 = null; }
 
-    // Step routing
-    if (step.isWoodSelection) {
-        renderWoodSelection(timestamp);
-    } else if (step.id === 'step2') {
-        renderStep2(timestamp);
-    } else if (step.id === 'step3') {
-        renderStep3(timestamp);
-    } else if (step.id === 'step5') {
-        renderStep5(timestamp);
-    } else if (step.id === 'step6') {
-        renderStep6(timestamp);
-    } else if (step.id === 'step7') {
-        renderStep7(timestamp);
-    } else {
-        const isVideo = currentSrc.endsWith('.mp4');
+        // Step routing
+        if (step.isWoodSelection) {
+            renderWoodSelection(timestamp);
+        } else if (step.id === 'step2') {
+            renderStep2(timestamp);
+        } else if (step.id === 'step3') {
+            renderStep3(timestamp);
+        } else if (step.id === 'step5') {
+            renderStep5(timestamp);
+        } else if (step.id === 'step6') {
+            renderStep6(timestamp);
+        } else if (step.id === 'step7') {
+            renderStep7(timestamp);
+        } else {
+            const isVideo = currentSrc.endsWith('.mp4');
 
-        gifContainer.innerHTML = `
+            // Initial button state for generic steps
+            // if (nextButton) {
+            //    if (step.id === 'step1.5') nextButton.disabled = !step1_5Completed;
+            //    else if (step.id === 'step8') nextButton.disabled = !step8Completed;
+            //    else nextButton.disabled = isVideo;
+            // }
+
+            gifContainer.innerHTML = `
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">
                     Step ${currentStepIndex + 1} of ${totalSteps}
                 </div>
-                <div style="height:400px;display:flex;align-items:center;justify-content:center;">
-                    ${
-                        isVideo
-                        ? `<video src="${currentSrc}?t=${timestamp}" autoplay muted playsinline style="width:100%;height:100%;object-fit:contain;"></video>`
-                        : `<img src="${currentSrc}?t=${timestamp}" class="step-gif">`
-                    }
+                <div style="height:400px;display:flex;align-items:center;justify-content:center;background:#fff">
+                    ${isVideo
+                    ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline style="width:100%;object-fit:contain;height:100%"></video>`
+                    : `<img src="${currentSrc}?t=${timestamp}" class="step-gif">`
+                }
                 </div>
             </div>
         `;
+
+            if (isVideo) {
+                const v = document.getElementById('generic-video');
+                if (v) {
+                    v.onended = () => {
+                        if (step.id === 'step1.5') {
+                            step1_5Completed = true; // Still track completion
+
+                            // Show 1.5.png
+                            const imgPath = getSimulationPath('images/simulation/1.5.png');
+                            // We replace the video with the image
+                            const container = v.parentElement;
+                            container.innerHTML = `<img src="${imgPath}?t=${timestamp}" class="step-gif" style="width:100%;height:100%;object-fit:contain;">`;
+                        }
+
+                        if (step.id === 'step8') step8Completed = true;
+
+                        if (nextButton) nextButton.disabled = false;
+                    };
+                }
+            }
+        }
+
+        // Call updateButton to set initial state based on logic (except for generic video which handled above)
+        // Actually, updateButtons might overwrite what we just did corresponding to generic video if we fall through to 'else' block in updateButtons.
+        // Let's refine updateButtons to read a state we set here? 
+        // Or just let showCurrentStep logic prevail by NOT calling updateButtons immediately for generic steps?
+        // Current updateButtons structure calculates state every time. 
+        // Ideally we should track 'step.completed' state.
+
+        // For now, let's inject a property into the step object at runtime for generic videos.
+        if (step.id !== 'step1' && !step.id.startsWith('step1') && !['step2', 'step3', 'step5', 'step6', 'step7'].includes(step.id)) {
+            // This block handles other generic steps if any? currently just 1.5, 8.
+        }
+
+        // We update buttons AFTER render to ensure correct initial state for complex steps
+        updateButtons();
     }
 
-    updateButtons();
-}
-
-function renderPrintStep() {
-    gifContainer.innerHTML = `
+    function renderPrintStep() {
+        var selectedWoodName = '';
+        var selectedWoodLength = 0;
+        var selectedWoodD1 = 0;
+        var selectedWoodD2 = 0;
+        var selectedWoodD3 = 0;
+        switch (selectedWood) {
+            case 'teak':
+                selectedWoodName = "Teak";
+                selectedWoodLength = 100;
+                selectedWoodD1 = 40;
+                selectedWoodD2 = 60;
+                selectedWoodD3 = 80;
+                break;
+            case 'pine':
+                selectedWoodName = "Pine wood";
+                selectedWoodLength = 200;
+                selectedWoodD1 = 80;
+                selectedWoodD2 = 120;
+                selectedWoodD3 = 160;
+                break;
+            case 'mahogany':
+                selectedWoodName = "Mahogany";
+                selectedWoodLength = 125;
+                selectedWoodD1 = 50;
+                selectedWoodD2 = 75;
+                selectedWoodD3 = 100;
+                break;
+        }
+        gifContainer.innerHTML = `
         <div class="gif-wrapper print-area">
             <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
             <hr>
 
             <p><strong>Experiment:</strong> Pattern Making – Turning Operation</p>
-            <p><strong>Material Used:</strong> ${selectedWood || 'N/A'}</p>
+            <p><strong>Material Used:</strong> ${selectedWoodName || 'N/A'}</p>
 
             <!-- MATERIAL IMAGE (ADD HERE) -->
-            ${
-                selectedWood
+            ${selectedWood
                 ? `<div style="text-align:center; margin: 15px 0;">
                        <img 
                            src="images/simulation/${selectedWood}/${selectedWood}.png"
                            alt="${selectedWood}"
-                           style="max-width:300px; border:1px solid #000;"
+                           style="max-width:575px"
                        >
                    </div>`
                 : ''
@@ -204,33 +286,33 @@ function renderPrintStep() {
 
     <tr>
         <td>Diameter – Part 1</td>
-        <td>50 mm</td>
+        <td>${selectedWoodD1} mm</td>
     </tr>
     <tr>
         <td>Diameter – Part 2</td>
-        <td>75 mm</td>
+        <td>${selectedWoodD2} mm</td>
     </tr>
     <tr>
         <td>Diameter – Part 3</td>
-        <td>100 mm</td>
+        <td>${selectedWoodD3} mm</td>
     </tr>
 
     <tr>
         <td>Length – Part 1</td>
-        <td>125 mm</td>
+        <td>${selectedWoodLength} mm</td>
     </tr>
     <tr>
         <td>Length – Part 2</td>
-        <td>125 mm</td>
+        <td>${selectedWoodLength} mm</td>
     </tr>
     <tr>
         <td>Length – Part 3</td>
-        <td>125 mm</td>
+        <td>${selectedWoodLength} mm</td>
     </tr>
 
     <tr>
         <td><strong>Total Length</strong></td>
-        <td><strong>375 mm</strong></td>
+        <td><strong>${selectedWoodLength * 3} mm</strong></td>
     </tr>
 </table>
 
@@ -247,13 +329,13 @@ function renderPrintStep() {
         </div>
     `;
 
-    if (nextButton) nextButton.disabled = true;
-}
+        if (nextButton) nextButton.disabled = true;
+    }
 
-function renderWoodSelection(timestamp) {
-    const imgSrc = 'images/simulation/1.png';
+    function renderWoodSelection(timestamp) {
+        const imgSrc = 'images/simulation/1.png';
 
-    gifContainer.innerHTML = `
+        gifContainer.innerHTML = `
         <div class="gif-wrapper" style="width: 100%; height: 100%;">
             <h3>These are the different types of wood used in pattern making</h3>
             <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
@@ -264,25 +346,25 @@ function renderWoodSelection(timestamp) {
         </div>
     `;
 
-    const stage = document.getElementById('play-stage');
-    const img = document.getElementById('wood-selection-img');
+        const stage = document.getElementById('play-stage');
+        const img = document.getElementById('wood-selection-img');
 
-   
-    function createWoodHotspots() {
-        woodTypes.forEach(wood => {
-            const hotspot = document.createElement('button');
-            hotspot.className = 'play-hotspot wood-hotspot';
-            hotspot.dataset.wood = wood.id;
-            hotspot.setAttribute('aria-label', `Select ${wood.name}`);
-            hotspot.title = wood.name;
-            stage.appendChild(hotspot);
 
-            hotspot.addEventListener('click', () => {
-                selectWood(wood.id, wood.name);
+        function createWoodHotspots() {
+            woodTypes.forEach(wood => {
+                const hotspot = document.createElement('button');
+                hotspot.className = 'play-hotspot wood-hotspot';
+                hotspot.dataset.wood = wood.id;
+                hotspot.setAttribute('aria-label', `Select ${wood.name}`);
+                hotspot.title = wood.name;
+                stage.appendChild(hotspot);
+
+                hotspot.addEventListener('click', () => {
+                    selectWood(wood.id, wood.name);
+                });
             });
-        });
-        layoutWoodHotspots();
-    }
+            layoutWoodHotspots();
+        }
 
 
         function layoutWoodHotspots() {
@@ -541,11 +623,10 @@ function renderWoodSelection(timestamp) {
             video.play();
 
             video.addEventListener('ended', () => {
-                // Optional: what to do when video ends? 
-                // Maybe show "Next" button? 
-                // Currently Step 6 completion logic was implicit/missing in original code other than just showing the gif.
-                // Let's assume enabling next button.
+                step6Completed = true;
                 if (nextButton) nextButton.disabled = false;
+                const instructions = gifContainer.querySelector('.drag-instructions');
+                if (instructions) instructions.textContent = 'Step complete!';
             });
         }
 
@@ -565,7 +646,7 @@ function renderWoodSelection(timestamp) {
 
     function renderStep3(timestamp) {
         step3Completed = false;
-        if (nextButton) nextButton.disabled = true;
+        // if (nextButton) nextButton.disabled = true;
 
         const videoSrc = getSimulationPath('images/simulation/3.mp4');
         const substeps = [
@@ -573,9 +654,9 @@ function renderWoodSelection(timestamp) {
             { time: 0.97, hotspot: { x: 0.61625, y: 0.5266666666666666, w: 0.045, h: 0.15333333333333332 }, instruction: 'Unlock the tool rest lock' },
             { time: 3.97, hotspot: { x: 0.50625, y: 0.31777777777777777, w: 0.2475, h: 0.36444444444444446 }, instruction: 'Move tool post to its position' },
             { time: 7, hotspot: { x: 0.71625, y: 0.31777777777777777, w: 0.23375, h: 0.3 }, instruction: 'Move tail stock to its position' },
-            { time: 7.97, hotspot: { x: 0.53625, y: 0.32222222222222224, w: 0.0875, h: 0.16 }, instruction: 'Lock the tail stock' },
+            { time: 7.97, hotspot: { x: 0.53625, y: 0.32222222222222224, w: 0.0875, h: 0.16 }, instruction: 'Adjust the tail stock quill' },
             { time: 8.95, hotspot: { x: 0.29875, y: 0.49333333333333335, w: 0.0875, h: 0.16 }, instruction: 'Engage the tool rest lock' },
-            { time: 9, instruction: 'Step complete!' }
+            { time: 8.95, instruction: 'Step complete!' }
         ];
         let currentSubstep = 0;
 
@@ -632,13 +713,16 @@ function renderWoodSelection(timestamp) {
             if (currentSubstep >= substeps.length) return;
             const target = substeps[currentSubstep].time;
             const t = video.currentTime;
-            if (t >= target && t < target + 0.5) { // Check if within range
+
+            // Debug check
+            // console.log(`Step 3 Check: t=${t}, target=${target}, currentSubstep=${currentSubstep}`);
+
+            // Remove upper bound to ensure we catch it even if we skip a frame
+            if (t >= target) {
                 video.pause();
-                // Ensure we don't process the same substep multiple times if it pauses slightly off
+
                 if (currentSubstep < substeps.length - 1) {
-                    // Only advance if we are strictly paused? 
-                    // Or just advance state.
-                    if (!video.paused) video.pause(); // Force pause
+                    if (!video.paused) video.pause();
                     currentSubstep++;
                     setupSubstep();
                 } else {
@@ -648,6 +732,16 @@ function renderWoodSelection(timestamp) {
                 }
             }
         }
+
+        video.addEventListener('ended', () => {
+            console.log('Step 3 video ended fallback');
+            step3Completed = true;
+            if (nextButton) {
+                nextButton.disabled = false;
+                nextButton.removeAttribute('disabled');
+            }
+            instructionElem.innerHTML = 'Step complete! <br><small style="color:blue">(Video Ended - Button Enabled)</small>';
+        });
 
         function frameCallback() {
             checkAndPause();
@@ -911,7 +1005,7 @@ function renderWoodSelection(timestamp) {
 
     function renderStep2(timestamp) {
         step2Completed = false;
-        if (nextButton) nextButton.disabled = true;
+        // if (nextButton) nextButton.disabled = true;
 
         const videoSrc = getSimulationPath('images/simulation/2.1.mp4');
         const video1Src = getSimulationPath('images/simulation/2.1.mp4');
@@ -1156,11 +1250,18 @@ function renderWoodSelection(timestamp) {
             isSecondVideo = true;
 
             video.src = video2Src + '?t=' + timestamp;
-            video.onended = () => {
+
+            // Define handler
+            const onVideoEnded = () => {
+                console.log('Step 2 Final Video Ended');
                 instructionElem.textContent = 'Step complete!';
                 step2Completed = true;
                 if (nextButton) nextButton.disabled = false;
+                // Remove listener to prevent duplicates if function called multiple times
+                video.removeEventListener('ended', onVideoEnded);
             };
+
+            video.addEventListener('ended', onVideoEnded);
             video.play();
         }
 
