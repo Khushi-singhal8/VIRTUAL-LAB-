@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
             id: 'step9',
-            title: 'Remove the workpiece from the chuck.',
+            title: 'Ruler is used to check the length of segments.',
             src: 'images/simulation/9.mp4'
         },
         {
