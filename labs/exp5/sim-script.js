@@ -1,0 +1,554 @@
+document.addEventListener("DOMContentLoaded", function () {
+    console.log('Simulation E9 script loaded');
+
+    const prevButton = document.getElementById('prev-btn');
+    const nextButton = document.getElementById('next-btn');
+    const gifContainer = document.getElementById('gif-container');
+    const currentStepElement = document.getElementById('current-step');
+    const totalStepsElement = document.getElementById('total-steps');
+    const stepsList = document.getElementById('steps-list');
+
+    let cleanupCurrent = null;
+    let selectedMaterial = null; // 'brass' or 'steel'
+    let selectedThickness = null; // '2mm' or '5mm'
+
+    const steps = [
+        {
+            id: 'step0',
+            mode: 'selection',
+            title: 'Select Material and Thickness',
+            isSelectionStep: true
+        },
+        {
+            id: 'step1', mode: 'drag', title: 'Place workpiece on apparatus (drag & drop).',
+            background: 'images/simulation/1.png', tool: 'images/simulation/1-tool.png',
+            target: { mode: 'rel', x: 0.48, y: 0.7 },
+            init: { mode: 'rel', x: 0.82, y: 0.30 },
+            anchor: { x: 0.5, y: 0.5 },
+            toolSize: { widthRel: 0.2 },
+            tolerance: 55,
+            instruction: 'Drag the workpiece onto the marked location on the apparatus.'
+        },
+        {
+            id: 'step2', mode: 'drag', title: 'Setup handle on apparatus (drag & drop).',
+            background: 'images/simulation/2.png', tool: 'images/simulation/2-tool.png',
+            target: { mode: 'rel', x: 0.46, y: 0.45 },
+            init: { mode: 'rel', x: 0.80, y: 0.25 },
+            anchor: { x: 0.25, y: 0.2 },
+            toolSize: { widthRel: 0.30 },
+            tolerance: 55,
+            instruction: 'Drag the handle so its hinge (top-left) snaps into place.'
+        },
+        { id: 'step3', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
+        { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' }
+    ];
+
+    const angleTextByStep = {
+        step3: 'Angle: 106°',
+        step4: 'Angle: 112°'
+    };
+
+    const hotspotSteps = new Set(['step3', 'step4']);
+    const stepCompleted = Object.fromEntries(steps.map(s => [s.id, s.mode !== 'drag' && !hotspotSteps.has(s.id)]));
+
+    let currentStepIndex = 0;
+    const totalSteps = steps.length;
+
+    if (stepsList) {
+        stepsList.innerHTML = '';
+        steps.forEach((step, index) => {
+            const item = document.createElement('div');
+            item.className = 'step-item';
+            item.dataset.step = index + 1;
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'step-item-title';
+            titleDiv.innerHTML = `<h4 style="margin:0">${index + 1}. ${step.title}</h4>`;
+            item.appendChild(titleDiv);
+            item.setAttribute('aria-disabled', 'true');
+            item.style.cursor = 'default';
+            item.title = 'Use Previous/Next to navigate';
+            stepsList.appendChild(item);
+        });
+    }
+
+    if (totalStepsElement) totalStepsElement.textContent = totalSteps;
+
+    function clearCleanup() {
+        if (typeof cleanupCurrent === 'function') {
+            try { cleanupCurrent(); } catch (_) { }
+            cleanupCurrent = null;
+        }
+    }
+
+    function isHotspotStep(step) { return step.mode === 'hotspot' && hotspotSteps.has(step.id); }
+    function isHotspotDone(step) { return stepCompleted[step.id]; }
+    function setStepDone(stepId) { if (stepCompleted.hasOwnProperty(stepId)) stepCompleted[stepId] = true; }
+
+    // Get simulation path based on material and thickness selection
+    function getSimulationPath(src) {
+        if (!selectedMaterial || !selectedThickness || !src) return src;
+        // Map selection to folder name
+        const folderName = `${selectedMaterial}-${selectedThickness}`;
+        return src.replace('images/simulation/', `images/simulation/${folderName}/`);
+    }
+
+    function showCurrentStep() {
+        if (!gifContainer) return;
+        const step = steps[currentStepIndex];
+        const timestamp = Date.now();
+        clearCleanup();
+
+        if (step.isSelectionStep) {
+            renderSelectionStep();
+        } else if (step.mode === 'drag') {
+            renderDragStep(step, timestamp);
+        } else if (isHotspotStep(step)) {
+            renderHotspotFirstFrame(step, timestamp);
+        } else {
+            renderAutoplayStep(step, timestamp);
+        }
+
+        if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
+        if (prevButton) prevButton.disabled = currentStepIndex === 0;
+
+        // Update next button logic
+        if (nextButton) {
+            if (step.isSelectionStep) {
+                nextButton.disabled = !selectedMaterial || !selectedThickness;
+            } else {
+                nextButton.disabled = (currentStepIndex === totalSteps - 1) || !isHotspotDone(step);
+            }
+        }
+
+        if (stepsList) {
+            const items = stepsList.querySelectorAll('.step-item');
+            items.forEach((itm, idx) => {
+                if (idx === currentStepIndex) itm.classList.add('active'); else itm.classList.remove('active');
+            });
+        }
+    }
+
+    function renderSelectionStep() {
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>Select Material and Thickness</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                
+                <div class="selection-container">
+                    <div class="selection-section">
+                        <h4>Choose Material:</h4>
+                        <div class="material-options">
+                            <div class="material-card" data-material="brass" id="material-brass">
+                                <div class="material-icon">🟡</div>
+                                <h5>Brass</h5>
+                                <p>Copper-zinc alloy</p>
+                            </div>
+                            <div class="material-card" data-material="steel" id="material-steel">
+                                <div class="material-icon">⚙️</div>
+                                <h5>Stainless Steel</h5>
+                                <p>Corrosion-resistant alloy</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="selection-section">
+                        <h4>Choose Thickness:</h4>
+                        <div class="thickness-options">
+                            <button class="thickness-btn" data-thickness="2mm" id="thickness-2mm">2mm</button>
+                            <button class="thickness-btn" data-thickness="5mm" id="thickness-5mm">5mm</button>
+                        </div>
+                    </div>
+                    
+                    <div class="selection-summary" id="selection-summary">
+                        Please select both material and thickness to proceed.
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // Material selection handlers
+        const materialCards = gifContainer.querySelectorAll('.material-card');
+        materialCards.forEach(card => {
+            if (selectedMaterial && card.dataset.material === selectedMaterial) {
+                card.classList.add('selected');
+            }
+            card.addEventListener('click', () => {
+                selectedMaterial = card.dataset.material;
+                materialCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                updateSelectionSummary();
+            });
+        });
+
+        // Thickness selection handlers
+        const thicknessButtons = gifContainer.querySelectorAll('.thickness-btn');
+        thicknessButtons.forEach(btn => {
+            if (selectedThickness && btn.dataset.thickness === selectedThickness) {
+                btn.classList.add('selected');
+            }
+            btn.addEventListener('click', () => {
+                selectedThickness = btn.dataset.thickness;
+                thicknessButtons.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                updateSelectionSummary();
+            });
+        });
+
+        updateSelectionSummary();
+
+        function updateSelectionSummary() {
+            const summary = document.getElementById('selection-summary');
+            if (!summary) return;
+
+            if (selectedMaterial && selectedThickness) {
+                const materialName = selectedMaterial === 'brass' ? 'Brass' : 'Stainless Steel';
+                summary.textContent = `Selected: ${materialName}, ${selectedThickness}`;
+                summary.classList.add('complete');
+                if (nextButton) nextButton.disabled = false;
+            } else {
+                const parts = [];
+                if (!selectedMaterial) parts.push('material');
+                if (!selectedThickness) parts.push('thickness');
+                summary.textContent = `Please select ${parts.join(' and ')} to proceed.`;
+                summary.classList.remove('complete');
+                if (nextButton) nextButton.disabled = true;
+            }
+        }
+    }
+
+    function renderHotspotFirstFrame(step, timestamp) {
+        // Generate initial instruction shown before hotspot is clicked
+        function getInitialInstruction(stepId) {
+            if (stepId === 'step3') {
+                return 'Click on the handle to start the bending operation and measure the angle.';
+            } else if (stepId === 'step4') {
+                return 'Click on the handle to remove the punch and measure the final angle.';
+            }
+            return 'Click to continue.';
+        }
+
+        // Generate dynamic instruction based on selection
+        function getDynamicInstruction(stepId) {
+
+            if (stepId === 'step3') {
+                if (selectedMaterial == 'brass' && selectedThickness == '2mm')
+                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+                if (selectedMaterial == 'brass' && selectedThickness == '5mm')
+                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+                if (selectedMaterial == 'steel' && selectedThickness == '2mm')
+                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+                if (selectedMaterial == 'steel' && selectedThickness == '5mm')
+                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+            } else if (stepId === 'step4') {
+                if (selectedMaterial == 'brass' && selectedThickness == '2mm')
+                    return `Measurement on protractor: 112°\nFinal bend angle after release : 180° - 112 = 68°\n
+Spring Back angle = 74° - 68° = 6°`;
+                if (selectedMaterial == 'brass' && selectedThickness == '5mm')
+                    return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
+Spring Back angle = 74° - 70° = 4°`;
+                if (selectedMaterial == 'steel' && selectedThickness == '2mm')
+                    return `Measurement on protractor: 126°\nFinal bend angle after release : 180° - 126 = 54°\n
+Spring Back angle = 74° - 54° = 20°`;
+                if (selectedMaterial == 'steel' && selectedThickness == '5mm')
+                    return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
+Spring Back angle = 74° - 64° = 10°`;
+            }
+            return 'Click to continue.';
+        }
+
+        const hotspotMap = {
+            step3: { x: 0.5532635467980296, y: 0.6332545155993431, w: 0.07376974935177183, h: 0.12618494945713216 },
+            step4: { x: 0.5397167487684729, y: 0.6026031746031746, w: 0.07376974935177183, h: 0.12618494945713216 }
+        };
+        const cfg = hotspotMap[step.id] || { x: 0.45, y: 0.45, w: 0.15, h: 0.15 };
+        const initialInstruction = getInitialInstruction(step.id);
+        const dynamicInstruction = getDynamicInstruction(step.id);
+        const videoSrc = getSimulationPath(step.src); // Apply branching
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="play-stage" id="play-stage">
+                    <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:100%;" preload="auto" playsinline muted></video>
+                    <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                </div>
+                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
+            </div>`;
+
+        const stage = document.getElementById('play-stage');
+        const video = document.getElementById('step-video');
+        const hotspot = document.getElementById('play-hotspot');
+        const instructionElem = document.getElementById('play-instruction');
+
+        function layoutHotspot() {
+            const rect = stage.getBoundingClientRect();
+            hotspot.style.left = (rect.width * cfg.x) + 'px';
+            hotspot.style.top = (rect.height * cfg.y) + 'px';
+            hotspot.style.width = (rect.width * cfg.w) + 'px';
+            hotspot.style.height = (rect.height * cfg.h) + 'px';
+        }
+
+        function showHotspot() {
+            instructionElem.textContent = initialInstruction;
+            layoutHotspot();
+            hotspot.style.display = 'block';
+            hotspot.classList.add('debug-highlight');
+        }
+
+        video.addEventListener('loadedmetadata', () => {
+            video.currentTime = 0.01;
+            video.pause();
+            showHotspot();
+        }, { once: true });
+
+        hotspot.addEventListener('click', () => {
+            hotspot.style.display = 'none';
+            setStepDone(step.id);
+            instructionElem.textContent = '  ';
+            video.play().catch(() => { });
+            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+        }, { once: true });
+
+        video.addEventListener('ended', () => {
+            // Display the full dynamic instruction after video ends
+            instructionElem.textContent = dynamicInstruction;
+        }, { once: true });
+
+        window.addEventListener('resize', layoutHotspot);
+
+        cleanupCurrent = function () {
+            try { window.removeEventListener('resize', layoutHotspot); } catch (_) { }
+        };
+    }
+
+    function renderAutoplayStep(step, timestamp) {
+        const videoSrc = getSimulationPath(step.src); // Apply branching
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="play-stage" id="play-stage">
+                    <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
+                </div>
+                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
+            </div>`;
+
+        const video = document.getElementById('step-video');
+        video.addEventListener('loadedmetadata', () => {
+            video.play().catch(() => { });
+        }, { once: true });
+
+        video.addEventListener('ended', () => {
+            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+        }, { once: true });
+
+        cleanupCurrent = function () {
+            try { video.pause(); video.removeAttribute('src'); video.load(); } catch (_) { }
+        };
+    }
+
+    function renderDragStep(step, timestamp) {
+        stepCompleted[step.id] = false;
+        if (nextButton) nextButton.disabled = true;
+
+        const backgroundPng = getSimulationPath(step.background); // Apply branching
+        const toolPng = getSimulationPath(step.tool); // Apply branching
+        const tolerancePx = step.tolerance || 50;
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper" style="width:100%;height:100%;">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="drag-stage" id="drag-stage">
+                    <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" id="drag-bg"/>
+                    <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable"/>
+                    <div id="drop-zone" class="drop-zone" aria-hidden="true"></div>
+                </div>
+                <div class="drag-instructions" id="drag-instruction">${step.instruction || 'Drag the tool to the highlighted target.'}</div>
+            </div>`;
+
+        const stage = document.getElementById('drag-stage');
+        const tool = document.getElementById('draggable-tool');
+        const dropZone = document.getElementById('drop-zone');
+        const stageBg = document.getElementById('drag-bg');
+        let toolPlacedInitially = false;
+        let toolMovedByUser = false;
+
+        function getRect() { return stage.getBoundingClientRect(); }
+
+        function getTargetPoint(rect) {
+            if (!step.target) return { x: rect.width * 0.5, y: rect.height * 0.5 };
+            if (step.target.mode === 'px') return { x: step.target.x, y: step.target.y };
+            return { x: rect.width * step.target.x, y: rect.height * step.target.y };
+        }
+
+        function placeToolInitial() {
+            const rect = getRect();
+            let left, top;
+            if (step.init && step.init.mode === 'px') { left = step.init.x; top = step.init.y; }
+            else if (step.init) { left = rect.width * step.init.x; top = rect.height * step.init.y; }
+            else { left = rect.width * 0.8; top = rect.height * 0.2; }
+            tool.style.left = left + 'px';
+            tool.style.top = top + 'px';
+            toolPlacedInitially = true;
+        }
+
+        function layoutDropZone() {
+            const rect = getRect();
+            const target = getTargetPoint(rect);
+            const dzSize = Math.max(60, Math.min(rect.width, rect.height) * 0.12);
+            dropZone.style.width = dzSize + 'px';
+            dropZone.style.height = dzSize + 'px';
+            dropZone.style.left = (target.x - dzSize / 2) + 'px';
+            dropZone.style.top = (target.y - dzSize / 2) + 'px';
+        }
+
+        function resizeStageToImage() {
+            const naturalW = stageBg.naturalWidth;
+            const naturalH = stageBg.naturalHeight;
+            if (!naturalW || !naturalH) return;
+            const stageW = stage.clientWidth;
+            const newH = Math.round(stageW * (naturalH / naturalW));
+            stage.style.height = newH + 'px';
+            layoutDropZone();
+            applyToolSize();
+            if (!toolMovedByUser && !toolPlacedInitially) placeToolInitial();
+        }
+
+        function applyToolSize() {
+            if (!step.toolSize) return;
+            const rect = getRect();
+            if (step.toolSize.widthPx) {
+                tool.style.width = step.toolSize.widthPx + 'px';
+            } else if (step.toolSize.widthRel) {
+                tool.style.width = (rect.width * step.toolSize.widthRel) + 'px';
+            }
+            tool.style.height = 'auto';
+        }
+
+        // Hide tool initially until properly positioned
+        tool.style.visibility = 'hidden';
+
+        if (stageBg.complete && stageBg.naturalWidth) {
+            resizeStageToImage();
+            tool.style.visibility = 'visible';
+        } else {
+            stageBg.addEventListener('load', () => {
+                resizeStageToImage();
+                tool.style.visibility = 'visible';
+            }, { once: true });
+        }
+
+        applyToolSize();
+
+        window.addEventListener('resize', resizeStageToImage, { passive: true });
+        layoutDropZone();
+
+        let dragging = false; let offsetX = 0; let offsetY = 0;
+        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
+
+        function pointerDown(e) {
+            if (stepCompleted[step.id]) return;
+            const toolRect = tool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            offsetX = clientX - toolRect.left;
+            offsetY = clientY - toolRect.top;
+            dragging = true;
+            toolMovedByUser = true;
+            tool.classList.add('dragging');
+            e.preventDefault();
+        }
+        function pointerMove(e) {
+            if (!dragging || stepCompleted[step.id]) return;
+            const rect = getRect();
+            const toolRect = tool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            let left = clientX - rect.left - offsetX;
+            let top = clientY - rect.top - offsetY;
+            left = clamp(left, 0, rect.width - toolRect.width);
+            top = clamp(top, 0, rect.height - toolRect.height);
+            tool.style.left = left + 'px';
+            tool.style.top = top + 'px';
+        }
+        function pointerUp() {
+            if (!dragging) return;
+            dragging = false;
+            tool.classList.remove('dragging');
+            checkDrop();
+        }
+
+        function centerDistance(a, b) { const dx = a.x - b.x, dy = a.y - b.y; return Math.hypot(dx, dy); }
+        function checkDrop() {
+            const rect = getRect();
+            const toolRect = tool.getBoundingClientRect();
+            const anchor = step.anchor || { x: 0.5, y: 0.5 };
+            const toolAnchorPoint = {
+                x: toolRect.left - rect.left + toolRect.width * anchor.x,
+                y: toolRect.top - rect.top + toolRect.height * anchor.y
+            };
+            const target = getTargetPoint(rect);
+            if (centerDistance(toolAnchorPoint, target) <= tolerancePx) snapToTarget(target, anchor);
+        }
+        function snapToTarget(target, anchor) {
+            const toolRect = tool.getBoundingClientRect();
+            const rect = getRect();
+            anchor = anchor || (step.anchor || { x: 0.5, y: 0.5 });
+            const left = target.x - toolRect.width * anchor.x;
+            const top = target.y - toolRect.height * anchor.y;
+            tool.style.transition = 'left 0.18s ease, top 0.18s ease';
+            tool.style.left = left + 'px';
+            tool.style.top = top + 'px';
+            setTimeout(() => { tool.style.transition = ''; }, 250);
+            dropZone.classList.add('success');
+            stepCompleted[step.id] = true;
+            setStepDone(step.id);
+            const ok = document.createElement('div');
+            ok.className = 'drag-success';
+            ok.textContent = 'Placed correctly!';
+            stage.appendChild(ok);
+            setTimeout(() => ok.remove(), 1200);
+            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1) ? true : false;
+        }
+
+        tool.addEventListener('mousedown', pointerDown);
+        tool.addEventListener('touchstart', pointerDown, { passive: false });
+        window.addEventListener('mousemove', pointerMove, { passive: true });
+        window.addEventListener('touchmove', pointerMove, { passive: false });
+        window.addEventListener('mouseup', pointerUp, { passive: true });
+        window.addEventListener('touchend', pointerUp, { passive: true });
+
+        cleanupCurrent = function () {
+            try {
+                window.removeEventListener('resize', resizeStageToImage);
+                window.removeEventListener('mousemove', pointerMove);
+                window.removeEventListener('touchmove', pointerMove);
+                window.removeEventListener('mouseup', pointerUp);
+                window.removeEventListener('touchend', pointerUp);
+                tool.removeEventListener('mousedown', pointerDown);
+                tool.removeEventListener('touchstart', pointerDown);
+            } catch (_) { }
+        };
+    }
+
+    if (prevButton) {
+        prevButton.addEventListener('click', () => {
+            if (currentStepIndex > 0) {
+                currentStepIndex--;
+                showCurrentStep();
+            }
+        });
+    }
+    if (nextButton) {
+        nextButton.addEventListener('click', () => {
+            if (currentStepIndex < totalSteps - 1) {
+                currentStepIndex++;
+                showCurrentStep();
+            }
+        });
+    }
+
+    showCurrentStep();
+});
