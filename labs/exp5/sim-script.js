@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", function () {
             instruction: 'Drag the handle so its hinge (top-left) snaps into place.'
         },
         { id: 'step3', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
-        { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' }
+        { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
+        { id: 'step5', mode: 'print', title: 'Observation & Result (Print)' }
     ];
 
     const angleTextByStep = {
@@ -102,8 +103,11 @@ document.addEventListener("DOMContentLoaded", function () {
             renderSelectionStep();
         } else if (step.mode === 'drag') {
             renderDragStep(step, timestamp);
+
         } else if (isHotspotStep(step)) {
             renderHotspotFirstFrame(step, timestamp);
+        } else if (step.mode === 'print') {
+            renderResultStep();
         } else {
             renderAutoplayStep(step, timestamp);
         }
@@ -531,6 +535,120 @@ Spring Back angle = 74° - 64° = 10°`;
                 tool.removeEventListener('touchstart', pointerDown);
             } catch (_) { }
         };
+    }
+
+    function renderResultStep() {
+        if (!selectedMaterial || !selectedThickness) return;
+
+        // Calculate values based on selection
+        let step3Angle, step4Angle, springBack;
+        let matName = selectedMaterial === 'brass' ? 'Brass' : 'Stainless Steel';
+
+        // Logic from getDynamicInstruction
+        if (selectedMaterial == 'brass') {
+            if (selectedThickness == '2mm') {
+                step3Angle = 106; // Protractor reading
+                step4Angle = 112; // Protractor reading
+                // Bend Angle = 180 - 106 = 74
+                // Final Angle = 180 - 112 = 68
+                // Spring Back = 74 - 68 = 6
+            } else { // 5mm
+                step3Angle = 106;
+                step4Angle = 110;
+                // Bend Angle = 74
+                // Final Angle = 70
+                // Spring Back = 4
+            }
+        } else { // Steel
+            if (selectedThickness == '2mm') {
+                step3Angle = 106;
+                step4Angle = 126;
+                // Bend Angle = 74
+                // Final Angle = 54
+                // Spring Back = 20
+            } else { // 5mm
+                step3Angle = 106;
+                step4Angle = 116;
+                // Bend Angle = 74
+                // Final Angle = 64
+                // Spring Back = 10
+            }
+        }
+
+        const bendAngle = 180 - step3Angle;
+        const finalAngle = 180 - step4Angle;
+        springBack = bendAngle - finalAngle;
+
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper print-area">
+                <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
+                <hr>
+                
+                <p><strong>Experiment:</strong> Spring Back Effect Analysis</p>
+                <p><strong>Material Used:</strong> ${matName}</p>
+                <p><strong>Thickness:</strong> ${selectedThickness}</p>
+                
+                <!-- MATERIAL IMAGE (Optional) -->
+                <div style="text-align:center; margin: 15px 0;">
+                    <img src="images/simulation/${selectedMaterial}-${selectedThickness}/1-tool.png" alt="${matName} ${selectedThickness}" style="max-width:400px">
+                </div>
+                
+                <h3>Measurements & Calculations</h3>
+                <table border="1" width="100%" cellpadding="8">
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Loaded State (Step 3)</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Protractor Reading</td>
+                        <td>${step3Angle}°</td>
+                    </tr>
+                    <tr>
+                        <td>Bend Angle (180° - Reading)</td>
+                        <td>${bendAngle}°</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>Unloaded State (Step 4)</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Protractor Reading</td>
+                        <td>${step4Angle}°</td>
+                    </tr>
+                     <tr>
+                        <td>Final Bend Angle (180° - Reading)</td>
+                        <td>${finalAngle}°</td>
+                    </tr>
+                    
+                    <tr>
+                        <td><strong>Result</strong></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><strong>Spring Back Angle</strong></td>
+                        <td><strong>${springBack}°</strong></td>
+                    </tr>
+                </table>
+                
+                <h3 style="margin-top:20px;">Conclusion</h3>
+                <p>
+                    The spring back effect was observed for ${matName} with ${selectedThickness} thickness.
+                    The difference between the loaded bend angle and the final unloaded angle indicates the elastic recovery of the material.
+                </p>
+                
+                <div class="no-print" style="text-align:center; margin-top:30px;">
+                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Observation Sheet</button>
+                </div>
+            </div>
+        `;
+
+        if (nextButton) nextButton.disabled = true;
     }
 
     if (prevButton) {
