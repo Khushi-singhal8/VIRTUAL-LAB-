@@ -30,6 +30,13 @@
           #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
           }
+            .proc-img {
+                width:260px;
+                height:auto;
+                display:block;          /* forces image on its own line */
+                margin:10px 0 20px 0;   /* top 10px, bottom 20px = one clear gap */
+            }
+
         </style>
     </head>
 
@@ -173,40 +180,107 @@
                     <section class="content">
                     <h3 style="margin-top:5%"> Procedure </h3>
                     <p style="font-size:130%; margin-top:2%">
+                    
+                    <ol>
+  <li>
+    <strong>Material and thickness selection:</strong>
+    The simulation page shows two material cards, <b>Brass</b>, and two thickness options, <span style="font-weight:bold; color:#007bff;">2&nbsp;mm and 5&nbsp;mm</span>.
+    The user has selected <span style="font-weight:bold; color:#0f0f0f;">Stainless Steel</span>
+    with <span style="font-weight:bold; color:#007bff;">2&nbsp;mm and 5&nbsp;mm</span> thickness, and the selection is confirmed in the
+    <span style="font-weight:bold; color:#28a745;">green status bar</span> at the bottom.
+  </li><br>
 
-                  <ol>
-    <li><b>Place Workpiece on Apparatus (Drag & Drop):</b>
-        <ul>
-            <li>Take the workpiece and carefully drag it onto the apparatus.</li>
-            <li>Ensure that the workpiece is positioned correctly and sits firmly in place before proceeding.</li>
-        </ul>
-    </li>
+  <li>
+    <strong>Placing the workpiece on the die:</strong>
+    The apparatus with the V-shaped lower die is visible, and the rectangular metal workpiece is shown to the right.
+    A <span style="font-weight:bold; color:#090908;">yellow dotted circular region</span> is marked on the die,
+    instructing the user to drag the workpiece into this highlighted zone to position it correctly for bending.
+  </li><br>
 
-    <li><b>Setup Handle on Apparatus (Drag & Drop):</b>
-        <ul>
-            <li>Drag and attach the handle to the designated slot of the apparatus.</li>
-            <li>Make sure the handle is fixed securely and can be rotated smoothly without obstruction.</li>
-            <li>Check that the handle is locked properly to avoid any movement during the operation.</li>
-        </ul>
-    </li>
+  <img src="images/procedure/1.png" alt=" "
+     class="proc-img">
 
-    <li><b>Start Operation and Measure Angle:</b>
-        <ul>
-            <li>Begin the operation by applying force through the handle, which drives the punch against the workpiece.</li>
-            <li>As the punch moves downward, it gradually bends or shapes the workpiece.</li>
-            <li>Once the operation is complete, carefully observe the scale (as shown in the figure) to measure the angle formed.</li>
-            <li>Align the protractor lines with the edges of the workpiece to get an accurate reading.</li>
-        </ul>
-    </li>
+  <li>
+    <strong>Workpiece positioned correctly:</strong>
+    The workpiece has been dragged onto the apparatus and now lies across the V-shaped lower die within the
+    <span style="font-weight:bold; color:#28a745;">green dotted circular area</span>.
+    A <span style="font-weight:bold; color:#28a745;">“Placed correctly!”</span> message appears above the setup,
+    indicating that the workpiece is in the correct location and the user can proceed.
+  </li><br>
 
-    <li><b>Remove Punch and Measure Angle:</b>
-        <ul>
-            <li>Detach the punch carefully from the workpiece.</li>
-            <li>Place the protractor or angle gauge on the processed workpiece to re-measure the final angle formed.</li>
-            <li>Compare the measured angle with the expected value to check accuracy.</li>
-        </ul>
-    </li>
+  <img src="images/procedure/2.png" alt=" "
+     class="proc-img">
+
+  <li>
+    <strong>Attaching the handle to the screw:</strong>
+    The upper part of the press with the vertical screw is shown, and the L‑shaped handle is displayed separately on the right side.
+    A <span style="font-weight:bold; color:#0f0e0e;">yellow dotted circular region</span> is highlighted around the screw head,
+    instructing the user to drag the handle so that its hinge aligns with this point to assemble the press.
+  </li><br>
+
+  <img src="images/procedure/3.png" alt=" "
+     class="proc-img">
+
+  <li>
+    <strong>Handle attached successfully:</strong>
+    The handle has been dragged and snapped onto the screw head, forming the complete lever mechanism for operating the press.
+    A <span style="font-weight:bold; color:#28a745;">“Placed correctly!”</span> message confirms that the handle is assembled properly
+    and the simulation is ready for the bending operation.
+  </li><br>
+
+  <img src="images/procedure/4.png" alt=" "
+     class="proc-img">
+
+  <li>
+    <strong>Starting the bending operation:</strong>
+    The complete press with the mounted workpiece and handle is shown.
+    A <span style="font-weight:bold; color:#dc3545;">red circular highlight</span> surrounds the free end of the handle,
+    indicating that the user should <span style="font-weight:bold; color:#dc3545;">click this handle</span> to initiate the downward
+    movement of the punch and start bending the metal strip.
+  </li><br>
+
+  <img src="images/procedure/5.png" alt=" "
+     class="proc-img">
+
+  <li>
+    <strong>Measuring bend angle before release:</strong>
+    The view switches to a large protractor overlapped by the bent workpiece.
+    The protractor reading is <span style="font-weight:bold; color:#007bff;">106&deg;</span>, and the text below states
+    <span style="font-weight:bold;">Measurement on protractor: 106&deg;</span> and
+    <span style="font-weight:bold;">Bend angle before release: 180&deg; − 106&deg; = 74&deg;</span>,
+    meaning the workpiece has been bent to a <span style="font-weight:bold; color:#17a2b8;">74&deg; internal angle</span>
+    while the punch is still pressing it.
+  </li><br>
+
+  <img src="images/procedure/6.png" alt=" "
+     class="proc-img">
+
+  <li>
+    <strong>Removing the punch to observe spring-back:</strong>
+    The apparatus view returns, showing the punch still in contact with the bent workpiece.
+    A <span style="font-weight:bold; color:#dc3545;">red circular highlight</span> surrounds the handle again,
+    instructing the user to <span style="font-weight:bold; color:#dc3545;">click the handle</span> to move the punch back up,
+    remove the load, and observe how the angle of the workpiece changes due to spring‑back.
+  </li><br>
+
+  <img src="images/procedure/7.png" alt=" "
+     class="proc-img">
+
+  <li>
+    <strong>Final bend angle and spring-back:</strong>
+    The protractor view appears again with the relaxed workpiece.
+    The protractor now reads <span style="font-weight:bold; color:#007bff;">116&deg;</span>, and the text below shows
+    <span style="font-weight:bold;">Measurement on protractor: 116&deg;</span>,
+    <span style="font-weight:bold;">Final bend angle after release: 180&deg; − 116&deg; = 64&deg;</span>, and
+    <span style="font-weight:bold;">Spring-back angle = 74&deg; − 64&deg; = 10&deg;</span>,
+    indicating that after unloading, the workpiece opened up by
+    <span style="font-weight:bold; color:#17a2b8;">10&deg; (spring‑back)</span>.
+  </li><br>
+
+  <img src="images/procedure/8.png" alt=" "
+     class="proc-img">
 </ol>
+
 
                     </p>
                 </section>
