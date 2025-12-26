@@ -3,14 +3,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
+    const resetButton = document.getElementById('reset-btn');
     const gifContainer = document.getElementById('gif-container');
     const currentStepElement = document.getElementById('current-step');
     const totalStepsElement = document.getElementById('total-steps');
     const stepsList = document.getElementById('steps-list');
 
     let cleanupCurrent = null;
-    let selectedMaterial = null; // 'brass' or 'steel'
-    let selectedThickness = null; // '2mm' or '5mm'
+    let selectedMaterial = null; // 'aluminium', 'brass' or 'steel'
+    let selectedThickness = null; // '1mm' or '5mm'
 
     const steps = [
         {
@@ -40,8 +41,30 @@ document.addEventListener("DOMContentLoaded", function () {
             instruction: 'Drag the handle so its hinge (top-left) snaps into place.'
         },
         { id: 'step3', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
+        {
+            id: 'step3_5', mode: 'drag', title: 'Measure Angle with Protractor',
+            background: 'images/simulation/3.5.png', tool: 'protractor.png',
+            target: { mode: 'rel', x: 0.5, y: 0.55 }, // Estimated target
+            init: { mode: 'rel', x: 0.82, y: 0.30 },
+            anchor: { x: 0.6, y: 0.82 },
+            toolSize: { widthRel: 0.6 },
+            snapRotation: 323,
+            tolerance: 120,
+            instruction: 'Drag the protractor to measure the angle.'
+        },
         { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
-        { id: 'step5', mode: 'print', title: 'Observation & Result (Print)' }
+        {
+            id: 'step4_5', mode: 'drag', title: 'Measure Final Angle with Protractor',
+            background: 'images/simulation/4.5.png', tool: 'protractor.png',
+            target: { mode: 'rel', x: 0.515, y: 0.68 },
+            init: { mode: 'rel', x: 0.82, y: 0.30 },
+            anchor: { x: 0.6, y: 0.76 },
+            toolSize: { widthRel: 0.6 },
+            snapRotation: 324,
+            tolerance: 120,
+            instruction: 'Drag the protractor to measure the final angle after spring back.'
+        },
+        { id: 'step6', mode: 'print', title: 'Observation & Result (Print)' }
     ];
 
     const angleTextByStep = {
@@ -88,6 +111,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Get simulation path based on material and thickness selection
     function getSimulationPath(src) {
         if (!selectedMaterial || !selectedThickness || !src) return src;
+        if (src === 'protractor.png') return 'images/simulation/' + src;
         // Map selection to folder name
         const folderName = `${selectedMaterial}-${selectedThickness}`;
         return src.replace('images/simulation/', `images/simulation/${folderName}/`);
@@ -117,11 +141,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Update next button logic
         if (nextButton) {
+            // Temporary Override: Always enable next button
+            nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            /*
             if (step.isSelectionStep) {
                 nextButton.disabled = !selectedMaterial || !selectedThickness;
             } else {
                 nextButton.disabled = (currentStepIndex === totalSteps - 1) || !isHotspotDone(step);
             }
+            */
         }
 
         if (stepsList) {
@@ -142,6 +170,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="selection-section">
                         <h4>Choose Material:</h4>
                         <div class="material-options">
+                            <div class="material-card" data-material="aluminium" id="material-aluminium">
+                                <div class="material-icon">⚪</div>
+                                <h5>Aluminium</h5>
+                                <p>Lightweight metal</p>
+                            </div>
                             <div class="material-card" data-material="brass" id="material-brass">
                                 <div class="material-icon">🟡</div>
                                 <h5>Brass</h5>
@@ -149,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                             <div class="material-card" data-material="steel" id="material-steel">
                                 <div class="material-icon">⚙️</div>
-                                <h5>Stainless Steel</h5>
+                                <h5>Mild Steel</h5>
                                 <p>Corrosion-resistant alloy</p>
                             </div>
                         </div>
@@ -158,7 +191,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="selection-section">
                         <h4>Choose Thickness:</h4>
                         <div class="thickness-options">
-                            <button class="thickness-btn" data-thickness="2mm" id="thickness-2mm">2mm</button>
+                            <button class="thickness-btn" data-thickness="1mm" id="thickness-1mm">1mm</button>
                             <button class="thickness-btn" data-thickness="5mm" id="thickness-5mm">5mm</button>
                         </div>
                     </div>
@@ -205,7 +238,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!summary) return;
 
             if (selectedMaterial && selectedThickness) {
-                const materialName = selectedMaterial === 'brass' ? 'Brass' : 'Stainless Steel';
+                let materialName = 'Aluminium';
+                if (selectedMaterial === 'brass') materialName = 'Brass';
+                if (selectedMaterial === 'steel') materialName = 'Stainless Steel';
                 summary.textContent = `Selected: ${materialName}, ${selectedThickness}`;
                 summary.classList.add('complete');
                 if (nextButton) nextButton.disabled = false;
@@ -215,54 +250,106 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!selectedThickness) parts.push('thickness');
                 summary.textContent = `Please select ${parts.join(' and ')} to proceed.`;
                 summary.classList.remove('complete');
-                if (nextButton) nextButton.disabled = true;
+                // if (nextButton) nextButton.disabled = true;
             }
         }
+    }
+
+    // Generate dynamic instruction based on selection
+    function getDynamicInstruction(stepId) {
+
+        if (stepId === 'step3_5') {
+            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
+                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
+                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+            if (selectedMaterial == 'brass' && selectedThickness == '1mm')
+                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+            if (selectedMaterial == 'brass' && selectedThickness == '5mm')
+                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+            if (selectedMaterial == 'steel' && selectedThickness == '1mm')
+                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+            if (selectedMaterial == 'steel' && selectedThickness == '5mm')
+                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
+        } else if (stepId === 'step4') {
+            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
+                return `Measurement on protractor: 114°\nFinal bend angle after release : 180° - 114 = 66°\n
+Spring Back angle = 74° - 66° = 8°`;
+            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
+                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
+Spring Back angle = 74° - 70° = 4°`;
+            if (selectedMaterial == 'brass' && selectedThickness == '1mm')
+                return `Measurement on protractor: 112°\nFinal bend angle after release : 180° - 112 = 68°\n
+Spring Back angle = 74° - 68° = 6°`;
+            if (selectedMaterial == 'brass' && selectedThickness == '5mm')
+                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
+Spring Back angle = 74° - 70° = 4°`;
+            if (selectedMaterial == 'steel' && selectedThickness == '1mm')
+                return `Measurement on protractor: 126°\nFinal bend angle after release : 180° - 126 = 54°\n
+Spring Back angle = 74° - 54° = 20°`;
+            if (selectedMaterial == 'steel' && selectedThickness == '5mm')
+                return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
+Spring Back angle = 74° - 64° = 10°`;
+        } else if (stepId === 'step4_5') {
+            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
+                return `Measurement on protractor: 114°\nFinal bend angle after release : 180° - 114 = 66°\n
+Spring Back angle = 74° - 66° = 8°`;
+            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
+                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
+Spring Back angle = 74° - 70° = 4°`;
+            if (selectedMaterial == 'brass' && selectedThickness == '1mm')
+                return `Measurement on protractor: 112°\nFinal bend angle after release : 180° - 112 = 68°\n
+Spring Back angle = 74° - 68° = 6°`;
+            if (selectedMaterial == 'brass' && selectedThickness == '5mm')
+                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
+Spring Back angle = 74° - 70° = 4°`;
+            if (selectedMaterial == 'steel' && selectedThickness == '1mm')
+                return `Measurement on protractor: 126°\nFinal bend angle after release : 180° - 126 = 54°\n
+Spring Back angle = 74° - 54° = 20°`;
+            if (selectedMaterial == 'steel' && selectedThickness == '5mm')
+                return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
+Spring Back angle = 74° - 64° = 10°`;
+        }
+        return 'Click to continue.';
+    }
+
+    // Get snap rotation angle based on selection and step
+    function getSnapRotation(stepId) {
+        if (stepId === 'step3_5') {
+            // All materials use 323 degrees for step 3.5 (can be customized per material)
+            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 323;
+            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 323;
+            if (selectedMaterial == 'brass' && selectedThickness == '1mm') return 323;
+            if (selectedMaterial == 'brass' && selectedThickness == '5mm') return 323;
+            if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 323;
+            if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 323;
+        } else if (stepId === 'step4_5') {
+            // All materials use 324 degrees for step 4.5 (can be customized per material)
+            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 326;
+            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 326;
+            if (selectedMaterial == 'brass' && selectedThickness == '1mm') return 327;
+            if (selectedMaterial == 'brass' && selectedThickness == '5mm') return 324;
+            if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 333;
+            if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 328;
+        }
+        return 0; // Default: no rotation
     }
 
     function renderHotspotFirstFrame(step, timestamp) {
         // Generate initial instruction shown before hotspot is clicked
         function getInitialInstruction(stepId) {
             if (stepId === 'step3') {
-                return 'Click on the handle to start the bending operation and measure the angle.';
+                return 'Click on the handle to start the bending operation.';
             } else if (stepId === 'step4') {
                 return 'Click on the handle to remove the punch and measure the final angle.';
             }
             return 'Click to continue.';
         }
 
-        // Generate dynamic instruction based on selection
-        function getDynamicInstruction(stepId) {
-
-            if (stepId === 'step3') {
-                if (selectedMaterial == 'brass' && selectedThickness == '2mm')
-                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-                if (selectedMaterial == 'brass' && selectedThickness == '5mm')
-                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-                if (selectedMaterial == 'steel' && selectedThickness == '2mm')
-                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-                if (selectedMaterial == 'steel' && selectedThickness == '5mm')
-                    return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-            } else if (stepId === 'step4') {
-                if (selectedMaterial == 'brass' && selectedThickness == '2mm')
-                    return `Measurement on protractor: 112°\nFinal bend angle after release : 180° - 112 = 68°\n
-Spring Back angle = 74° - 68° = 6°`;
-                if (selectedMaterial == 'brass' && selectedThickness == '5mm')
-                    return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
-Spring Back angle = 74° - 70° = 4°`;
-                if (selectedMaterial == 'steel' && selectedThickness == '2mm')
-                    return `Measurement on protractor: 126°\nFinal bend angle after release : 180° - 126 = 54°\n
-Spring Back angle = 74° - 54° = 20°`;
-                if (selectedMaterial == 'steel' && selectedThickness == '5mm')
-                    return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
-Spring Back angle = 74° - 64° = 10°`;
-            }
-            return 'Click to continue.';
-        }
 
         const hotspotMap = {
-            step3: { x: 0.5532635467980296, y: 0.6332545155993431, w: 0.07376974935177183, h: 0.12618494945713216 },
-            step4: { x: 0.5397167487684729, y: 0.6026031746031746, w: 0.07376974935177183, h: 0.12618494945713216 }
+            step3: { x: 0.5347906403940886, y: 0.5697624521072796, w: 0.07376974935177183, h: 0.12618494945713216 },
+            step4: { x: 0.5410837438423646, y: 0.5721948549534757, w: 0.07376974935177183, h: 0.12618494945713216 }
         };
         const cfg = hotspotMap[step.id] || { x: 0.45, y: 0.45, w: 0.15, h: 0.15 };
         const initialInstruction = getInitialInstruction(step.id);
@@ -315,8 +402,8 @@ Spring Back angle = 74° - 64° = 10°`;
         }, { once: true });
 
         video.addEventListener('ended', () => {
-            // Display the full dynamic instruction after video ends
-            instructionElem.textContent = dynamicInstruction;
+            // Show "Step complete!" for both step3 and step4
+            instructionElem.textContent = 'Step complete! Now we will measure the angle.';
         }, { once: true });
 
         window.addEventListener('resize', layoutHotspot);
@@ -369,7 +456,7 @@ Spring Back angle = 74° - 64° = 10°`;
                     <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable"/>
                     <div id="drop-zone" class="drop-zone" aria-hidden="true"></div>
                 </div>
-                <div class="drag-instructions" id="drag-instruction">${step.instruction || 'Drag the tool to the highlighted target.'}</div>
+                <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.instruction || 'Drag the tool to the highlighted target.'}</div>
             </div>`;
 
         const stage = document.getElementById('drag-stage');
@@ -505,6 +592,10 @@ Spring Back angle = 74° - 64° = 10°`;
             tool.style.transition = 'left 0.18s ease, top 0.18s ease';
             tool.style.left = left + 'px';
             tool.style.top = top + 'px';
+            const rotation = getSnapRotation(step.id);
+            if (rotation) {
+                tool.style.transform = `rotate(${rotation}deg)`;
+            }
             setTimeout(() => { tool.style.transition = ''; }, 250);
             dropZone.classList.add('success');
             stepCompleted[step.id] = true;
@@ -513,6 +604,12 @@ Spring Back angle = 74° - 64° = 10°`;
             ok.className = 'drag-success';
             ok.textContent = 'Placed correctly!';
             stage.appendChild(ok);
+
+            const dynInst = getDynamicInstruction(step.id);
+            if (dynInst && dynInst !== 'Click to continue.') {
+                document.getElementById('drag-instruction').textContent = dynInst;
+            }
+
             setTimeout(() => ok.remove(), 1200);
             if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1) ? true : false;
         }
@@ -542,11 +639,27 @@ Spring Back angle = 74° - 64° = 10°`;
 
         // Calculate values based on selection
         let step3Angle, step4Angle, springBack;
-        let matName = selectedMaterial === 'brass' ? 'Brass' : 'Stainless Steel';
+        let matName = 'Aluminium';
+        if (selectedMaterial === 'brass') matName = 'Brass';
+        if (selectedMaterial === 'steel') matName = 'Mild Steel';
 
         // Logic from getDynamicInstruction
-        if (selectedMaterial == 'brass') {
-            if (selectedThickness == '2mm') {
+        if (selectedMaterial == 'aluminium') {
+            if (selectedThickness == '1mm') {
+                step3Angle = 106;
+                step4Angle = 114;
+                // Bend Angle = 74
+                // Final Angle = 66
+                // Spring Back = 8
+            } else { // 5mm
+                step3Angle = 106;
+                step4Angle = 110;
+                // Bend Angle = 74
+                // Final Angle = 70
+                // Spring Back = 4
+            }
+        } else if (selectedMaterial == 'brass') {
+            if (selectedThickness == '1mm') {
                 step3Angle = 106; // Protractor reading
                 step4Angle = 112; // Protractor reading
                 // Bend Angle = 180 - 106 = 74
@@ -560,7 +673,7 @@ Spring Back angle = 74° - 64° = 10°`;
                 // Spring Back = 4
             }
         } else { // Steel
-            if (selectedThickness == '2mm') {
+            if (selectedThickness == '1mm') {
                 step3Angle = 106;
                 step4Angle = 126;
                 // Bend Angle = 74
@@ -601,7 +714,7 @@ Spring Back angle = 74° - 64° = 10°`;
                         <th>Value</th>
                     </tr>
                     <tr>
-                        <td><strong>Loaded State (Step 3)</strong></td>
+                        <td><strong>Loaded State</strong></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -614,7 +727,7 @@ Spring Back angle = 74° - 64° = 10°`;
                     </tr>
                     
                     <tr>
-                        <td><strong>Unloaded State (Step 4)</strong></td>
+                        <td><strong>Unloaded State</strong></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -665,6 +778,11 @@ Spring Back angle = 74° - 64° = 10°`;
                 currentStepIndex++;
                 showCurrentStep();
             }
+        });
+    }
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            location.reload();
         });
     }
 

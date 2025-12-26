@@ -32,13 +32,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const baseSteps = [
         {
             id: 'step1',
-            title: 'These are the different types of wood used in pattern making',
+            title: 'Choose the wood to use for pattern making',
             src: 'images/simulation/1.png',
             isWoodSelection: true
         },
         {
             id: 'step1.5',
-            title: 'Marking',
+            title: 'Marking before starting the process',
             src: 'images/simulation/1.5.mp4'
         },
         {
@@ -337,7 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         gifContainer.innerHTML = `
         <div class="gif-wrapper" style="width: 100%; height: 100%;">
-            <h3>These are the different types of wood used in pattern making</h3>
+            <h3>Choose the wood to use for pattern making</h3>
             <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
             <div class="play-stage" id="play-stage">
                 <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%;height:100%;object-fit:contain;"/>
@@ -626,7 +626,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 step6Completed = true;
                 if (nextButton) nextButton.disabled = false;
                 const instructions = gifContainer.querySelector('.drag-instructions');
-                if (instructions) instructions.textContent = 'Step complete!';
+                if (instructions) instructions.textContent = 'Step complete! Now we will finsh the process by sanding the workpeice.';
             });
         }
 
@@ -656,7 +656,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { time: 7, hotspot: { x: 0.71625, y: 0.31777777777777777, w: 0.23375, h: 0.3 }, instruction: 'Move tail stock to its position' },
             { time: 7.97, hotspot: { x: 0.53625, y: 0.32222222222222224, w: 0.0875, h: 0.16 }, instruction: 'Adjust the tail stock quill' },
             { time: 8.95, hotspot: { x: 0.29875, y: 0.49333333333333335, w: 0.0875, h: 0.16 }, instruction: 'Engage the tool rest lock' },
-            { time: 8.95, instruction: 'Step complete!' }
+            { time: 8.95, instruction: 'Step complete! Now we will place the tool.' }
         ];
         let currentSubstep = 0;
 
@@ -726,7 +726,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentSubstep++;
                     setupSubstep();
                 } else {
-                    instructionElem.textContent = 'Step complete!';
+                    instructionElem.textContent = 'Step complete! Now we will place the tool.';
                     step3Completed = true;
                     if (nextButton) nextButton.disabled = false;
                 }
@@ -740,7 +740,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 nextButton.disabled = false;
                 nextButton.removeAttribute('disabled');
             }
-            instructionElem.innerHTML = 'Step complete! <br><small style="color:blue">(Video Ended - Button Enabled)</small>';
+            instructionElem.innerHTML = 'Step complete! Now we are ready to begin the process. <br><small style="color:blue">(Video Ended - Button Enabled)</small>';
         });
 
         function frameCallback() {
@@ -973,7 +973,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Update instruction text
             const instructions = gifContainer.querySelector('.drag-instructions');
             if (instructions) {
-                instructions.textContent = 'Step complete!';
+                instructions.textContent = 'Step complete! Now we are ready to begin the process.';
             }
 
             const ok = document.createElement('div');
@@ -1031,7 +1031,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { time: 1.3, hotspot: { x: 0.5615, y: 0.4937436108689752, w: 0.061, h: 0.1002 }, instruction: 'Click on the chuck key to tighten.' },
             { time: 2.9, hotspot: { x: 0.4503, y: 0.7004, w: 0.047, h: 0.1042 }, instruction: 'Click on the chuck key to tighten.' },
             { time: 4.5, hotspot: { x: 0.3335, y: 0.4788, w: 0.061, h: 0.1002 }, instruction: 'Click on the chuck key to tighten.' },
-            { time: 5.9, instruction: 'Step complete!' }
+            { time: 5.9, instruction: 'Step complete! Now we can proceed with the setup.' }
         ];
 
         let substeps = substeps1;
@@ -1254,7 +1254,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Define handler
             const onVideoEnded = () => {
                 console.log('Step 2 Final Video Ended');
-                instructionElem.textContent = 'Step complete!';
+                instructionElem.textContent = 'Step complete! Now lets start with the setup.';
                 step2Completed = true;
                 if (nextButton) nextButton.disabled = false;
                 // Remove listener to prevent duplicates if function called multiple times
