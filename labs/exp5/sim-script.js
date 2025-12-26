@@ -21,7 +21,19 @@ document.addEventListener("DOMContentLoaded", function () {
             isSelectionStep: true
         },
         {
-            id: 'step1', mode: 'drag', title: 'Place workpiece on apparatus (drag & drop).',
+            id: 'step0_5',
+            mode: 'schematic',
+            title: 'Schematic Diagram',
+            instruction: 'Review the schematic diagram for the selected thickness.'
+        },
+        {
+            id: 'step1',
+            mode: 'hotspot',
+            title: 'Marking Step',
+            src: 'images/simulation/0.5.mp4'
+        },
+        {
+            id: 'step2', mode: 'drag', title: 'Place workpiece on apparatus (drag & drop).',
             background: 'images/simulation/1.png', tool: 'images/simulation/1-tool.png',
             target: { mode: 'rel', x: 0.48, y: 0.7 },
             init: { mode: 'rel', x: 0.82, y: 0.30 },
@@ -31,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             instruction: 'Drag the workpiece onto the marked location on the apparatus.'
         },
         {
-            id: 'step2', mode: 'drag', title: 'Setup handle on apparatus (drag & drop).',
+            id: 'step3', mode: 'drag', title: 'Setup handle on apparatus (drag & drop).',
             background: 'images/simulation/2.png', tool: 'images/simulation/2-tool.png',
             target: { mode: 'rel', x: 0.46, y: 0.45 },
             init: { mode: 'rel', x: 0.80, y: 0.25 },
@@ -40,9 +52,9 @@ document.addEventListener("DOMContentLoaded", function () {
             tolerance: 55,
             instruction: 'Drag the handle so its hinge (top-left) snaps into place.'
         },
-        { id: 'step3', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
+        { id: 'step4', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
         {
-            id: 'step3_5', mode: 'drag', title: 'Measure Angle with Protractor',
+            id: 'step4_5', mode: 'drag', title: 'Measure Angle with Protractor',
             background: 'images/simulation/3.5.png', tool: 'protractor.png',
             target: { mode: 'rel', x: 0.5, y: 0.55 }, // Estimated target
             init: { mode: 'rel', x: 0.82, y: 0.30 },
@@ -52,9 +64,9 @@ document.addEventListener("DOMContentLoaded", function () {
             tolerance: 120,
             instruction: 'Drag the protractor to measure the angle.'
         },
-        { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
+        { id: 'step5', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
         {
-            id: 'step4_5', mode: 'drag', title: 'Measure Final Angle with Protractor',
+            id: 'step5_5', mode: 'drag', title: 'Measure Final Angle with Protractor',
             background: 'images/simulation/4.5.png', tool: 'protractor.png',
             target: { mode: 'rel', x: 0.515, y: 0.68 },
             init: { mode: 'rel', x: 0.82, y: 0.30 },
@@ -64,15 +76,15 @@ document.addEventListener("DOMContentLoaded", function () {
             tolerance: 120,
             instruction: 'Drag the protractor to measure the final angle after spring back.'
         },
-        { id: 'step6', mode: 'print', title: 'Observation & Result (Print)' }
+        { id: 'step7', mode: 'print', title: 'Observation & Result (Print)' }
     ];
 
     const angleTextByStep = {
-        step3: 'Angle: 106°',
-        step4: 'Angle: 112°'
+        step4: 'Angle: 106°',
+        step5: 'Angle: 112°'
     };
 
-    const hotspotSteps = new Set(['step3', 'step4']);
+    const hotspotSteps = new Set(['step4', 'step5']);
     const stepCompleted = Object.fromEntries(steps.map(s => [s.id, s.mode !== 'drag' && !hotspotSteps.has(s.id)]));
 
     let currentStepIndex = 0;
@@ -125,6 +137,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (step.isSelectionStep) {
             renderSelectionStep();
+        } else if (step.mode === 'schematic') {
+            renderSchematicStep(step, timestamp);
         } else if (step.mode === 'drag') {
             renderDragStep(step, timestamp);
 
@@ -255,10 +269,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    function renderSchematicStep(step, timestamp) {
+        // Determine which schematic image to show based on thickness
+        const schematicImage = selectedThickness === '5mm' ? '5mm.png' : '1mm.png';
+        const imagePath = `images/simulation/${schematicImage}?t=${timestamp}`;
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="play-stage" id="schematic-stage" style="display: flex; align-items: center; justify-content: center;">
+                    <img src="${imagePath}" alt="Schematic Diagram" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                </div>
+                <div class="drag-instructions">${step.instruction}</div>
+            </div>
+        `;
+
+        if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+    }
+
     // Generate dynamic instruction based on selection
     function getDynamicInstruction(stepId) {
 
-        if (stepId === 'step3_5') {
+        if (stepId === 'step4_5') {
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
                 return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
             if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
@@ -271,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
             if (selectedMaterial == 'steel' && selectedThickness == '5mm')
                 return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-        } else if (stepId === 'step4') {
+        } else if (stepId === 'step5') {
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
                 return `Measurement on protractor: 114°\nFinal bend angle after release : 180° - 114 = 66°\n
 Spring Back angle = 74° - 66° = 8°`;
@@ -290,7 +323,7 @@ Spring Back angle = 74° - 54° = 20°`;
             if (selectedMaterial == 'steel' && selectedThickness == '5mm')
                 return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
 Spring Back angle = 74° - 64° = 10°`;
-        } else if (stepId === 'step4_5') {
+        } else if (stepId === 'step5_5') {
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
                 return `Measurement on protractor: 114°\nFinal bend angle after release : 180° - 114 = 66°\n
 Spring Back angle = 74° - 66° = 8°`;
@@ -315,7 +348,7 @@ Spring Back angle = 74° - 64° = 10°`;
 
     // Get snap rotation angle based on selection and step
     function getSnapRotation(stepId) {
-        if (stepId === 'step3_5') {
+        if (stepId === 'step4_5') {
             // All materials use 323 degrees for step 3.5 (can be customized per material)
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 323;
             if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 323;
@@ -323,7 +356,7 @@ Spring Back angle = 74° - 64° = 10°`;
             if (selectedMaterial == 'brass' && selectedThickness == '5mm') return 323;
             if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 323;
             if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 323;
-        } else if (stepId === 'step4_5') {
+        } else if (stepId === 'step5_5') {
             // All materials use 324 degrees for step 4.5 (can be customized per material)
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 326;
             if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 326;
@@ -338,9 +371,11 @@ Spring Back angle = 74° - 64° = 10°`;
     function renderHotspotFirstFrame(step, timestamp) {
         // Generate initial instruction shown before hotspot is clicked
         function getInitialInstruction(stepId) {
-            if (stepId === 'step3') {
-                return 'Click on the handle to start the bending operation.';
+            if (stepId === 'step1') {
+                return 'Click to start the marking step.';
             } else if (stepId === 'step4') {
+                return 'Click on the handle to start the bending operation.';
+            } else if (stepId === 'step5') {
                 return 'Click on the handle to remove the punch and measure the final angle.';
             }
             return 'Click to continue.';
@@ -348,8 +383,9 @@ Spring Back angle = 74° - 64° = 10°`;
 
 
         const hotspotMap = {
-            step3: { x: 0.5347906403940886, y: 0.5697624521072796, w: 0.07376974935177183, h: 0.12618494945713216 },
-            step4: { x: 0.5410837438423646, y: 0.5721948549534757, w: 0.07376974935177183, h: 0.12618494945713216 }
+            step1: { x: 0.5, y: 0.5, w: 0.15, h: 0.15 },
+            step4: { x: 0.5347906403940886, y: 0.5697624521072796, w: 0.07376974935177183, h: 0.12618494945713216 },
+            step5: { x: 0.5410837438423646, y: 0.5721948549534757, w: 0.07376974935177183, h: 0.12618494945713216 }
         };
         const cfg = hotspotMap[step.id] || { x: 0.45, y: 0.45, w: 0.15, h: 0.15 };
         const initialInstruction = getInitialInstruction(step.id);
