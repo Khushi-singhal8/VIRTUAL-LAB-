@@ -185,17 +185,23 @@ document.addEventListener("DOMContentLoaded", function () {
                         <h4>Choose Material:</h4>
                         <div class="material-options">
                             <div class="material-card" data-material="aluminium" id="material-aluminium">
-                                <div class="material-icon">⚪</div>
+                                <div class="material-icon">
+                                    <img src="images/simulation/aluminium-5mm/1-tool.png" alt="Aluminium workpiece" style="max-width: 150px; height: auto;">
+                                </div>
                                 <h5>Aluminium</h5>
                                 <p>Lightweight metal</p>
                             </div>
                             <div class="material-card" data-material="brass" id="material-brass">
-                                <div class="material-icon">🟡</div>
+                                <div class="material-icon">
+                                    <img src="images/simulation/brass-5mm/1-tool.png" alt="Brass workpiece" style="max-width: 150px; height: auto;">
+                                </div>
                                 <h5>Brass</h5>
                                 <p>Copper-zinc alloy</p>
                             </div>
                             <div class="material-card" data-material="steel" id="material-steel">
-                                <div class="material-icon">⚙️</div>
+                                <div class="material-icon">
+                                    <img src="images/simulation/steel-5mm/1-tool.png" alt="Steel workpiece" style="max-width: 150px; height: auto;">
+                                </div>
                                 <h5>Mild Steel</h5>
                                 <p>Corrosion-resistant alloy</p>
                             </div>
