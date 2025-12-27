@@ -1059,7 +1059,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase 2: Wood -->
                  <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
                     <img src="${chunkOpenBgPath}?t=${timestamp}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%; top: 10%; right: 10%;"/>
+                    <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 10%;"/>
                     <div id="step2-wood-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
                 

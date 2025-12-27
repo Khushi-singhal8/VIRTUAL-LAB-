@@ -272,7 +272,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderSchematicStep(step, timestamp) {
         // Determine which schematic image to show based on thickness
         const schematicImage = selectedThickness === '5mm' ? '5mm.png' : '1mm.png';
-        const imagePath = `images/simulation/${schematicImage}?t=${timestamp}`;
+        // Use getSimulationPath to load from material-specific folders
+        const imagePath = getSimulationPath(`images/simulation/${schematicImage}`) + `?t=${timestamp}`;
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
@@ -625,14 +626,15 @@ Spring Back angle = 74° - 64° = 10°`;
             anchor = anchor || (step.anchor || { x: 0.5, y: 0.5 });
             const left = target.x - toolRect.width * anchor.x;
             const top = target.y - toolRect.height * anchor.y;
-            tool.style.transition = 'left 0.18s ease, top 0.18s ease';
+            tool.style.transition = 'left 0.18s ease, top 0.18s ease, transform 0.3s ease';
             tool.style.left = left + 'px';
             tool.style.top = top + 'px';
             const rotation = getSnapRotation(step.id);
             if (rotation) {
-                tool.style.transform = `rotate(${rotation}deg)`;
+                // Subtract 360 to make the rotation animate anti-clockwise
+                tool.style.transform = `rotate(${rotation - 360}deg)`;
             }
-            setTimeout(() => { tool.style.transition = ''; }, 250);
+            setTimeout(() => { tool.style.transition = ''; }, 350);
             dropZone.classList.add('success');
             stepCompleted[step.id] = true;
             setStepDone(step.id);
