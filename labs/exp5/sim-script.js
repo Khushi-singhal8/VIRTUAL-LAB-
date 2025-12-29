@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         {
             id: 'step1',
-            mode: 'hotspot',
+            mode: 'autoplay',
             title: 'Marking Step',
             src: 'images/simulation/0.5.mp4'
         },
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
             background: 'images/simulation/3.5.png', tool: 'protractor.png',
             target: { mode: 'rel', x: 0.5, y: 0.55 }, // Estimated target
             init: { mode: 'rel', x: 0.82, y: 0.30 },
-            anchor: { x: 0.6, y: 0.82 },
+            anchor: { x: 0.477, y: 0.85 },
             toolSize: { widthRel: 0.6 },
             snapRotation: 323,
             tolerance: 120,
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
             background: 'images/simulation/4.5.png', tool: 'protractor.png',
             target: { mode: 'rel', x: 0.515, y: 0.68 },
             init: { mode: 'rel', x: 0.82, y: 0.30 },
-            anchor: { x: 0.6, y: 0.76 },
+            anchor: { x: 0.477, y: 0.85 },
             toolSize: { widthRel: 0.6 },
             snapRotation: 324,
             tolerance: 120,
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", function () {
     };
 
     const hotspotSteps = new Set(['step4', 'step5']);
-    const stepCompleted = Object.fromEntries(steps.map(s => [s.id, s.mode !== 'drag' && !hotspotSteps.has(s.id)]));
+    const stepCompleted = Object.fromEntries(steps.map(s => [s.id, s.mode !== 'drag' && s.mode !== 'autoplay' && !hotspotSteps.has(s.id)]));
 
     let currentStepIndex = 0;
     const totalSteps = steps.length;
@@ -155,15 +155,20 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Update next button logic
         if (nextButton) {
-            // Temporary Override: Always enable next button
-            nextButton.disabled = (currentStepIndex === totalSteps - 1);
-            /*
             if (step.isSelectionStep) {
+                // Enabled only when selection is complete (handled in renderSelectionStep and updateSelectionSummary)
                 nextButton.disabled = !selectedMaterial || !selectedThickness;
+            } else if (step.mode === 'schematic') {
+                // Schematic is just viewing an image, always enabled
+                nextButton.disabled = false;
+            } else if (step.mode === 'print') {
+                nextButton.disabled = true; // Last step
             } else {
-                nextButton.disabled = (currentStepIndex === totalSteps - 1) || !isHotspotDone(step);
+                // For drag, hotspot, autoplay: disabled until explicitly completed
+                nextButton.disabled = !isHotspotDone(step);
             }
-            */
+            // Final check for last step
+            if (currentStepIndex === totalSteps - 1) nextButton.disabled = true;
         }
 
         if (stepsList) {
@@ -438,15 +443,17 @@ Spring Back angle = 74° - 64° = 10°`;
 
         hotspot.addEventListener('click', () => {
             hotspot.style.display = 'none';
-            setStepDone(step.id);
+            // Do not marks as done here - wait for video end
             instructionElem.textContent = '  ';
             video.play().catch(() => { });
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            if (nextButton) nextButton.disabled = true;
         }, { once: true });
 
         video.addEventListener('ended', () => {
-            // Show "Step complete!" for both step3 and step4
-            instructionElem.textContent = 'Step complete! Now we will measure the angle.';
+            // Show "Step complete!"
+            instructionElem.textContent = 'Step complete!';
+            if (nextButton) nextButton.disabled = false;
+            setStepDone(step.id);
         }, { once: true });
 
         window.addEventListener('resize', layoutHotspot);
@@ -474,7 +481,11 @@ Spring Back angle = 74° - 64° = 10°`;
         }, { once: true });
 
         video.addEventListener('ended', () => {
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            if (document.getElementById('play-instruction')) {
+                document.getElementById('play-instruction').textContent = 'Step complete!';
+            }
+            if (nextButton) nextButton.disabled = false;
+            setStepDone(step.id);
         }, { once: true });
 
         cleanupCurrent = function () {
@@ -635,27 +646,66 @@ Spring Back angle = 74° - 64° = 10°`;
             tool.style.transition = 'left 0.18s ease, top 0.18s ease, transform 0.3s ease';
             tool.style.left = left + 'px';
             tool.style.top = top + 'px';
+
             const rotation = getSnapRotation(step.id);
+
+            // Function to run after successful placement/rotation
+            const onComplete = () => {
+                dropZone.classList.add('success');
+                stepCompleted[step.id] = true;
+                setStepDone(step.id);
+
+                if (step.id !== 'step4_5' && step.id !== 'step5_5') {
+                    const ok = document.createElement('div');
+                    ok.className = 'drag-success';
+                    ok.textContent = 'Placed correctly!';
+                    stage.appendChild(ok);
+                    setTimeout(() => ok.remove(), 1200);
+                }
+
+                const dynInst = getDynamicInstruction(step.id);
+                if (step.id !== 'step4_5' && step.id !== 'step5_5') {
+                    document.getElementById('drag-instruction').textContent = 'Step complete!';
+                } else if (dynInst && dynInst !== 'Click to continue.') {
+                    document.getElementById('drag-instruction').textContent = dynInst;
+                }
+
+                if (nextButton) nextButton.disabled = false;
+            };
+
             if (rotation) {
-                // Subtract 360 to make the rotation animate anti-clockwise
-                tool.style.transform = `rotate(${rotation - 360}deg)`;
-            }
-            setTimeout(() => { tool.style.transition = ''; }, 350);
-            dropZone.classList.add('success');
-            stepCompleted[step.id] = true;
-            setStepDone(step.id);
-            const ok = document.createElement('div');
-            ok.className = 'drag-success';
-            ok.textContent = 'Placed correctly!';
-            stage.appendChild(ok);
+                // Determine anchor percent for transform origin
+                const anchorPercentX = (anchor.x * 100).toFixed(1);
+                const anchorPercentY = (anchor.y * 100).toFixed(1);
 
-            const dynInst = getDynamicInstruction(step.id);
-            if (dynInst && dynInst !== 'Click to continue.') {
-                document.getElementById('drag-instruction').textContent = dynInst;
-            }
+                // Set instruction to prompt for click
+                document.getElementById('drag-instruction').textContent = "Click on the protractor to align it.";
 
-            setTimeout(() => ok.remove(), 1200);
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1) ? true : false;
+                // Add one-time click listener for rotation
+                tool.style.cursor = 'pointer';
+                const rotateOnClick = () => {
+                    tool.style.cursor = 'default';
+                    // Set transform-origin to the anchor point (base of protractor)
+                    tool.style.transformOrigin = `${anchorPercentX}% ${anchorPercentY}%`;
+                    tool.style.transform = `rotate(${rotation - 360}deg)`;
+
+                    // Wait for rotation animation then complete
+                    setTimeout(onComplete, 350);
+                };
+                // Add listener after a short delay to avoid triggering on the current drag-release click
+                setTimeout(() => {
+                    tool.addEventListener('click', rotateOnClick, { once: true });
+                    // Also support touch
+                    tool.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        rotateOnClick();
+                    }, { once: true });
+                }, 100);
+
+            } else {
+                // No rotation needed, complete immediately
+                onComplete();
+            }
         }
 
         tool.addEventListener('mousedown', pointerDown);
