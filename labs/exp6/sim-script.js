@@ -1,6 +1,30 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation E4 script loaded');
 
+    // Inject CSS for apparatus image sizing
+const style = document.createElement('style');
+style.innerHTML = `
+.apparatus-img-box {
+    width: 280px;
+    height: 280px;
+    margin: 20px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    background: #f9f9f9;
+}
+
+.apparatus-img-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+`;
+document.head.appendChild(style);
+
+
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
     const gifContainer = document.getElementById('gif-container');
@@ -17,6 +41,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let step7Completed = false;
 
     const steps = [
+        {
+            id: 'step0',
+            title: 'Apparatus Identification',
+            type: 'apparatus'
+        },
         {
             id: 'step1',
             title: 'Setup',
@@ -133,14 +162,45 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    const apparatusData = [
+    {
+        name: "Oxy-acetylene welding torch",
+        img: "images/simulation/torch.png",
+        desc: "Used to mix oxygen and acetylene in controlled proportions to produce different welding flames."
+    },
+    {
+        name: "Oxygen cylinder",
+        img: "images/simulation/oxygen cylinder.png",
+        desc: "Supplies pure oxygen at high pressure to support combustion."
+    },
+    {
+        name: "Acetylene cylinderr",
+        img: "images/simulation/acetylene cylinderr.png",
+        desc: "Provides acetylene fuel gas for flame generation, stored safely in dissolved form."
+    },
+    {
+        name: "Pressure regulator",
+        img: "images/simulation/regulator.png",
+        desc: "Reduces and maintains safe working pressure of gases supplied from cylinders."
+    },
+    {
+        name: "Spark lighter (striker)",
+        img: "images/simulation/striker.png",
+        desc: "Used to ignite acetylene gas safely without an open flame."
+    }
+];
+
+
     function showCurrentStep() {
         if (!gifContainer) return;
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
 
         clearCleanup();
-
-        if (step.type === 'gif') {
+        if (step.type === 'apparatus') {
+        renderApparatusStep();
+    } 
+        else if (step.type === 'gif') {
             renderGifStep(step, timestamp);
         } else if (step.type === 'drag') {
             renderDragStep(step, timestamp);
@@ -176,6 +236,54 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
     }
+
+    function renderApparatusStep() {
+    if (nextButton) nextButton.disabled = true;
+
+    let optionsHTML = `<option value="">-- Select Apparatus --</option>`;
+    apparatusData.forEach((a, i) => {
+        optionsHTML += `<option value="${i}">${a.name}</option>`;
+    });
+
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper">
+            <h3>Apparatus Used</h3>
+            <div class="step-indicator">Step 1 of ${totalSteps}</div>
+
+            <select id="apparatus-select" style="padding:10px;width:60%;margin-bottom:20px;">
+                ${optionsHTML}
+            </select>
+
+            <div id="apparatus-display" style="display:none;">
+                <div class="apparatus-img-box">
+    <img id="apparatus-img">
+</div>
+
+                <p id="apparatus-desc" style="font-size:16px;text-align:center;"></p>
+            </div>
+        </div>
+    `;
+
+    const select = document.getElementById('apparatus-select');
+    const display = document.getElementById('apparatus-display');
+    const img = document.getElementById('apparatus-img');
+    const desc = document.getElementById('apparatus-desc');
+
+    select.addEventListener('change', () => {
+        if (!select.value) {
+            display.style.display = "none";
+            nextButton.disabled = true;
+            return;
+        }
+
+        const item = apparatusData[select.value];
+        img.src = item.img;
+        desc.textContent = item.desc;
+        display.style.display = "block";
+        nextButton.disabled = false;
+    });
+}
+
 
     function renderDragStep(step, timestamp) {
         setInteractiveCompleted(step.id, false);
