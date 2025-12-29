@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation E4 script loaded');
 
     // Inject CSS for apparatus image sizing
-const style = document.createElement('style');
-style.innerHTML = `
+    const style = document.createElement('style');
+    style.innerHTML = `
 .apparatus-img-box {
     width: 280px;
     height: 280px;
@@ -22,7 +22,7 @@ style.innerHTML = `
     object-fit: contain;
 }
 `;
-document.head.appendChild(style);
+    document.head.appendChild(style);
 
 
     const prevButton = document.getElementById('prev-btn');
@@ -87,13 +87,13 @@ document.head.appendChild(style);
             title: 'Setup',
             src: 'images/simulation/5.mp4',
             type: 'video',
-            initialInstruction: 'Set the pressure of acetylene cylinder to 15 PSI',
+            initialInstruction: 'Set the pressure of acetylene cylinder to 3 PSI',
             finalInstruction: 'Click on next to close ignite the flame',
             interaction: { pauseAt: 1.5, hotspot: { x: 0.36484440599106716, y: 0.2239508188783387, w: 0.21985737820308607, h: 0.15423028092564836 }, instruction: 'Click near the torch control to continue.' }
         },
         {
             id: 'step5_5',
-            title: 'Light the torch with the spark lighter.',
+            title: 'Ignition of flame',
             type: 'drag',
             src: 'images/simulation/6.png',
             tool: 'images/simulation/6-tool.png',
@@ -102,8 +102,54 @@ document.head.appendChild(style);
             interaction: {
                 target: { x: 0.408297138221516, y: 0.447313881310034, w: 0.2, h: 0.2 },
                 anchor: { x: 0.8, y: 0.15 }, /* Tip of the striker */
+                initialPos: { x: 0.1, y: 0.15 },
                 tolerance: 80
             }
+        },
+        {
+            id: 'step7',
+            title: 'Observation of flames',
+            src: 'images/simulation/7.mp4',
+            type: 'video',
+            initialInstruction: 'Introduce oxygen to obtain carburizing flame',
+            finalInstruction: 'Step complete!',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Introduce oxygen to obtain carburizing flame' }
+        },
+        {
+            id: 'step8',
+            title: 'Observation of flames',
+            src: 'images/simulation/8.mp4',
+            type: 'video',
+            initialInstruction: 'Increase oxygen to obtain neutral flame',
+            finalInstruction: 'Step complete!',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain neutral flame' }
+        },
+        {
+            id: 'step9',
+            title: 'Observation of flames',
+            src: 'images/simulation/9.mp4',
+            type: 'video',
+            initialInstruction: 'Increase oxygen to obtain oxidizing flame',
+            finalInstruction: 'Step complete!',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain oxidizing flame' }
+        },
+        {
+            id: 'step10',
+            title: 'Cleanup',
+            src: 'images/simulation/10.mp4',
+            type: 'video',
+            initialInstruction: 'Close oxygen valve',
+            finalInstruction: 'Step complete!',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close oxygen valve' }
+        },
+        {
+            id: 'step11',
+            title: 'Cleanup',
+            src: 'images/simulation/11.mp4',
+            type: 'video',
+            initialInstruction: 'Close acetylene valve',
+            finalInstruction: 'Step complete!',
+            interaction: { pauseAt: 0, hotspot: { x: 0.8342696189111698, y: 0.67396520020934, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close acetylene valve' }
         }
     ];
 
@@ -163,32 +209,32 @@ document.head.appendChild(style);
     }
 
     const apparatusData = [
-    {
-        name: "Oxy-acetylene welding torch",
-        img: "images/simulation/torch.png",
-        desc: "Used to mix oxygen and acetylene in controlled proportions to produce different welding flames."
-    },
-    {
-        name: "Oxygen cylinder",
-        img: "images/simulation/oxygen cylinder.png",
-        desc: "Supplies pure oxygen at high pressure to support combustion."
-    },
-    {
-        name: "Acetylene cylinderr",
-        img: "images/simulation/acetylene cylinderr.png",
-        desc: "Provides acetylene fuel gas for flame generation, stored safely in dissolved form."
-    },
-    {
-        name: "Pressure regulator",
-        img: "images/simulation/regulator.png",
-        desc: "Reduces and maintains safe working pressure of gases supplied from cylinders."
-    },
-    {
-        name: "Spark lighter (striker)",
-        img: "images/simulation/striker.png",
-        desc: "Used to ignite acetylene gas safely without an open flame."
-    }
-];
+        {
+            name: "Oxy-acetylene welding torch",
+            img: "images/simulation/torch.png",
+            desc: "Used to mix oxygen and acetylene in controlled proportions to produce different welding flames."
+        },
+        {
+            name: "Oxygen cylinder",
+            img: "images/simulation/oxygen cylinder.png",
+            desc: "Supplies pure oxygen at high pressure to support combustion."
+        },
+        {
+            name: "Acetylene cylinderr",
+            img: "images/simulation/acetylene cylinderr.png",
+            desc: "Provides acetylene fuel gas for flame generation, stored safely in dissolved form."
+        },
+        {
+            name: "Pressure regulator",
+            img: "images/simulation/regulator.png",
+            desc: "Reduces and maintains safe working pressure of gases supplied from cylinders."
+        },
+        {
+            name: "Spark lighter (striker)",
+            img: "images/simulation/striker.png",
+            desc: "Used to ignite acetylene gas safely without an open flame."
+        }
+    ];
 
 
     function showCurrentStep() {
@@ -198,8 +244,8 @@ document.head.appendChild(style);
 
         clearCleanup();
         if (step.type === 'apparatus') {
-        renderApparatusStep();
-    } 
+            renderApparatusStep();
+        }
         else if (step.type === 'gif') {
             renderGifStep(step, timestamp);
         } else if (step.type === 'drag') {
@@ -238,14 +284,14 @@ document.head.appendChild(style);
     }
 
     function renderApparatusStep() {
-    if (nextButton) nextButton.disabled = true;
+        if (nextButton) nextButton.disabled = true;
 
-    let optionsHTML = `<option value="">-- Select Apparatus --</option>`;
-    apparatusData.forEach((a, i) => {
-        optionsHTML += `<option value="${i}">${a.name}</option>`;
-    });
+        let optionsHTML = `<option value="">-- Select Apparatus --</option>`;
+        apparatusData.forEach((a, i) => {
+            optionsHTML += `<option value="${i}">${a.name}</option>`;
+        });
 
-    gifContainer.innerHTML = `
+        gifContainer.innerHTML = `
         <div class="gif-wrapper">
             <h3>Apparatus Used</h3>
             <div class="step-indicator">Step 1 of ${totalSteps}</div>
@@ -264,25 +310,25 @@ document.head.appendChild(style);
         </div>
     `;
 
-    const select = document.getElementById('apparatus-select');
-    const display = document.getElementById('apparatus-display');
-    const img = document.getElementById('apparatus-img');
-    const desc = document.getElementById('apparatus-desc');
+        const select = document.getElementById('apparatus-select');
+        const display = document.getElementById('apparatus-display');
+        const img = document.getElementById('apparatus-img');
+        const desc = document.getElementById('apparatus-desc');
 
-    select.addEventListener('change', () => {
-        if (!select.value) {
-            display.style.display = "none";
-            nextButton.disabled = true;
-            return;
-        }
+        select.addEventListener('change', () => {
+            if (!select.value) {
+                display.style.display = "none";
+                nextButton.disabled = true;
+                return;
+            }
 
-        const item = apparatusData[select.value];
-        img.src = item.img;
-        desc.textContent = item.desc;
-        display.style.display = "block";
-        nextButton.disabled = false;
-    });
-}
+            const item = apparatusData[select.value];
+            img.src = item.img;
+            desc.textContent = item.desc;
+            display.style.display = "block";
+            nextButton.disabled = false;
+        });
+    }
 
 
     function renderDragStep(step, timestamp) {
@@ -332,8 +378,13 @@ document.head.appendChild(style);
         tool.ontouchstart = dragStart;
 
         // Position tool initially
-        tool.style.left = '80%';
-        tool.style.top = '20%';
+        if (step.interaction && step.interaction.initialPos) {
+            tool.style.left = (step.interaction.initialPos.x * 100) + '%';
+            tool.style.top = (step.interaction.initialPos.y * 100) + '%';
+        } else {
+            tool.style.left = '80%';
+            tool.style.top = '20%';
+        }
 
         function dragStart(e) {
             e.preventDefault();
