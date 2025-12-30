@@ -1,255 +1,281 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title> Virtual Labs </title>
-        <!-- Tell the browser to be responsive to screen width -->
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-        <!-- Bootstrap 3.3.6 -->
-        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-        <!-- Theme style -->
-        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
-        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
-        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Virtual Labs</title>
+    <!-- Tell the browser to be responsive to screen width -->
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <!-- Bootstrap 3.3.6 -->
+    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+    <!-- AdminLTE Skins -->
+    <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
 
+    <script>
+        window.onload = function () {
+            document.getElementById("procedure").className = "active treeview";
+        };
+    </script>
 
-        <script>
-            window.onload = function () {
-                document.getElementById("procedure").className = "active treeview";
-            }
-        </script>
-        <style>
-          #toggle_nav:hover{
+    <style>
+        #toggle_nav:hover {
             background-color: #1261A0;
-          }
-          #aim{
+        }
+        #aim {
             background-color: #009dff;
-          }
-          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+        }
+        #aim:hover,
+        #theory:hover,
+        #pretest:hover,
+        #procedure:hover,
+        #simulation:hover,
+        #result:hover,
+        #posttest:hover,
+        #references:hover {
             background-color: #009dff;
-          }
-        </style>
-    </head>
+        }
 
-    <body class="hold-transition skin-blue sidebar-mini">
-        <!--Navigation Bar-->
+        .procedure {
+    max-width: 100%;
+    margin: 0;              /* removes centering */
+    padding-left: 20px;     /* keeps it slightly away from edge */
+}
+
+        .procedure h3 {
+            margin-top: 24px;
+        }
+
+        .procedure .step-img {
+    display: block;
+    width: 300px;      /* smaller width */
+    height: 180px;     /* smaller height */
+    object-fit: contain; /* shows full image without cropping */
+    margin: 8px 0 16px;
+    border-radius: 6px;
+}
+
+    </style>
+</head>
+
+<body class="hold-transition skin-blue sidebar-mini">
+<!-- Navigation Bar -->
 <div class="navbar navbar-default">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="http://iitb.ac.in">
+                <span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width:400px;"></span>
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+        </div>
     </div>
-    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
-     
-    </div>
-  </div>
 </div>
-        
-        <div class="wrapper">
-        	<header class="main-header">
+
+<div class="wrapper">
+    <header class="main-header">
         <!-- Logo -->
-        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
-        <p align="center" style="font-size:1em;"><b>Manufacturing Process Lab</b></p>
-    </a>
-        <!-- Header Navbar: style can be found in header.less -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color:#1261A0;">
+            <p align="center" style="font-size:1em;"><b>Manufacturing Process Lab</b></p>
+        </a>
+        <!-- Header Navbar -->
         <nav class="navbar navbar-static-top" style="background-color:#009dff;">
-          <!-- Sidebar toggle button-->
-          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
-        <span class="sr-only">Toggle navigation</span>
-      </a>
-          <section class="content-header" >
-            <ol class="breadcrumb" >
-              <li>
-                <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
-              </li>
-              <li>
-                <a href="#">Oxy-Acetylene Welding</a>
-              </li>
-              <li class="active">Aim</li>
-            </ol>
-          </section>
+            <!-- Sidebar toggle button-->
+            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+                <span class="sr-only">Toggle navigation</span>
+            </a>
+            <section class="content-header">
+                <ol class="breadcrumb">
+                    <li>
+                        <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
+                    </li>
+                    <li>
+                        <a href="#">Oxy-Acetylene Welding</a>
+                    </li>
+                    <li class="active">Aim</li>
+                </ol>
+            </section>
         </nav>
-      </header>
-            
-      <!-- Left side column. contains the logo and sidebar -->
-      <aside class="main-sidebar" style="background-color:#1261A0;">
-        <!-- sidebar: style can be found in sidebar.less -->
+    </header>
+
+    <!-- Left side column. contains the logo and sidebar -->
+    <aside class="main-sidebar" style="background-color:#1261A0;">
         <section class="sidebar">
-          <!-- search form -->
-          <form action="#" method="get" class="sidebar-form">
-            <div class="input-group"></div>
-          </form>
-          <!-- /.sear ch form -->
-          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <!-- search form -->
+            <form action="#" method="get" class="sidebar-form">
+                <div class="input-group"></div>
+            </form>
+            <!-- sidebar menu -->
             <ul class="sidebar-menu" style="background-color:#1261A0;">
                 <li class="treeview" id="aim">
                     <a href="index.html" id="aim">
-                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
-
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Aim</span>
                     </a>
                 </li>
                 <li class="treeview" id="theory">
-                    <a href="theory.html" id="theory" >
+                    <a href="theory.html" id="theory">
                         <i class="fa fa-files-o" style="color:white;"></i>
                         <span style="color:white;">Theory</span>
                     </a>
                 </li>
-             <!--   <li class="treeview" id="numerical">
-                    <a href="numerical.php">
-                        <i class="fa fa-laptop"></i>
-                        <span>Numerical</span>
-                        <span class="pull-right-container">
-                        </span>
-                    </a>
-                </li>
-                <li class="treeview" id="program">
-                    <a href="program.php">
-                        <i class="fa fa-laptop"></i>
-                        <span>Program</span>
-                        <span class="pull-right-container">
-                        </span>
-                    </a>
-                </li> -->
                 <li class="treeview" id="pretest">
                     <a href="pretest.html" id="pretest">
-                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
-
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Pre Test</span>
                     </a>
                 </li>
-                
                 <li class="treeview" id="procedure">
                     <a href="procedure.html" id="procedure">
-                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Procedure</span>
                     </a>
                 </li>
                 <li class="treeview" id="simulation">
                     <a href="simulation.html" id="simulation">
                         <i class="fa fa-laptop" style="color:white;"></i>
                         <span style="color:white;">Simulation</span>
-                        <span class="pull-right-container">
-                        </span>
                     </a>
                 </li>
-
-                
                 <li class="treeview" id="posttest">
-                    <a href=" posttest.html" id="posttest">
-                        <i class=" fa fa-files-o" style="color:white;">
-                    </i>
-                    <span style="color:white;">Post Test</span>
-                    <span class="pull-right-container">
-                    </span>
+                    <a href="posttest.html" id="posttest">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Post Test</span>
                     </a>
                 </li>
                 <li class="treeview" id="ref">
                     <a href="references.html" id="references">
                         <i class="fa fa-files-o" style="color:white;"></i>
                         <span style="color:white;">References</span>
-                        <span class="pull-right-container">
-                        </span>
                     </a>
                 </li>
             </ul>
         </section>
-        <!-- /.sidebar -->
-      </aside>
+    </aside>
 
-   
-            <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-                <section class="content-header">
-                <h1 align="center">
-                    Study and identification of various types of flames generated in oxyacetylene gas welding.
-                </h1>
-                </section>
-                    <!-- Main content -->
-                    <section class="content">
-                    <h3 style="margin-top:5%"> Procedure </h3>
-                    <p style="font-size:130%; margin-top:2%">
+    <div class="content-wrapper">
+        <!-- Page header -->
+        <section class="content-header">
+            <h1 align="center">
+                Study and identification of various types of flames generated in oxyacetylene gas welding.
+            </h1>
+        </section>
 
-                  
-<p>
-    This simulation demonstrates the formation of different Oxy-Acetylene flames (carburising/reducing, neutral, and oxidising) by adjusting the acetylene and oxygen supply.
-</p>
+        <!-- Main content -->
+        <section class="content">
+            <h3 style="margin-top:5%">Procedure</h3>
 
-<ol>
-    <li><b>Open Acetylene Valve:</b>
-        <ul>
-            <li>Slightly open the acetylene valve on the torch.</li>
-        </ul>
-    </li>
+            <div class="procedure" style="font-size:130%; margin-top:2%">
+                
+                <!-- Step 2 -->
+                <h3>Step 1: Open oxygen valve</h3>
+                <p>
+                    Turn the torch’s purple knob to <strong>open</strong> the oxygen valve before setting
+                    cylinder pressure.
+                </p>
+                <img src="images/procedure/2].png" alt="Turn on oxygen valve" class="step-img">
 
-    <li><b>Observe Orange Flame:</b>
-        <ul>
-            <li>The flame appears yellowish-orange due to incomplete combustion.</li>
-            <li>This is an unstable flame with excess acetylene.</li>
-        </ul>
-    </li>
+                <!-- Step 3 -->
+                <h3>Step 2: Set oxygen pressure</h3>
+                <p>
+                    Rotate the regulator handle and set the oxygen cylinder to <strong>15&nbsp;PSI</strong> on the gauge.
+                </p>
+                <img src="images/procedure/3].png" alt="Set oxygen 15 PSI" class="step-img">
 
-    <li><b>Open Oxygen Valve (Low Flow):</b>
-        <ul>
-            <li>Slowly open the oxygen valve and keep the flow low.</li>
-            <li>Oxygen begins to mix with acetylene for partial combustion.</li>
-        </ul>
-    </li>
+                <!-- Step 4 -->
+                <h3>Step 3: Close oxygen valve at torch</h3>
+                <p>
+                    Close the oxygen control on the torch to <strong>stop</strong> flow after the cylinder
+                    pressure is adjusted.
+                </p>
+                <img src="images/procedure/4].png" alt="Close oxygen valve" class="step-img">
 
-    <li><b>Observe Reducing Flame:</b>
-        <ul>
-            <li>The flame becomes longer with a feathery edge.</li>
-            <li>This carburising/reducing flame has excess acetylene.</li>
-        </ul>
-    </li>
+                <!-- Step 5 -->
+                <h3>Step 4: Open acetylene valve</h3>
+                <p>
+                    Turn the red knob on the torch to <strong>open</strong> the acetylene valve before setting
+                    its pressure.
+                </p>
+                <img src="images/procedure/5].png" alt="Open acetylene valve" class="step-img">
 
-    <li><b>Increase Oxygen Flow to Balance Gases:</b>
-        <ul>
-            <li>Gradually increase oxygen until both gases are balanced.</li>
-            <li>A well-defined bright inner cone becomes visible.</li>
-        </ul>
-    </li>
+                <!-- Step 6 -->
+                <h3>Step 5: Set acetylene pressure</h3>
+                <p>
+                    Adjust the acetylene regulator so the gauge reads <strong>3&nbsp;PSI</strong> for safe operation.
+                </p>
+                <img src="images/procedure/6].png" alt="Set acetylene 3 PSI" class="step-img">
 
-    <li><b>Observe Neutral Flame:</b>
-        <ul>
-            <li>The neutral flame has a sharp inner cone with no feathering.</li>
-            <li>This flame is ideal for welding mild steel and general-purpose use.</li>
-        </ul>
-    </li>
+                <!-- Step 7 -->
+                <h3>Step 6: Bring lighter near tip</h3>
+                <p>
+                    Drag the spark lighter close to the torch <strong>tip</strong> to prepare for ignition.
+                </p>
+                <img src="images/procedure/7].png" alt="Drag lighter to tip" class="step-img">
 
-    <li><b>Further Increase Oxygen Flow:</b>
-        <ul>
-            <li>Increase oxygen flow beyond balance condition.</li>
-            <li>The flame cone becomes shorter, sharper, and produces a hissing sound.</li>
-        </ul>
-    </li>
+                <!-- Step 8 -->
+                <h3>Step 7: Ignite the torch</h3>
+                <p>
+                    Click on the lighter to produce a <strong>spark</strong> and ignite the acetylene gas.
+                </p>
+                <img src="images/procedure/8].png" alt="Click lighter to ignite" class="step-img">
 
-    <li><b>Observe Oxidising Flame:</b>
-        <ul>
-            <li>The oxidising flame has excess oxygen.</li>
-            <li>It produces higher temperature but may cause oxidation of steel.</li>
-        </ul>
-    </li>
-</ol>
+                <!-- Step 9 -->
+                <h3>Step 8: Carburizing flame</h3>
+                <p>
+                    With more acetylene and less oxygen, a reddish <strong>carburizing</strong> flame is
+                    obtained at the tip.
+                </p>
+                <img src="images/procedure/9].png" alt="Carburizing flame" class="step-img">
 
+                <!-- Step 10 -->
+                <h3>Step 9: Neutral flame</h3>
+                <p>
+                    Increase the oxygen slightly until a well‑defined inner cone shows a <strong>neutral</strong>
+                    flame.
+                </p>
+                <img src="images/procedure/10].png" alt="Neutral flame" class="step-img">
 
-                    </p>
-                </section>
-            <!-- /.content -->
+                <!-- Step 11 -->
+                <h3>Step 10: Oxidizing flame</h3>
+                <p>
+                    Further increase oxygen to get a shorter, sharper <strong>oxidizing</strong> flame suitable
+                    for specific operations.
+                </p>
+                <img src="images/procedure/11].png" alt="Oxidizing flame" class="step-img">
+
+                <!-- Step 12 -->
+                <h3>Step 11: Close acetylene valve</h3>
+                <p>
+                    To shut down, first close the acetylene <strong>valve</strong> on the torch to extinguish
+                    the flame.
+                </p>
+                <img src="images/procedure/12].png" alt="Close acetylene valve" class="step-img">
+
+                <!-- Step 13 -->
+                <h3>Step 12: Close oxygen valve</h3>
+                <p>
+                    Finally, close the oxygen <strong>valve</strong> on the torch and cylinders to make the
+                    setup safe.
+                </p>
+                <img src="images/procedure/13].png" alt="Close oxygen valve" class="step-img">
             </div>
-            <footer class="main-footer">
-                <h4 align="center">Lab contributed by Galgotia University </h4>
-            </footer>
-        </div>
-        
-    </body>
-</html>
+        </section>
+    </div>
 
-<!-- ./wrapper -->
+    <footer class="main-footer">
+        <h4 align="center">Lab contributed by Galgotia University</h4>
+    </footer>
+</div>
+
 <!-- jQuery 2.2.3 -->
 <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -262,3 +288,5 @@
 <script src="../../plugins/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="../../dist/js/app.min.js"></script>
+</body>
+</html>
