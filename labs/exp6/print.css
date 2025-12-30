@@ -1,0 +1,67 @@
+@media print {
+    @page {
+        margin: 1cm;
+        size: landscape;
+        /* Optional: might help if table is very wide, but standard is usually portrait. Let's try to fit in portrait first, or allow auto. */
+    }
+
+    body * {
+        visibility: hidden;
+    }
+
+    .print-area,
+    .print-area * {
+        visibility: visible;
+    }
+
+    .print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* specific fixes for table */
+    .print-area table {
+        width: 100% !important;
+        border-collapse: collapse;
+        font-size: 12px;
+        /* Reduce font size */
+        table-layout: fixed;
+        /* helps with sizing */
+    }
+
+    .print-area th,
+    .print-area td {
+        padding: 5px;
+        /* scale down padding */
+        word-wrap: break-word;
+    }
+
+    /* specific fixes for images in table */
+    .print-area img {
+        max-width: 100% !important;
+        /* ensure images don't overflow their cells */
+        height: auto !important;
+        width: auto !important;
+        /* Allow shrinking */
+        max-height: 150px;
+        /* Limit height */
+    }
+
+    .no-print {
+        display: none !important;
+    }
+
+    /* Hide navigation buttons and other UI elements */
+    #prev-btn,
+    #next-btn,
+    .step-item,
+    .sidebar,
+    .button-container,
+    #reset-btn {
+        display: none !important;
+    }
+}

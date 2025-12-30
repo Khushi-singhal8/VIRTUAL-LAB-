@@ -24,6 +24,12 @@ document.addEventListener("DOMContentLoaded", function () {
 `;
     document.head.appendChild(style);
 
+    // Inject print.css
+    const printLink = document.createElement('link');
+    printLink.rel = 'stylesheet';
+    printLink.href = 'print.css'; // Assuming it's in the same directory relative to index.html
+    document.head.appendChild(printLink);
+
 
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
@@ -69,9 +75,9 @@ document.addEventListener("DOMContentLoaded", function () {
             title: 'Setup',
             src: 'images/simulation/3.mp4',
             type: 'video',
-            initialInstruction: 'Click the oxygen valve to continue.',
+            initialInstruction: 'Close the oxygen valve to continue.',
             finalInstruction: 'Click next to turn on the acetylene valve',
-            interaction: { pauseAt: 1.9, hotspot: { x: 0.44354027478690583, y: 0.4376252530111657, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Click the oxygen valve to continue.' }
+            interaction: { pauseAt: 1.9, hotspot: { x: 0.44354027478690583, y: 0.4376252530111657, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Close the oxygen valve to continue.' }
         },
         {
             id: 'step4',
@@ -88,8 +94,8 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/5.mp4',
             type: 'video',
             initialInstruction: 'Set the pressure of acetylene cylinder to 3 PSI',
-            finalInstruction: 'Click on next to close ignite the flame',
-            interaction: { pauseAt: 1.5, hotspot: { x: 0.36484440599106716, y: 0.2239508188783387, w: 0.21985737820308607, h: 0.15423028092564836 }, instruction: 'Click near the torch control to continue.' }
+            finalInstruction: 'Click on next to ignite the flame',
+            interaction: { pauseAt: 1.5, hotspot: { x: 0.36484440599106716, y: 0.2239508188783387, w: 0.21985737820308607, h: 0.15423028092564836 }, instruction: 'Set the pressure of acetylene cylinder to 3 PSI' }
         },
         {
             id: 'step5_5',
@@ -112,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/7.mp4',
             type: 'video',
             initialInstruction: 'Introduce oxygen to obtain carburizing flame',
-            finalInstruction: 'Step complete!',
+            finalInstruction: '<b>Carburizing flame</b>\nThis flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal and is suitable for welding high-carbon steels, lead, and aluminum where oxidation must be avoided.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Introduce oxygen to obtain carburizing flame' }
         },
         {
@@ -121,7 +127,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/8.mp4',
             type: 'video',
             initialInstruction: 'Increase oxygen to obtain neutral flame',
-            finalInstruction: 'Step complete!',
+            finalInstruction: 'Neutral flame\nThis flame has a well-defined inner luminous cone and an outer envelope. It has a temperature around 3300°C and does not oxidize or carburize the metal. It is ideal for welding steels and cast iron.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain neutral flame' }
         },
         {
@@ -130,7 +136,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/9.mp4',
             type: 'video',
             initialInstruction: 'Increase oxygen to obtain oxidizing flame',
-            finalInstruction: 'Step complete!',
+            finalInstruction: 'Oxidizing flame\nThis flame has a shorter, sharp inner cone and a loud hissing sound. It is hotter than the neutral flame and is used for cutting and welding metals like brass or bronze that require oxidation.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain oxidizing flame' }
         },
         {
@@ -150,6 +156,11 @@ document.addEventListener("DOMContentLoaded", function () {
             initialInstruction: 'Close acetylene valve',
             finalInstruction: 'Step complete!',
             interaction: { pauseAt: 0, hotspot: { x: 0.8342696189111698, y: 0.67396520020934, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close acetylene valve' }
+        },
+        {
+            id: 'step12',
+            title: 'Result',
+            type: 'result'
         }
     ];
 
@@ -250,6 +261,8 @@ document.addEventListener("DOMContentLoaded", function () {
             renderGifStep(step, timestamp);
         } else if (step.type === 'drag') {
             renderDragStep(step, timestamp);
+        } else if (step.type === 'result') {
+            renderResultStep();
         } else {
             renderInteractiveVideoStep(step, timestamp);
         }
@@ -491,7 +504,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <video id="step-video" src="${step.src}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
-                <div id="play-instruction" class="drag-instructions">${step.initialInstruction}</div>
+                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;">${step.initialInstruction}</div>
             </div>
         `;
 
@@ -606,4 +619,75 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     showCurrentStep();
+
+    function renderResultStep() {
+        if (nextButton) nextButton.disabled = true;
+
+        const flames = [
+            {
+                name: 'Carburizing Flame',
+                img: 'images/carbrizing flame.png', // Using video thumbnails or screenshots if available, else video
+                desc: 'This flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal.',
+                app: 'Welding high-carbon steels, lead, and aluminum where oxidation must be avoided.'
+            },
+            {
+                name: 'Neutral Flame',
+                img: 'images/neutral flame.png',
+                desc: 'This flame has a well-defined inner luminous cone and an outer envelope. Temperature around 3300°C.',
+                app: 'Ideal for welding steels and cast iron. Does not oxidize or carburize the metal.'
+            },
+            {
+                name: 'Oxidizing Flame',
+                img: 'images/oxidising flame.png',
+                desc: 'This flame has a shorter, sharp inner cone and a loud hissing sound. It is hotter than the neutral flame.',
+                app: 'Used for cutting and welding metals like brass or bronze that require oxidation.'
+            }
+        ];
+
+        let tableRows = '';
+        flames.forEach(f => {
+            // Using video as image/thumbnail if static image not available, or just use the video element
+            tableRows += `
+                <tr>
+                    <td style="text-align:center;">
+                        <strong>${f.name}</strong><br>
+                        <img src="${f.img}" style="width:235px;">
+                    </td>
+                    <td>${f.desc}</td>
+                    <td>${f.app}</td>
+                </tr>
+            `;
+        });
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+                <h2 style="text-align:center;">Experiment Result: Types of Flames</h2>
+                <hr>
+                
+                <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse; margin-top:20px;">
+                    <thead>
+                        <tr style="background:#f0f0f0;">
+                            <th width="30%">Flame Type</th>
+                            <th width="40%">Description</th>
+                            <th width="30%">Applications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+                
+                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom: 20px;">
+                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
+                </div>
+            </div>
+        `;
+
+        const resetBtn = document.getElementById('reset-btn');
+        if (resetBtn) {
+            resetBtn.onclick = () => {
+                location.reload();
+            };
+        }
+    }
 });
