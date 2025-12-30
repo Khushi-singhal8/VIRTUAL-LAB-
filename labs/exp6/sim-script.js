@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
             type: 'video',
             initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure',
             finalInstruction: 'Click on next to set the pressure',
-            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42888694558776186, w: 0.07724718693621943, h: 0.13732833233105676 }, instruction: 'Click the acetylene valve to continue.' }
+            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42888694558776186, w: 0.07724718693621943, h: 0.13732833233105676 }, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure' }
         },
         {
             id: 'step2',
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
             type: 'video',
             initialInstruction: 'Set the pressure of oxygen cylinder to 15 PSI',
             finalInstruction: 'Click on next to close the oxygen valve',
-            interaction: { pauseAt: 1.55, hotspot: { x: 0.34345287730103713, y: 0.2598674596418459, w: 0.21985737820308607, h: 0.13732833233105676 }, instruction: 'Click the acetylene valve to continue.' }
+            interaction: { pauseAt: 1.55, hotspot: { x: 0.34345287730103713, y: 0.2598674596418459, w: 0.21985737820308607, h: 0.13732833233105676 }, instruction: 'Set the pressure of oxygen cylinder to 15 PSI' }
         },
         {
             id: 'step3',
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
             type: 'video',
             initialInstruction: 'Turn on the acetylene valve before setting the acetylene cylinder’s pressure',
             finalInstruction: 'Click on next to set the pressure of acetylene',
-            interaction: { pauseAt: 1.7, hotspot: { x: 0.4744391495613936, y: 0.4333997658625178, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Click the acetylene valve to continue.' }
+            interaction: { pauseAt: 1.7, hotspot: { x: 0.4744391495613936, y: 0.4333997658625178, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Turn on the acetylene valve before setting the acetylene cylinder’s pressure' }
         },
         {
             id: 'step5',
