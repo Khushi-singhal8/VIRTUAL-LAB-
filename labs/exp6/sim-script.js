@@ -5,22 +5,23 @@ document.addEventListener("DOMContentLoaded", function () {
     const style = document.createElement('style');
     style.innerHTML = `
 .apparatus-img-box {
-    width: 280px;
-    height: 280px;
-    margin: 20px auto;
+    width: 100%;
+    height: 160px;              
+    border: 1px solid #ccc;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    background: #f9f9f9;
+    overflow: hidden;          
+    background: #f8f9fa;
 }
 
 .apparatus-img-box img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;
+    object-fit: contain;        
 }
+
 `;
     document.head.appendChild(style);
 
@@ -297,51 +298,47 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderApparatusStep() {
-        if (nextButton) nextButton.disabled = true;
+    if (nextButton) nextButton.disabled = false;
 
-        let optionsHTML = `<option value="">-- Select Apparatus --</option>`;
-        apparatusData.forEach((a, i) => {
-            optionsHTML += `<option value="${i}">${a.name}</option>`;
-        });
+    let apparatusHTML = '';
 
-        gifContainer.innerHTML = `
+    apparatusData.forEach(item => {
+        apparatusHTML += `
+            <div style="
+                width: 260px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                padding: 12px;
+                text-align: center;
+                background: #fff;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            ">
+                <div class="apparatus-img-box">
+                    <img src="${item.img}" alt="${item.name}">
+                </div>
+                <h4 style="margin: 10px 0 6px;">${item.name}</h4>
+                <p style="font-size: 14px;">${item.desc}</p>
+            </div>
+        `;
+    });
+
+    gifContainer.innerHTML = `
         <div class="gif-wrapper">
             <h3>Apparatus Used</h3>
             <div class="step-indicator">Step 1 of ${totalSteps}</div>
 
-            <select id="apparatus-select" style="padding:10px;width:60%;margin-bottom:20px;">
-                ${optionsHTML}
-            </select>
-
-            <div id="apparatus-display" style="display:none;">
-                <div class="apparatus-img-box">
-    <img id="apparatus-img">
-</div>
-
-                <p id="apparatus-desc" style="font-size:16px;text-align:center;"></p>
+            <div style="
+                display: flex;
+                flex-wrap: wrap;
+                gap: 20px;
+                justify-content: center;
+                margin-top: 20px;
+            ">
+                ${apparatusHTML}
             </div>
         </div>
     `;
-
-        const select = document.getElementById('apparatus-select');
-        const display = document.getElementById('apparatus-display');
-        const img = document.getElementById('apparatus-img');
-        const desc = document.getElementById('apparatus-desc');
-
-        select.addEventListener('change', () => {
-            if (!select.value) {
-                display.style.display = "none";
-                nextButton.disabled = true;
-                return;
-            }
-
-            const item = apparatusData[select.value];
-            img.src = item.img;
-            desc.textContent = item.desc;
-            display.style.display = "block";
-            nextButton.disabled = false;
-        });
-    }
+}
 
 
     function renderDragStep(step, timestamp) {
