@@ -32,6 +32,7 @@ document.addEventListener("DOMContentLoaded", function () {
     document.head.appendChild(printLink);
 
 
+    const resetButton = document.getElementById('reset-btn');
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
     const gifContainer = document.getElementById('gif-container');
@@ -137,7 +138,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/9.mp4',
             type: 'video',
             initialInstruction: 'Increase oxygen to obtain oxidizing flame',
-            finalInstruction: 'Oxidizing flame\nThis flame has a shorter, sharp inner cone and a loud hissing sound. It is hotter than the neutral flame and is used for cutting and welding metals like brass or bronze that require oxidation.',
+            finalInstruction: 'Oxidizing flame\nThis flame has a shorter, sharp inner cone and a loud hissing sound. It is hotter than the neutral flame and is used for cutting and welding metals like brass or bronze that require oxidation.\n\nClick on next to extinguish the flame',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain oxidizing flame' }
         },
         {
@@ -146,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/10.mp4',
             type: 'video',
             initialInstruction: 'Close oxygen valve',
-            finalInstruction: 'Step complete!',
+            finalInstruction: 'Click on next to close the acetylene valve.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close oxygen valve' }
         },
         {
@@ -656,6 +657,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentStepIndex++;
                 showCurrentStep();
             }
+        });
+    }
+    if (resetButton) {
+        resetButton.addEventListener('click', () => {
+            location.reload();
         });
     }
 
