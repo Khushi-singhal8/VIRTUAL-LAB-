@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
             type: 'video',
             initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure',
             finalInstruction: 'Click on next to set the pressure',
-            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42888694558776186, w: 0.07724718693621943, h: 0.13732833233105676 }, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure' }
+            interaction: { pauseAt: 1.4, hotspot: {x: 0.4504105207511871, y: 0.42994331737492386, w: 0.07249351389399054, h: 0.12887735803376096}, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure' }
         },
         {
             id: 'step2',
@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/7.mp4',
             type: 'video',
             initialInstruction: 'Introduce oxygen to obtain carburizing flame',
-            finalInstruction: '<b>Carburizing flame</b>\nThis flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal and is suitable for welding high-carbon steels, lead, and aluminum where oxidation must be avoided.',
+            finalInstruction: 'Carburizing flame\nThis flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal and is suitable for welding high-carbon steels, lead, and aluminum where oxidation must be avoided.\n\nClick next to obtain and study neutral flame.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Introduce oxygen to obtain carburizing flame' }
         },
         {
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/8.mp4',
             type: 'video',
             initialInstruction: 'Increase oxygen to obtain neutral flame',
-            finalInstruction: 'Neutral flame\nThis flame has a well-defined inner luminous cone and an outer envelope. It has a temperature around 3300°C and does not oxidize or carburize the metal. It is ideal for welding steels and cast iron.',
+            finalInstruction: 'Neutral flame\nThis flame has a well-defined inner luminous cone and an outer envelope. It has a temperature around 3300°C and does not oxidize or carburize the metal. It is ideal for welding steels and cast iron.\n\nClick next to obtain and study oxidizing flame.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain neutral flame' }
         },
         {
@@ -510,6 +510,15 @@ document.addEventListener("DOMContentLoaded", function () {
         const hotspot = document.getElementById('play-hotspot');
         const instructionElem = document.getElementById('play-instruction');
 
+        // Create audio element for step 9 hiss sound with optimizations for seamless looping
+        let hissAudio = null;
+        if (step.id === 'step9') {
+            hissAudio = new Audio('images/simulation/hiss.mp3');
+            hissAudio.loop = true;
+            hissAudio.preload = 'auto';
+            hissAudio.volume = 1.0; // Maximum volume for clear hissing sound
+        }
+
         function layoutHotspot() {
             const rect = stage.getBoundingClientRect();
             hotspot.style.left = (rect.width * cfg.hotspot.x) + 'px';
@@ -565,6 +574,23 @@ document.addEventListener("DOMContentLoaded", function () {
             setInteractiveCompleted(step.id, true);
             instructionElem.textContent = step.finalInstruction;
             if (nextButton) nextButton.disabled = false;
+
+            // Play hiss sound on seamless loop for step 9
+            if (step.id === 'step9' && hissAudio) {
+                // Reset to beginning
+                hissAudio.currentTime = 0;
+                
+                // Ensure loop is enabled
+                hissAudio.loop = true;
+                
+                // Play with error handling
+                const playPromise = hissAudio.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.warn('Audio autoplay was prevented:', error);
+                    });
+                }
+            }
         }
 
         video.addEventListener('play', onPlay);
@@ -578,6 +604,18 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('resize', layoutHotspot);
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
+            
+            // Pre-load audio for step 9 to ensure seamless playback
+            if (step.id === 'step9' && hissAudio) {
+                // Preload by starting and immediately pausing
+                hissAudio.play().then(() => {
+                    hissAudio.pause();
+                    hissAudio.currentTime = 0;
+                }).catch(() => {
+                    // Preload may be prevented by autoplay policy, that's ok
+                });
+            }
+            
             video.play().catch(() => { });
         }, { once: true });
 
@@ -594,6 +632,12 @@ document.addEventListener("DOMContentLoaded", function () {
             if (intervalId) {
                 clearInterval(intervalId);
                 intervalId = null;
+            }
+            // Stop and cleanup hiss audio when leaving step 9
+            if (hissAudio) {
+                hissAudio.pause();
+                hissAudio.currentTime = 0;
+                hissAudio.loop = false; // Disable loop before cleanup
             }
         };
     }
