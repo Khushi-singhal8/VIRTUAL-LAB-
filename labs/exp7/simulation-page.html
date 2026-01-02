@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Labs | Electrical Machines</title>
+    <style>
+        /* Simulation Styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .experiment-panel-content {
+            width: 100%;
+        }
+
+        .experiment-panel {
+            width: 100%;
+        }
+
+        .gif-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .gif-wrapper {
+            width: 100%;
+            position: relative;
+            background: white;
+        }
+
+        .gif-wrapper h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .play-stage {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .play-stage video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .play-hotspot {
+            position: absolute;
+            background-color: rgba(255, 193, 7, 0.3);
+            border: 2px solid #ffc107;
+            border-radius: 50%;
+            cursor: pointer;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        .play-hotspot:hover {
+            background-color: rgba(255, 193, 7, 0.5);
+            transform: scale(1.1);
+        }
+
+        .play-hotspot.debug-highlight {
+            background-color: rgba(255, 0, 0, 0.3);
+            border: 2px solid red;
+        }
+
+        .play-hotspot.debug-highlight:hover {
+            background-color: rgba(255, 0, 0, 0.5);
+        }
+
+        .drag-instructions {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+            font-size: 20px;
+            color: #1976D2;
+            min-height: 50px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-width: 130px;
+        }
+
+        .button-container button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
+        .button-container button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .gif-placeholder {
+            padding: 60px 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        #simulation-container {
+            flex: 3;
+        }
+
+        #steps-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-left: 20px;
+            box-shadow: -1px 0 0 #ddd;
+        }
+
+        .step-item {
+            padding: 10px;
+            cursor: default;
+            border-left: 4px solid transparent;
+            margin-bottom: 8px;
+        }
+
+        .step-item.active {
+            background-color: #eafbea;
+            border-left-color: #4CAF50;
+        }
+
+        .step-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .step-item-title h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .wood-hotspot {
+            background-color: transparent !important;
+            border: none !important;
+            opacity: 0 !important;
+            pointer-events: auto;
+        }
+
+        .wood-hotspot:hover {
+            background-color: transparent !important;
+        }
+    </style>
+    <style>
+        /* Overrides: larger media like exp1/exp2 and keep controls visible */
+        .gif-container {
+            max-width: 900px;
+        }
+
+        .gif-wrapper img.step-gif {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .gif-wrapper video#step-generic-video {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .play-stage video {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .button-container {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        /* Ensure generic media wrapper boxes auto-size and avoid clipping */
+        .gif-wrapper>div[style*="height: 400px"] {
+            height: auto !important;
+        }
+
+        .gif-wrapper video {
+            width: 100%;
+            height: auto;
+        }
+
+        /* Ensure drag stage also scales properly */
+        #drag-stage {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        #drag-stage img.stage-bg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Draggable tool styling */
+        .draggable {
+            position: absolute;
+            cursor: grab;
+            z-index: 20;
+            max-width: 50%;
+            height: auto;
+        }
+
+        .draggable.dragging {
+            cursor: grabbing;
+            opacity: 0.8;
+        }
+
+        .drop-zone {
+            position: absolute;
+            border: 2px dashed rgba(255, 255, 0, 0.7);
+            background: rgba(255, 255, 0, 0.2);
+            border-radius: 50%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .drop-zone.success {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+        }
+
+        .drag-success {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(76, 175, 80, 0.9);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 100;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Material and Thickness Selection Styles */
+        .selection-container {
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+        }
+
+        .selection-section {
+            margin-bottom: 25px;
+        }
+
+        .selection-section h4 {
+            margin: 0 0 12px 0;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .material-options {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .material-card {
+            flex: 1;
+            min-width: 200px;
+            max-width: 280px;
+            padding: 20px;
+            background: white;
+            border: 3px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .material-card:hover {
+            border-color: #2196F3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .material-card.selected {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .material-card h5 {
+            margin: 10px 0 5px 0;
+            color: #333;
+            font-size: 20px;
+        }
+
+        .material-card p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .material-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .thickness-options {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .thickness-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            background: white;
+            border: 3px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .thickness-btn:hover {
+            border-color: #2196F3;
+            background-color: #e3f2fd;
+        }
+
+        .thickness-btn.selected {
+            border-color: #4CAF50;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .selection-summary {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #e65100;
+        }
+
+        .selection-summary.complete {
+            background: #e8f5e9;
+            border-left-color: #4CAF50;
+            color: #2e7d32;
+        }
+    </style>
+
+    <!-- Print Styles -->
+    <link rel="stylesheet" href="print.css">
+
+
+</head>
+
+<body>
+
+    <div class="container" id="experiment-view" style="display:flex;">
+        <div class="experiment-panel-content" id="experiment-panel-content">
+            <div class="experiment-panel active" id="panel-simulation">
+
+                <button onclick="window.location.href='simulation.html'"
+                    style="margin-bottom: 20px; padding: 10px 24px; font-size: 16px; border: none; border-radius: 5px; background-color: #2196F3; color: white; cursor: pointer;">
+                    ← Back to Lab
+                </button>
+                <h1>Simulation</h1>
+                <div class="row" style="display: flex; align-items: flex-start;">
+                    <div class="container" id="simulation-container">
+                        <div id="gif-container" class="gif-container">
+                            <div class="gif-placeholder">
+                                Use the navigation buttons below to view the steps
+                            </div>
+                        </div>
+
+                        <div class="button-container" style="margin-top: 20px;">
+                            <button id="prev-btn" disabled><span style="color: inherit; visibility: visible;">←
+                                    Previous</span></button>
+                            <button id="next-btn"><span style="color: inherit; visibility: visible;">Next
+                                    →</span></button>
+                            <button id="reset-btn" style="background-color: #ff9800;"><span
+                                    style="color: inherit; visibility: visible;">Reset</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="sim-script.js"></script>
+</body>
+
+</html>

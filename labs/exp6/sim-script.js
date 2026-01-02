@@ -729,10 +729,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
         `;
-
-        const resetBtn = document.getElementById('reset-btn');
-        if (resetBtn) {
-            resetBtn.onclick = () => {
+        if (resetButton) {
+            resetButton.onclick = () => {
                 location.reload();
             };
         }
