@@ -1024,168 +1024,183 @@ const stepGuidance = {
         };
     }
 
-
-   
-
     function renderStep6DragDrop(step, timestamp) {
-    console.log("STEP 6 FUNCTION RUNNING");
+        step6Completed = false;
+        if (nextButton) nextButton.disabled = true;
 
-    step6Completed = false;
-    if (nextButton) nextButton.disabled = true;
+        const videoSrc = 'images/simulation/6.mp4';
+        const bgPath = 'images/simulation/6.png';
+        const toolPath = 'images/simulation/6-tool.png';
 
-    const bgPath = 'images/simulation/6.png';
-    const videoSrc = 'images/simulation/6.mp4';
-    const torchImg = 'images/simulation/welding_torch.png';
-    const fillerImg = 'images/simulation/filler_rod.png';
-
-    gifContainer.innerHTML = `
-        <div class="gif-wrapper">
-            <h3>${step.title}</h3>
-            <div class="step-indicator">
-                Step ${currentStepIndex + 1} of ${totalSteps}
-            </div>
-
-            <div id="stage6" style="position:relative;width:100%;overflow:hidden;">
-                <img src="${bgPath}?t=${timestamp}"
-     style="width:100%;display:block;position:relative;z-index:1;">
-
-
-                <!-- Welding Torch (ACTIVE) -->
-                <img id="torch6" src="${torchImg}"
-                     style="position:absolute;width:18%;left:5%;top:20%;
-                            cursor:grab;z-index:20;">
-
-                <!-- Filler Rod (VISIBLE BUT INACTIVE) -->
-                <img id="filler6" src="${fillerImg}"
-                     style="position:absolute;width:18%;right:5%;top:20%;
-                            opacity:0.5;pointer-events:none;z-index:20;">
-
-                <!-- Drop Zone -->
-                <div id="drop6"
-                     style="position:absolute;width:90px;height:90px;
-                            border:2px dashed yellow;
-                            border-radius:50%;
-                            left:50%;top:70%;
-                            transform:translate(-50%,-50%);
-                            background:rgba(255,255,0,0.25);">
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                
+                <!-- Drag Phase -->
+                <div class="drag-stage" id="step6-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                    <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Welded plates" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${toolPath}?t=${timestamp}" id="draggable-file" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 37%; top: 10%; right: 10%;"/>
+                    <div id="step6-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
+
+                <!-- Video Phase -->
+                <div class="play-stage" id="step6-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                    <video id="step6-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                </div>
+                
+                <div id="step6-instruction" class="drag-instructions">Drag the file to the weld bead.</div>
             </div>
+        `;
 
-            <div id="instruction6" class="drag-instructions">
-                Drag the <b>Welding Torch</b> to the weld joint.
-            </div>
-        </div>
-    `;
+        const dragStage = document.getElementById('step6-drag-stage');
+        const fileTool = document.getElementById('draggable-file');
+        const dropZone = document.getElementById('step6-drop-zone');
+        const dragBg = dragStage.querySelector('.stage-bg');
 
-    const stage = document.getElementById("stage6");
-    const torch = document.getElementById("torch6");
-    const filler = document.getElementById("filler6");
-    const drop = document.getElementById("drop6");
-    const instruction = document.getElementById("instruction6");
+        const playStage = document.getElementById('step6-play-stage');
+        const video = document.getElementById('step6-video');
+        const instructionElem = document.getElementById('step6-instruction');
 
-    enableDrag(torch, () => {
+        // Drop zone target (adjust x and y for the weld bead location)
+        const targetRel = {x: 0.5, y: 0.85};
+        const tolerancePx = 120;
 
-    // snap torch
-    snapToDrop(torch, -25);
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            const w = rect.width * 0.08;
+            const h = w;
+            const tx = rect.width * targetRel.x;
+            const ty = rect.height * targetRel.y;
+            dropZone.style.width = w + 'px';
+            dropZone.style.height = h + 'px';
+            dropZone.style.left = (tx - w / 2) + 'px';
+            dropZone.style.top = (ty - h / 2) + 'px';
+        }
 
-    instruction.innerHTML =
-        "Now drag the <b>Filler Rod</b> to the weld joint.";
+        if (dragBg.complete && dragBg.naturalWidth) setDropZoneLayout();
+        else dragBg.onload = setDropZoneLayout;
+        window.addEventListener('resize', setDropZoneLayout);
 
-    // 🔓 ACTIVATE FILLER ROD
-    filler.style.opacity = "1";
-    filler.style.pointerEvents = "auto";
+        // Drag Logic
+        let dragging = false;
+        let startX = 0, startY = 0;
 
-    enableDrag(filler, () => {
-        snapToDrop(filler, 25);
-        startVideo();
-    });
-});
-
-
-    function enableDrag(el, onDrop) {
-        let dx = 0, dy = 0, dragging = false;
-
-        el.onmousedown = e => {
+        function onPointerDown(e) {
             dragging = true;
-            dx = e.clientX - el.offsetLeft;
-            dy = e.clientY - el.offsetTop;
+            fileTool.classList.add('dragging');
+            const rect = fileTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
 
-            document.onmousemove = ev => {
-                if (!dragging) return;
-                const rect = stage.getBoundingClientRect();
-el.style.left = (ev.clientX - rect.left - dx) + "px";
-el.style.top = (ev.clientY - rect.top - dy) + "px";
+        function onPointerMove(e) {
+            if (!dragging) return;
+            const stageRect = dragStage.getBoundingClientRect();
+            const fileRect = fileTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
 
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - fileRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - fileRect.height));
+
+            fileTool.style.left = newLeft + 'px';
+            fileTool.style.top = newTop + 'px';
+        }
+
+        function onPointerUp() {
+            if (!dragging) return;
+            dragging = false;
+            fileTool.classList.remove('dragging');
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const fileRect = fileTool.getBoundingClientRect();
+            const fileCenter = {
+                x: fileRect.left - stageRect.left + fileRect.width / 2,
+                y: fileRect.top - stageRect.top + fileRect.height / 2
             };
 
-            document.onmouseup = () => {
-                dragging = false;
-                document.onmousemove = null;
-                document.onmouseup = null;
-                if (isOverDrop(el)) {
-                    el.onmousedown = null;
-                    onDrop();
-                }
-            };
+            const dzRect = dropZone.getBoundingClientRect();
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(fileCenter.x - targetX, fileCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                dropZone.classList.add('success');
+                setTimeout(startVideoPhase, 500);
+            }
+        }
+
+        fileTool.addEventListener('mousedown', onPointerDown);
+        fileTool.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        function startVideoPhase() {
+            // Cleanup drag listeners
+            window.removeEventListener('resize', setDropZoneLayout);
+            window.removeEventListener('mousemove', onPointerMove);
+            window.removeEventListener('touchmove', onPointerMove);
+            window.removeEventListener('mouseup', onPointerUp);
+            window.removeEventListener('touchend', onPointerUp);
+
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+            instructionElem.textContent = "Dressing the weld bead...";
+
+           video.onended = () => {
+    instructionElem.innerHTML =
+        "<b>Step complete.</b> " +
+        stepGuidance.step6.next;
+
+    step6Completed = true;
+    if (nextButton) nextButton.disabled = false;
+};
+
+            video.play();
+        }
+
+        cleanupCurrent = () => {
+            try {
+                window.removeEventListener('resize', setDropZoneLayout);
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+            } catch (_) { }
         };
     }
 
-    function isOverDrop(el) {
-        const a = el.getBoundingClientRect();
-        const b = drop.getBoundingClientRect();
-        return Math.hypot(
-            (a.left + a.width / 2) - (b.left + b.width / 2),
-            (a.top + a.height / 2) - (b.top + b.height / 2)
-        ) < 70;
-    }
-
-    function snapToDrop(el, offsetX) {
-        const d = drop.getBoundingClientRect();
-        const s = stage.getBoundingClientRect();
-        el.style.left = (d.left - s.left - el.offsetWidth / 2 + offsetX) + "px";
-        el.style.top = (d.top - s.top - el.offsetHeight / 2) + "px";
-    }
-
-    function startVideo() {
-        setTimeout(() => {
-            gifContainer.innerHTML = `
-                <div class="gif-wrapper">
-                    <video src="${videoSrc}" autoplay muted style="width:100%;"></video>
-                    <div class="drag-instructions">
-                        <b>Step complete.</b> ${stepGuidance.step6.next}
-                    </div>
-                </div>
-            `;
-            step6Completed = true;
-            if (nextButton) nextButton.disabled = false;
-        }, 700);
-    }
-}
-
-
-    /* ================= NAVIGATION ================= */
-
     if (prevButton) {
-        prevButton.onclick = () => {
+        prevButton.addEventListener('click', function () {
             if (currentStepIndex > 0) {
                 currentStepIndex--;
                 showCurrentStep();
             }
-        };
+        });
     }
-
     if (nextButton) {
-        nextButton.onclick = () => {
+        nextButton.addEventListener('click', function () {
             if (currentStepIndex < totalSteps - 1) {
                 currentStepIndex++;
                 showCurrentStep();
             }
+        });
+    }
+    if (resetButton) {
+        resetButton.onclick = () => {
+            location.reload();
         };
     }
 
-    if (resetButton) {
-        resetButton.onclick = () => location.reload();
-    }
-
     showCurrentStep();
-});
+}); 
