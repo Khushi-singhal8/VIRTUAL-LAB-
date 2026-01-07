@@ -103,10 +103,10 @@ const stepGuidance = {
     },
     step2: {
         now: "Click the highlighted areas to align plates.",
-        next: "Ignite the welding flame."
+        next: "coated the flux."
     },
     step3_1: {
-        now: "Follow the steps to ignite a neutral flame.",
+        now: "flux is coated.",
         next: "Apply tack welds at both ends."
     },
     step4: {
