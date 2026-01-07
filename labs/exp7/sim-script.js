@@ -838,9 +838,16 @@ const stepGuidance = {
                 <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
                     <img src="${tool1Path}?t=${timestamp}" id="draggable-tool1" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
-                    <img src="${tool2Path}?t=${timestamp}" id="draggable-tool2" class="draggable" alt="Welding tool 2" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 10%; right: 25%; display: none;"/>
+                   <img src="${tool2Path}?t=${timestamp}" id="draggable-tool2"class="draggable"style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 10%; right: 25%;"/>
+
                     <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                    <div id="step4-drop-zone2" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5; display: none;"></div>
+                    <div id="step4-drop-zone2"
+     class="drop-zone"
+     style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7);
+            background: rgba(255, 255, 0, 0.2); border-radius: 50%;
+            z-index: 5;">
+</div>
+
                 </div>
 
                 <!-- Video Phase -->
@@ -848,7 +855,10 @@ const stepGuidance = {
                     <video id="step4-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
-                <div id="step4-instruction" class="drag-instructions">Drag the welding tool to the first end of the plates.</div>
+                <div id="step4-instruction" class="drag-instructions">
+    Drag both welding tools to their respective ends of the plates.
+</div>
+
             </div>
         `;
 
@@ -868,10 +878,10 @@ const stepGuidance = {
         const target2Rel = {x: 0.36, y: 0.55};
         const tolerancePx = 80;
 
-        let currentTool = 1; // Start with tool 1
-        let activeTool = tool1;
-        let activeDropZone = dropZone1;
-        let currentTargetRel = target1Rel;
+        let tool1Done = false;
+        let tool2Done = false;
+        let activeTool = null;
+
 
         function setDropZoneLayout() {
             const rect = dragStage.getBoundingClientRect();
@@ -904,81 +914,90 @@ const stepGuidance = {
         let startX = 0, startY = 0;
 
         function onPointerDown(e) {
-            if (e.target !== activeTool) return;
-            dragging = true;
-            activeTool.classList.add('dragging');
-            const rect = activeTool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-            startX = clientX - rect.left;
-            startY = clientY - rect.top;
-            e.preventDefault();
-        }
+    if (e.target !== tool1 && e.target !== tool2) return;
+
+    activeTool = e.target;
+    dragging = true;
+    activeTool.classList.add('dragging');
+
+    const rect = activeTool.getBoundingClientRect();
+    const clientX = e.clientX ?? e.touches[0].clientX;
+    const clientY = e.clientY ?? e.touches[0].clientY;
+
+    startX = clientX - rect.left;
+    startY = clientY - rect.top;
+    e.preventDefault();
+}
+
 
         function onPointerMove(e) {
-            if (!dragging) return;
-            const stageRect = dragStage.getBoundingClientRect();
-            const toolRect = activeTool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+    if (!dragging || !activeTool) return;   // 🔒 lock movement to active tool only
 
-            let newLeft = clientX - stageRect.left - startX;
-            let newTop = clientY - stageRect.top - startY;
+    const stageRect = dragStage.getBoundingClientRect();
+    const toolRect = activeTool.getBoundingClientRect();
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+    const clientX = e.clientX ?? e.touches[0].clientX;
+    const clientY = e.clientY ?? e.touches[0].clientY;
 
-            activeTool.style.left = newLeft + 'px';
-            activeTool.style.top = newTop + 'px';
-        }
+    let newLeft = clientX - stageRect.left - startX;
+    let newTop = clientY - stageRect.top - startY;
+
+    newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+    newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+
+    activeTool.style.left = newLeft + 'px';
+    activeTool.style.top = newTop + 'px';
+}
+
 
         function onPointerUp() {
-            if (!dragging) return;
-            dragging = false;
-            activeTool.classList.remove('dragging');
+    if (!dragging || !activeTool) return;
+    dragging = false;
+    activeTool.classList.remove('dragging');
 
-            const stageRect = dragStage.getBoundingClientRect();
-            const toolRect = activeTool.getBoundingClientRect();
-            const toolCenter = {
-                x: toolRect.left - stageRect.left + toolRect.width / 2,
-                y: toolRect.top - stageRect.top + toolRect.height / 2
-            };
+    const stageRect = dragStage.getBoundingClientRect();
+    const toolRect = activeTool.getBoundingClientRect();
 
-            const dzRect = activeDropZone.getBoundingClientRect();
-            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
-            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+    const toolCenter = {
+        x: toolRect.left - stageRect.left + toolRect.width / 2,
+        y: toolRect.top - stageRect.top + toolRect.height / 2
+    };
 
-            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+    // Decide correct drop zone based on tool
+    const dropZone = (activeTool === tool1) ? dropZone1 : dropZone2;
+    const dzRect = dropZone.getBoundingClientRect();
 
-            if (dist < tolerancePx) {
-                // Snap tool to target position
-                const newToolLeft = targetX - toolRect.width / 2;
-                const newToolTop = targetY - toolRect.height / 2;
-                activeTool.style.left = newToolLeft + 'px';
-                activeTool.style.top = newToolTop + 'px';
+    const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+    const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
 
-                activeDropZone.classList.add('success');
-                
-                if (currentTool === 1) {
-                    // First tool placed successfully, show second tool
-                    setTimeout(() => {
-                        tool1.style.cursor = 'default';
-                        tool1.style.pointerEvents = 'none';
-                        dropZone1.style.display = 'none';
-                        tool2.style.display = 'block';
-                        dropZone2.style.display = 'block';
-                        currentTool = 2;
-                        activeTool = tool2;
-                        activeDropZone = dropZone2;
-                        currentTargetRel = target2Rel;
-                        instructionElem.textContent = "Drag the welding tool to the second end of the plates.";
-                    }, 500);
-                } else {
-                    // Second tool placed successfully, start video
-                    setTimeout(startVideoPhase, 500);
-                }
-            }
+    const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+
+    if (dist < tolerancePx) {
+        // Snap tool
+        activeTool.style.left = (targetX - toolRect.width / 2) + 'px';
+        activeTool.style.top = (targetY - toolRect.height / 2) + 'px';
+
+        // Lock this tool
+        activeTool.style.pointerEvents = 'none';
+        activeTool.style.cursor = 'default';
+
+        dropZone.classList.add('success');
+
+        // Mark completion
+        if (activeTool === tool1) tool1Placed = true;
+        if (activeTool === tool2) tool2Placed = true;
+
+        instructionElem.textContent = "Place the other welding tool.";
+
+        // When BOTH are placed → play video
+        if (tool1Placed && tool2Placed) {
+            setTimeout(startVideoPhase, 500);
         }
+    }
+
+    activeTool = null;
+}
+
 
         tool1.addEventListener('mousedown', onPointerDown);
         tool1.addEventListener('touchstart', onPointerDown);
