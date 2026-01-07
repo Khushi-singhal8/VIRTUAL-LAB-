@@ -88,9 +88,9 @@ const apparatusData = [
     { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
     { id: 'step3', title: 'Ignite flame', src: 'images/simulation/3.mp4', type: 'video' },
     { id: 'step4', title: 'Apply small tack welds at both ends of the plates', src: 'images/simulation/4.mp4', type: 'video' },
-    { id: 'step4_5', title: 'Welding', src: 'images/simulation/4.5.mp4', type: 'video' },
-    { id: 'step5', title: 'Use a chipping hammer to remove slag', src: 'images/simulation/5.mp4', type: 'video' },
-    { id: 'step6', title: 'Use a file to dress the weld bead and edges', src: 'images/simulation/6.mp4', type: 'video' }
+    { id: 'step4_5', title: 'Welding', src: 'images/simulation/6 welding.mp4', type: 'video' },
+    { id: 'step5', title: 'Use a chipping hammer to remove slag', src: 'images/simulation/7.mp4', type: 'video' },
+    
 ];
 
 const stepGuidance = {
@@ -126,10 +126,7 @@ const stepGuidance = {
         now: "Remove slag from the weld bead.",
         next: "Dress the weld bead using a file."
     },
-    step6: {
-        now: "Drag the file to dress the weld bead.",
-        next: "Experiment completed successfully."
-    }
+    
 };
 
 
