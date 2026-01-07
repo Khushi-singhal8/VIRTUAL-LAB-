@@ -21,6 +21,36 @@ style.innerHTML = `
     max-height: 95%;
     object-fit: contain;
 }
+
+.click-hint {
+    position: absolute;
+    border: 3px dashed #00ffcc;
+    border-radius: 8px;
+    animation: pulse 1.4s infinite;
+    pointer-events: none;
+    box-shadow: 0 0 12px rgba(0,255,204,0.7);
+    z-index: 9;
+}
+
+.click-label {
+    position: absolute;
+    top: -28px;
+    left: 0;
+    background: #00ffcc;
+    color: #000;
+    padding: 3px 8px;
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+@keyframes pulse {
+    0%   { opacity: 0.3; }
+    50%  { opacity: 1; }
+    100% { opacity: 0.3; }
+}
+
+
 `;
 document.head.appendChild(style);
 
@@ -124,7 +154,7 @@ const stepGuidance = {
     },
     step5: {
         now: "Remove slag from the weld bead.",
-        next: "Dress the weld bead using a file."
+        next: "simulation complete."
     },
     
 };
@@ -270,9 +300,12 @@ const stepGuidance = {
             renderStep4_5Video(step, timestamp);
         } else if (step.id === 'step6') {
             renderStep6DragDrop(step, timestamp);
-        } else {
-            renderPlainVideoStep(step, timestamp);
-        }
+        } else if (step.id === 'step5') {
+    renderStep5DragDrop(step, timestamp);
+}else {
+    renderPlainVideoStep(step, timestamp);
+}
+
 
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
@@ -1039,6 +1072,139 @@ const stepGuidance = {
             } catch (_) { }
         };
     }
+
+    function renderStep5DragDrop(step, timestamp) {
+
+    if (nextButton) nextButton.disabled = true;
+
+    const videoSrc = 'images/simulation/7.mp4';
+
+    // ⏱️ EXACT timestamps (verified)
+    const HAMMER_START = 0.0;
+    const HAMMER_END   = 12.6;
+    const FILE_START   = 12.6;
+    const FILE_END     = 26.0;
+
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper">
+            <h3>${step.title}</h3>
+
+            <div class="step-indicator">
+                Step ${currentStepIndex + 1} of ${totalSteps}
+            </div>
+
+            <div id="step5-stage"
+                 style="position:relative;width:100%;max-width:900px;margin:auto;">
+
+                <video id="step5-video"
+                       src="${videoSrc}?t=${timestamp}"
+                       style="width:100%;display:block;"
+                       muted
+                       playsinline>
+                </video>
+
+                <!-- 🔨 HAMMER CLICK AREA -->
+                <div id="hammer-hotspot"
+                     style="position:absolute;width:120px;height:160px;
+                            left:38%;top:38%;
+                            cursor:pointer;z-index:10;">
+                </div>
+
+                <!-- 🧽 FILE CLICK AREA -->
+                <div id="file-hotspot"
+                     style="position:absolute;width:130px;height:120px;
+                            left:58%;top:36%;
+                            cursor:not-allowed;
+                            pointer-events:none;
+                            z-index:10;">
+                </div>
+
+                <!-- 🔔 VISUAL GUIDE -->
+                <div id="click-hint" class="click-hint"
+                     style="width:120px;height:160px;left:38%;top:38%;">
+                    <div class="click-label">Click hammer here</div>
+                </div>
+            </div>
+
+            <div id="step5-instruction" class="drag-instructions">
+                Click on the highlighted area to remove slag using chipping hammer.
+            </div>
+        </div>
+    `;
+
+    const video = document.getElementById('step5-video');
+    const hammerSpot = document.getElementById('hammer-hotspot');
+    const fileSpot = document.getElementById('file-hotspot');
+    const instruction = document.getElementById('step5-instruction');
+    const stage = document.getElementById('step5-stage');
+
+    let hammerDone = false;
+    let fileDone = false;
+
+    video.pause();
+
+    /* 🔨 HAMMER STEP */
+    hammerSpot.onclick = () => {
+        if (hammerDone) return;
+        hammerDone = true;
+
+        document.getElementById('click-hint')?.remove();
+
+        instruction.textContent = "Removing slag using chipping hammer...";
+
+        video.currentTime = HAMMER_START;
+        video.play();
+
+        video.ontimeupdate = () => {
+            if (video.currentTime >= HAMMER_END) {
+                video.pause();
+                video.ontimeupdate = null;
+
+                instruction.textContent =
+                    "Slag removed. Now click on the highlighted area to use the file.";
+
+                /* 🔔 MOVE HINT TO FILE */
+                const hint = document.createElement('div');
+                hint.className = 'click-hint';
+                hint.style.width = '130px';
+                hint.style.height = '120px';
+                hint.style.left = '58%';
+                hint.style.top = '36%';
+                hint.innerHTML = `<div class="click-label">Click file here</div>`;
+                stage.appendChild(hint);
+
+                fileSpot.style.pointerEvents = 'auto';
+                fileSpot.style.cursor = 'pointer';
+
+                /* 🧽 FILE STEP */
+                fileSpot.onclick = () => {
+                    if (fileDone) return;
+                    fileDone = true;
+
+                    hint.remove();
+                    instruction.textContent = "Finishing weld using file...";
+
+                    video.currentTime = FILE_START;
+                    video.play();
+
+                    video.ontimeupdate = () => {
+                        if (video.currentTime >= FILE_END) {
+                            video.pause();
+                            video.ontimeupdate = null;
+
+                            instruction.innerHTML =
+                                "<b>Step complete.</b> Weld cleaning finished successfully.";
+
+                            if (nextButton) nextButton.disabled = false;
+                        }
+                    };
+                };
+            }
+        };
+    };
+}
+
+
 
     function renderStep6DragDrop(step, timestamp) {
         step6Completed = false;
