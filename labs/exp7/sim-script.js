@@ -120,7 +120,8 @@ const apparatusData = [
     { id: 'step4', title: 'Apply small tack welds at both ends of the plates', src: 'images/simulation/4.mp4', type: 'video' },
     { id: 'step4_5', title: 'Welding', src: 'images/simulation/6 welding.mp4', type: 'video' },
     { id: 'step5', title: 'Use a chipping hammer to remove slag', src: 'images/simulation/7.mp4', type: 'video' },
-    
+    {id: 'result',title: 'Observation & Result',type: 'result'}
+
 ];
 
 const stepGuidance = {
@@ -268,12 +269,15 @@ const stepGuidance = {
 
 
     function showCurrentStep() {
-        if (!gifContainer) return;
-        const step = steps[currentStepIndex];
-        const timestamp = Date.now();
+    if (!gifContainer) return;
 
-            if (step.id === 'apparatus') {
-        clearCleanup();
+    const step = steps[currentStepIndex];
+    const timestamp = Date.now();
+
+    clearCleanup();
+
+    /* ---------- APPARATUS STEP ---------- */
+    if (step.id === 'apparatus') {
         renderApparatusStep();
 
         if (currentStepElement)
@@ -281,49 +285,57 @@ const stepGuidance = {
 
         if (prevButton) prevButton.disabled = true;
         if (nextButton) nextButton.disabled = false;
-
         return;
     }
 
+    /* ---------- RESULT / PRINT PAGE ---------- */
+    if (step.id === 'result') {
+        renderResultStep();
 
-        clearCleanup();
+        if (currentStepElement)
+            currentStepElement.textContent = currentStepIndex + 1;
 
-        if (step.id === 'step1') {
-            renderStep1DragDrop(step, timestamp);
-        } else if (step.id === 'step1_5') {
-            renderStep1_5DragDrop(step, timestamp);
-        } else if (step.id === 'step2' || step.id === 'step3') {
-            renderInteractiveVideoStep(step, timestamp);
-        } else if (step.id === 'step4') {
-            renderStep4DragDrop(step, timestamp);
-        } else if (step.id === 'step4_5') {
-            renderStep4_5Video(step, timestamp);
-        } else if (step.id === 'step6') {
-            renderStep6DragDrop(step, timestamp);
-        } else if (step.id === 'step5') {
-    renderStep5DragDrop(step, timestamp);
-}else {
-    renderPlainVideoStep(step, timestamp);
+        if (prevButton) prevButton.disabled = false;
+        if (nextButton) nextButton.disabled = true;
+        return;
+    }
+
+    /* ---------- NORMAL STEPS ---------- */
+    if (step.id === 'step1') {
+        renderStep1DragDrop(step, timestamp);
+    } else if (step.id === 'step1_5') {
+        renderStep1_5DragDrop(step, timestamp);
+    } else if (step.id === 'step2' || step.id === 'step3') {
+        renderInteractiveVideoStep(step, timestamp);
+    } else if (step.id === 'step4') {
+        renderStep4DragDrop(step, timestamp);
+    } else if (step.id === 'step4_5') {
+        renderStep4_5Video(step, timestamp);
+    } else if (step.id === 'step5') {
+        renderStep5DragDrop(step, timestamp);
+    } else if (step.id === 'step6') {
+        renderStep6DragDrop(step, timestamp);
+    } else {
+        renderPlainVideoStep(step, timestamp);
+    }
+
+    if (currentStepElement)
+        currentStepElement.textContent = currentStepIndex + 1;
+
+    if (prevButton)
+        prevButton.disabled = currentStepIndex === 0;
+
+    if (nextButton)
+        nextButton.disabled = (currentStepIndex === totalSteps - 1);
+
+    if (stepsList) {
+        const items = stepsList.querySelectorAll('.step-item');
+        items.forEach((itm, idx) => {
+            itm.classList.toggle('active', idx === currentStepIndex);
+        });
+    }
 }
 
-
-        if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
-        if (prevButton) prevButton.disabled = currentStepIndex === 0;
-        if (nextButton) {
-            // Temporarily enable next button always for testing
-            nextButton.disabled = (currentStepIndex === totalSteps - 1);
-            //             nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
-            // nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
-        }
-
-        if (stepsList) {
-            const items = stepsList.querySelectorAll('.step-item');
-            items.forEach((itm, idx) => {
-                if (idx === currentStepIndex) itm.classList.add('active');
-                else itm.classList.remove('active');
-            });
-        }
-    }
 
     function renderPlainVideoStep(step, timestamp) {
         gifContainer.innerHTML = `
@@ -1339,14 +1351,22 @@ const stepGuidance = {
             playStage.style.display = 'block';
             instructionElem.textContent = "Dressing the weld bead...";
 
-           video.onended = () => {
+          video.onended = () => {
     instructionElem.innerHTML =
-        "<b>Step complete.</b> " +
-        stepGuidance.step6.next;
+        "<b>Simulation complete.</b> Dressing finished successfully.";
 
     step6Completed = true;
-    if (nextButton) nextButton.disabled = false;
+
+    // Disable next button (last step)
+    if (nextButton) nextButton.disabled = true;
+
+    // ✅ SHOW OBSERVATION & RESULT TABLE
+    showObservationResult();
+
+    // ✅ SHOW PRINT BUTTON
+    showPrintPage();
 };
+
 
             video.play();
         }
@@ -1361,6 +1381,65 @@ const stepGuidance = {
             } catch (_) { }
         };
     }
+
+    function renderResultStep() {
+
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper">
+            <h3>Observation & Result</h3>
+            <div class="step-indicator">Final Step</div>
+
+            <!-- ✅ FINAL RESULT IMAGE -->
+            <div style="text-align:center; margin:20px 0;">
+                <img src="images/simulation/print .png"
+                     alt="Final Welded Butt Joint"
+                     style="max-width:90%; border:1px solid #ccc; border-radius:6px;">
+                <p style="font-size:14px; margin-top:6px;">
+                    Final welded butt joint after dressing
+                </p>
+            </div>
+
+            <!-- ✅ OBSERVATION TABLE -->
+            <table border="1" width="100%" cellpadding="8">
+                <tr><td><b>Plate Material</b></td><td>Mild Steel</td></tr>
+                <tr><td><b>Filler Rod</b></td><td>ER70S-6</td></tr>
+                <tr><td><b>Temperature (Neutral Flame)</b></td><td>3200°C – 3300°C</td></tr>
+                <tr><td><b>Flame Type</b></td><td>Neutral</td></tr>
+                <tr><td><b>O₂ Pressure</b></td><td>250 kPa</td></tr>
+                <tr><td><b>Acetylene Pressure</b></td><td>120 kPa</td></tr>
+                <tr><td><b>Travel Speed</b></td><td>5 mm/s</td></tr>
+            </table>
+
+            <!-- ✅ CONCLUSION -->
+            <h4>Conclusion</h4>
+            <p>
+                From the above experiment, it was observed that a proper butt joint
+                on mild steel plates can be successfully produced using the
+                oxy-acetylene welding process when correct joint preparation and
+                flame adjustment are maintained. Cleaning plate edges, accurate
+                alignment of the V-groove, and the use of a neutral flame played a
+                significant role in achieving a uniform weld bead with good fusion.
+                Proper control of oxygen and acetylene pressures helped in minimizing
+                welding defects and excessive slag formation. The experiment also
+                improved understanding of gas welding equipment, flame control,
+                safety precautions, and post-weld cleaning operations. Hence, the
+                objective of the experiment was achieved satisfactorily.
+            </p>
+
+            <!-- ✅ PRINT BUTTON -->
+            <div style="text-align:center; margin-top:20px;">
+                <button onclick="window.print()" style="padding:10px 20px;font-size:16px;">
+                    🖨️ Print Page
+                </button>
+            </div>
+        </div>
+    `;
+
+    // Final step → disable Next
+    if (nextButton) nextButton.disabled = true;
+}
+
+
 
     if (prevButton) {
         prevButton.addEventListener('click', function () {
