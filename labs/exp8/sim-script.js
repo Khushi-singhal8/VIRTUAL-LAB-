@@ -1057,33 +1057,73 @@ else if (step.id === 'step4') {
     function renderResultStep() {
     gifContainer.innerHTML = `
         <div class="gif-wrapper">
-            <h3>Observation & Result</h3>
+            <h3>Brazing of Two Metal Sheets – Observation & Result</h3>
             <div class="step-indicator">Final Step</div>
 
+            <!-- RESULT IMAGE -->
             <div style="text-align:center; margin:20px 0;">
-                <img src="${RESULT_IMAGE}" 
-                     alt="Final Welded Joint"
-                     style="max-width:90%; border:1px solid #ccc; border-radius:8px;">
+                <img src="images/simulation/print1.png" 
+                     alt="Brazed Joint Result"
+                     style="max-width:50%; border:1px solid #ccc; border-radius:8px;">
             </div>
 
-            <table border="1" width="100%" cellpadding="8">
-                <tr><td><b>Plate Material</b></td><td>Mild Steel</td></tr>
-                <tr><td><b>Filler Rod</b></td><td>ER70S-6</td></tr>
-                <tr><td><b>Temperature</b></td><td>3200–3300°C</td></tr>
-                <tr><td><b>Flame Type</b></td><td>Neutral</td></tr>
-                <tr><td><b>O₂ Pressure</b></td><td>250 kPa</td></tr>
-                <tr><td><b>Acetylene Pressure</b></td><td>120 kPa</td></tr>
+            <!-- OBSERVATION TABLE -->
+            <h4>Observation Table</h4>
+            <table border="1" width="100%" cellpadding="8" cellspacing="0">
+                <tr>
+                    <th>Sheet Material</th>
+                    <th>Filler Used</th>
+                    <th>Flux</th>
+                    <th>Joint Quality</th>
+                    <th>Notes</th>
+                </tr>
+                <tr>
+                    <td>Mild Steel</td>
+                    <td>Brass Rod</td>
+                    <td>Borax</td>
+                    <td>Clean & Leak-proof</td>
+                    <td>Smooth Finish</td>
+                </tr>
             </table>
 
-            <h4>Conclusion</h4>
+            <!-- RESULT -->
+            <h4 style="margin-top:20px;">Result</h4>
             <p>
-                The oxy-acetylene welding experiment was successfully performed.
-                Proper edge preparation, flame control, and welding technique
-                resulted in a uniform and defect-free butt joint.
+                The two metal sheets were successfully joined using the brazing process.
+                The molten filler metal flowed uniformly into the joint by capillary action,
+                resulting in a smooth, continuous, and leak-tight joint without melting
+                the base metals.
             </p>
 
-            <div style="text-align:center; margin-top:25px;">
-                <button onclick="window.print()" 
+            <!-- TEMPERATURE DETAILS -->
+            <h4>Neutral Flame Temperature</h4>
+            <p>
+                The neutral flame temperature used during brazing was approximately
+                <b>3,200°C to 3,300°C</b>.
+            </p>
+
+            <h4>Heating Temperature</h4>
+            <p>
+                During brazing, the joint was heated to a temperature above
+                <b>450°C</b> and below the melting point of the base metals.
+                Controlled heating ensured proper melting of the filler metal
+                while preventing deformation of the sheets.
+            </p>
+
+            <!-- CONCLUSION -->
+            <h4>Conclusion</h4>
+            <p>
+                The experiment demonstrated that brazing is a reliable method for joining
+                metal sheets, especially thin and dissimilar materials. Proper surface
+                cleaning, correct flux application, and controlled heating using a neutral
+                flame were essential for obtaining a strong and clean joint. The experiment
+                provided a clear understanding of brazing principles, equipment handling,
+                and industrial applications, thereby fulfilling the aim of the experiment.
+            </p>
+
+            <!-- PRINT BUTTON -->
+            <div style="text-align:center; margin-top:30px;">
+                <button onclick="window.print()"
                         style="padding:10px 25px; font-size:16px; cursor:pointer;">
                     🖨️ Print Page
                 </button>
@@ -1093,8 +1133,6 @@ else if (step.id === 'step4') {
 
     if (nextButton) nextButton.disabled = true;
 }
-
-
 
     if (prevButton) {
         prevButton.addEventListener('click', function () {
