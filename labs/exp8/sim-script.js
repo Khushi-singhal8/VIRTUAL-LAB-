@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step3_1', title: 'Coating the flux', src: 'images/simulation/3_1.mp4', type: 'video' },
         { id: 'step3', title: 'Ignite flame', src: 'images/simulation/3.1.mp4', type: 'video' },
         { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
-        { id: 'step4_5', title: 'Welding', src: 'images/simulation/7.mp4', type: 'video' },
+        { id: 'step4_5', title: 'Welding', src: 'images/simulation/4.5.mp4', type: 'video' },
         { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
 
