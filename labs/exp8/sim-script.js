@@ -59,9 +59,9 @@ document.addEventListener("DOMContentLoaded", function () {
             desc: "Used to supply additional molten metal to the joint during welding for proper fusion and strength."
         },
         {
-            name: "Workpiece Clamp",
+            name: "Workpiece",
             img: "images/apparatus/e].png",
-            desc: "Used to hold the workpieces firmly in position and maintain proper alignment during welding."
+            desc: "Two clean metal sheets (mild steel or copper)."
         },
         {
             name: "Ignitor",
