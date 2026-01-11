@@ -131,6 +131,12 @@ document.addEventListener("DOMContentLoaded", function () {
         return assetCache[originalUrl] || originalUrl;
     }
 
+    function formatSrc(url, timestamp) {
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
+    }
+
     async function preloadAssets() {
         // Create overlay
         const overlay = document.createElement('div');
@@ -461,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${getAssetSrc(step.src)}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                 </div>
             </div>
         `;
@@ -488,7 +494,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${getAssetSrc(step.src)}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                 </div>
                 <div id="step4_5-instruction" class="drag-instructions">Start welding at 5mm/s</div>
             </div>
@@ -545,7 +551,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${getAssetSrc(step.src)}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
@@ -676,14 +682,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${getAssetSrc(bgPath)}?t=${timestamp}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${getAssetSrc(toolPath)}?t=${timestamp}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${getAssetSrc(videoSrc)}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
@@ -832,14 +838,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step3_1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${getAssetSrc(bgPath)}?t=${timestamp}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${getAssetSrc(toolPath)}?t=${timestamp}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 25%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 25%; top: 10%; right: 10%;"/>
                     <div id="step3_1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step3_1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step3_1-video" src="${getAssetSrc(videoSrc)}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step3_1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
                 <div id="step3_1-instruction" class="drag-instructions">Drag the flux to the plate joint.</div>
@@ -1009,8 +1015,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Phase 2: Drag Stage -->
                 <div class="drag-stage" id="step3-drag-stage" style="position: relative; width: 100%; overflow: hidden; display: none;">
-                    <img src="${getAssetSrc('images/simulation/3.png')}?t=${timestamp}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${getAssetSrc('images/simulation/3-tool.png')}?t=${timestamp}" id="step3-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc('images/simulation/3.png', timestamp)}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 10%;"/>
                     <div id="step3-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -1217,7 +1223,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentCfg = phase3Cfg;
 
             // Load Phase 3 video
-            video.src = `${getAssetSrc('images/simulation/3.2.mp4')}?t=${Date.now()}`;
+            video.src = `${formatSrc('images/simulation/3.2.mp4', Date.now())}`;
             video.addEventListener('ended', onVideoEnded, { once: true });
             video.addEventListener('loadedmetadata', () => {
                 layoutHotspot();
@@ -1226,7 +1232,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Start Phase 1
-        video.src = `${getAssetSrc(step.src)}?t=${timestamp}`;
+        video.src = `${formatSrc(step.src, timestamp)}`;
         video.addEventListener('play', onPlay);
         video.addEventListener('pause', onPause);
         video.addEventListener('ended', onVideoEnded);
@@ -1279,14 +1285,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${getAssetSrc(bgPath)}?t=${timestamp}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${getAssetSrc(toolPath)}?t=${timestamp}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1_5-video" src="${getAssetSrc(videoSrc)}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
                 <div id="step1_5-instruction" class="drag-instructions">Drag the tool to the plate edge.</div>
@@ -1435,15 +1441,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${getAssetSrc(bgPath)}?t=${timestamp}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${getAssetSrc(tool1Path)}?t=${timestamp}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
                     
                     <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${getAssetSrc(videoSrc)}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions">
@@ -1602,15 +1608,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${getAssetSrc(bgPath)}?t=${timestamp}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${getAssetSrc(toolPath)}?t=${timestamp}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     
                     <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step5-video" src="${getAssetSrc(videoSrc)}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions">
