@@ -419,7 +419,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let cfgSeq;
         if (step.id === 'step2') {
             cfgSeq = [
-                { pauseAt: 0, hotspot: { x: 0.3433333333333333, y: 0.5251851851851852, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the first plate.' },
+                { pauseAt: 0, hotspot: { x: 0.3, y: 0.5251851851851852, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the first plate.' },
                 { pauseAt: 1.95, hotspot: { x: 0.7144444444444444, y: 0.591604938271605, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the second plate.' }
             ];
         } else if (step.id === 'step4') {
@@ -1195,7 +1195,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions">
-    Drag both welding tools to their respective ends of the plates.
+    Drag the torch to the highlighted starting position as shown.
 </div>
 
             </div>
@@ -1733,7 +1733,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <video id="step8-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
                 </div>
                 
-                <div id="step8-instruction" class="drag-instructions">Drag the inspection tool to examine the weld.</div>
+                <div id="step8-instruction" class="drag-instructions">Drag the filing tool to its highlighted position for cleaning.</div>
             </div>
         `;
 
