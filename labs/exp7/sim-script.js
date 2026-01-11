@@ -557,9 +557,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
-            { pauseAt: 2.4, hotspot: { x: 0.249624, y: 0.319122, w: 0.121189, h: 0.135736 }, instruction: 'Set pressure for acetylene to 120kPa' },
-            { pauseAt: 7.4, hotspot: { x: 0.562958, y: 0.376485, w: 0.121189, h: 0.135737 }, instruction: 'Set pressure for oxygen to 250kPa.' },
-            { pauseAt: 14.45, hotspot: { x: 0.387778, y: 0.379787, w: 0.088889, h: 0.158244 }, instruction: 'Open acetylene valve slightly.' }
+            { pauseAt: 2.4, hotspot: { x: 0.095556, y: 0.150123, w: 0.154444, h: 0.161975 }, instruction: 'Set pressure for acetylene to 120kPa' },
+            { pauseAt: 7.4, hotspot: { x: 0.457778, y: 0.316049, w: 0.154444, h: 0.161975 }, instruction: 'Set pressure for oxygen to 250kPa.' },
+            { pauseAt: 14.45, hotspot: { x: 0.078889, y: 0.244938, w: 0.150000, h: 0.266667 }, instruction: 'Open acetylene valve slightly.' }
         ];
 
         // Phase 3 hotspot configuration (one hotspot at the beginning)
