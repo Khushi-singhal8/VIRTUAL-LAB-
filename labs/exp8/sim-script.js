@@ -1096,7 +1096,7 @@ document.addEventListener("DOMContentLoaded", function () {
             currentPhase = 3;
             dragStage.style.display = 'none';
             playStage.style.display = 'block';
-            instructionElem.textContent = 'Click to ignite the flame.';
+            instructionElem.textContent = 'Click to increase oxygen to obtain neutral flame.';
 
             // Reset for Phase 3
             segmentIndex = 0;
@@ -1490,7 +1490,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-tool5" class="draggable" alt="Chipping hammer" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                    <img src="${toolPath}?t=${timestamp}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     
                     <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
@@ -1501,7 +1501,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions">
-                    Drag the chipping hammer to remove slag.
+                    Drag the filing tool to remove slag.
                 </div>
             </div>
         `;
