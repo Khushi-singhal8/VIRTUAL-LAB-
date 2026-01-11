@@ -42,6 +42,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let cleanupCurrent = null;
 
+    // Web Audio API context and buffer
+    let audioCtx = null;
+    let hissBuffer = null;
+
+    async function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+        }
+        if (!hissBuffer) {
+            try {
+                const response = await fetch('images/simulation/hiss.mp3');
+                const arrayBuffer = await response.arrayBuffer();
+                hissBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (e) {
+                console.error('Error loading audio:', e);
+            }
+        }
+    }
+
     let step1Completed = false;
     let step3Completed = false;
     let step5Completed = false;
@@ -61,7 +83,7 @@ document.addEventListener("DOMContentLoaded", function () {
             type: 'video',
             initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure',
             finalInstruction: 'Click on next to set the pressure',
-            interaction: { pauseAt: 1.4, hotspot: {x: 0.4504105207511871, y: 0.42994331737492386, w: 0.07249351389399054, h: 0.12887735803376096}, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure' }
+            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42994331737492386, w: 0.07249351389399054, h: 0.12887735803376096 }, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure' }
         },
         {
             id: 'step2',
@@ -299,12 +321,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderApparatusStep() {
-    if (nextButton) nextButton.disabled = false;
+        if (nextButton) nextButton.disabled = false;
 
-    let apparatusHTML = '';
+        let apparatusHTML = '';
 
-    apparatusData.forEach(item => {
-        apparatusHTML += `
+        apparatusData.forEach(item => {
+            apparatusHTML += `
             <div style="
                 width: 260px;
                 border: 1px solid #ddd;
@@ -321,9 +343,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p style="font-size: 14px;">${item.desc}</p>
             </div>
         `;
-    });
+        });
 
-    gifContainer.innerHTML = `
+        gifContainer.innerHTML = `
         <div class="gif-wrapper">
             <h3>Apparatus Used</h3>
             <div class="step-indicator">Step 1 of ${totalSteps}</div>
@@ -339,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         </div>
     `;
-}
+    }
 
 
     function renderDragStep(step, timestamp) {
@@ -511,13 +533,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const hotspot = document.getElementById('play-hotspot');
         const instructionElem = document.getElementById('play-instruction');
 
-        // Create audio element for step 9 hiss sound with optimizations for seamless looping
-        let hissAudio = null;
+        // Audio source node for step 9
+        let hissSource = null;
+
         if (step.id === 'step9') {
-            hissAudio = new Audio('images/simulation/hiss.mp3');
-            hissAudio.loop = true;
-            hissAudio.preload = 'auto';
-            hissAudio.volume = 1.0; // Maximum volume for clear hissing sound
+            // Initialize audio context and load buffer
+            initAudio().catch(console.error);
         }
 
         function layoutHotspot() {
@@ -577,19 +598,21 @@ document.addEventListener("DOMContentLoaded", function () {
             if (nextButton) nextButton.disabled = false;
 
             // Play hiss sound on seamless loop for step 9
-            if (step.id === 'step9' && hissAudio) {
-                // Reset to beginning
-                hissAudio.currentTime = 0;
-                
-                // Ensure loop is enabled
-                hissAudio.loop = true;
-                
-                // Play with error handling
-                const playPromise = hissAudio.play();
-                if (playPromise !== undefined) {
-                    playPromise.catch(error => {
-                        console.warn('Audio autoplay was prevented:', error);
-                    });
+            // Play hiss sound on seamless loop for step 9 using Web Audio API
+            if (step.id === 'step9' && audioCtx && hissBuffer) {
+                try {
+                    // Resume context just in case
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+
+                    hissSource = audioCtx.createBufferSource();
+                    hissSource.buffer = hissBuffer;
+                    hissSource.loop = true;
+                    hissSource.connect(audioCtx.destination);
+                    hissSource.start(0);
+                } catch (e) {
+                    console.error('Error playing Web Audio:', e);
                 }
             }
         }
@@ -605,18 +628,13 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('resize', layoutHotspot);
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
-            
+
             // Pre-load audio for step 9 to ensure seamless playback
-            if (step.id === 'step9' && hissAudio) {
-                // Preload by starting and immediately pausing
-                hissAudio.play().then(() => {
-                    hissAudio.pause();
-                    hissAudio.currentTime = 0;
-                }).catch(() => {
-                    // Preload may be prevented by autoplay policy, that's ok
-                });
+            // Pre-load audio for step 9
+            if (step.id === 'step9') {
+                initAudio();
             }
-            
+
             video.play().catch(() => { });
         }, { once: true });
 
@@ -635,10 +653,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 intervalId = null;
             }
             // Stop and cleanup hiss audio when leaving step 9
-            if (hissAudio) {
-                hissAudio.pause();
-                hissAudio.currentTime = 0;
-                hissAudio.loop = false; // Disable loop before cleanup
+            // Stop and cleanup hiss audio when leaving step 9
+            if (hissSource) {
+                try {
+                    hissSource.stop();
+                    hissSource.disconnect();
+                    hissSource = null;
+                } catch (e) {
+                    // Ignore errors if already stopped
+                }
             }
         };
     }

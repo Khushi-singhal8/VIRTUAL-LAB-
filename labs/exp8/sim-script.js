@@ -494,7 +494,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline></video>
                 </div>
                 <div id="step4_5-instruction" class="drag-instructions">Start welding at 5mm/s</div>
             </div>
@@ -1449,7 +1449,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions">
