@@ -1,6 +1,28 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation E6 script loaded');
 
+    /* ---------------- CSS ---------------- */
+    const style = document.createElement('style');
+    style.innerHTML = `
+    .apparatus-img-box {
+        width: 100%;
+        height: 190px;
+        border: 2px solid #ccc;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background: #f8f9fa;
+    }
+    .apparatus-img-box img {
+        max-width: 95%;
+        max-height: 95%;
+        object-fit: contain;
+    }`;
+    document.head.appendChild(style);
+
+    /* ---------------- DOM ---------------- */
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
     const gifContainer = document.getElementById('gif-container');
@@ -10,10 +32,48 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let cleanupCurrent = null;
 
+    /* ---------------- HOTSPOTS ---------------- */
     const hotspotSteps = new Set(['step0', 'step2', 'step3']);
     const hotspotCompleted = { step0: false, step2: false, step3: false };
 
+    /* ---------------- APPARATUS DATA ---------------- */
+    const apparatusData = [
+    {
+        name: "Wire Brush",
+        img: "images/simulation/apparatus/brush.png",
+        desc: "Used to clean rust, scale, and dirt from the metal surface before welding."
+    },
+    {
+        name: "Gas Cylinder",
+        img: "images/simulation/apparatus/gas-cylinder.png",
+        desc: "Supplies shielding gas to protect the weld pool from atmospheric contamination."
+    },
+    {
+        name: "Plates",
+        img: "images/simulation/apparatus/plates.png",
+        desc: "Metal workpieces that are joined together during the welding process."
+    },
+    {
+        name: "Filler Rod",
+        img: "images/simulation/apparatus/wire.png",
+        desc: "Provides filler metal that melts and forms the weld joint."
+    },
+    {
+        name: "Welding Machine",
+        img: "images/simulation/apparatus/torch.png",
+        desc: "Supplies and controls the electrical current required for welding."
+    },
+    {
+        name: "Clip",
+        img: "images/simulation/apparatus/CLIP.png",
+        desc: "Used to complete the electrical circuit by connecting the workpiece to the welding machine."
+    }
+];
+
+
+    /* ---------------- STEPS ---------------- */
     const steps = [
+        { id: 'apparatus', title: 'Apparatus Used', type: 'apparatus' },
         { id: 'step0', title: 'Align the plates', src: 'images/simulation/0.5.mp4', type: 'video' },
         { id: 'step1', title: 'Clean workpiece using wire brush', src: 'images/simulation/1.mp4', type: 'video' },
         { id: 'step2', title: 'Set current', src: 'images/simulation/2.mp4', type: 'video' },
@@ -23,73 +83,95 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     const stepGuidance = {
-        step0: {
-            now: "Align the plates.",
-            next: "Clean workpiece using wire brush."
-        },
-        step1: {
-            now: "Clean the workpiece surface.",
-            next: "Set current."
-        },
-        step2: {
-            now: "Set current.",
-            next: "Setup shielding gas."
-        },
-        step3: {
-            now: "Setup shielding gas.",
-            next: "Start welding."
-        },
-        step4: {
-            now: "Start welding.",
-            next: "Clean the weld."
-        },
-        step5: {
-            now: "Cleaning.",
-            next: "Results."
-        }
+        apparatus: { now: "Observe the apparatus.", next: "Click Next to start simulation." },
+        step0: { now: "Align plates.", next: "Clean workpiece." },
+        step1: { now: "Cleaning surface.", next: "Set current." },
+        step2: { now: "Adjust current.", next: "Setup gas." },
+        step3: { now: "Set gas flow.", next: "Start welding." },
+        step4: { now: "Perform welding.", next: "Clean weld." },
+        step5: { now: "Cleaning weld.", next: "Finish." }
     };
 
     let currentStepIndex = 0;
     const totalSteps = steps.length;
-
-    if (stepsList) {
-        stepsList.innerHTML = '';
-        steps.forEach((step, index) => {
-            const item = document.createElement('div');
-            item.className = 'step-item';
-            item.dataset.step = index + 1;
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'step-item-title';
-            titleDiv.innerHTML = `<h4 style="margin:0">${index + 1}. ${step.title}</h4>`;
-            item.appendChild(titleDiv);
-            item.setAttribute('aria-disabled', 'true');
-            item.style.cursor = 'default';
-            item.title = 'Use Previous/Next to navigate';
-            stepsList.appendChild(item);
-        });
-    }
-
     if (totalStepsElement) totalStepsElement.textContent = totalSteps;
 
-    function clearCleanup() {
-        if (typeof cleanupCurrent === 'function') {
-            try { cleanupCurrent(); } catch (_) { }
-            cleanupCurrent = null;
+    /* ---------------- APPARATUS RENDER ---------------- */
+    function renderApparatusStep() {
+        let html = `
+        <div class="gif-wrapper">
+            <h3>Apparatus Used</h3>
+            <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:auto;">
+        `;
+
+        for (let i = 0; i < 3; i++) {
+            const a = apparatusData[i];
+            html += `
+            <div style="background:#f5f5f5;padding:15px;border-radius:12px;text-align:center">
+                <div class="apparatus-img-box"><img src="${a.img}" alt="${a.name}"></div>
+                <h4>${i + 1}. ${a.name}</h4>
+                <p>${a.desc}</p>
+            </div>`;
         }
+        html += `</div>
+
+        <div style="display:flex;justify-content:center;gap:20px;margin-top:20px;">`;
+
+        for (let i = 3; i < apparatusData.length; i++) {
+            const a = apparatusData[i];
+            html += `
+            <div style="width:280px;background:#f5f5f5;padding:15px;border-radius:12px;text-align:center">
+                <div class="apparatus-img-box"><img src="${a.img}" alt="${a.name}"></div>
+                <h4>${i + 1}. ${a.name}</h4>
+                <p>${a.desc}</p>
+            </div>`;
+        }
+
+        html += `
+        </div>
+
+        <div class="drag-instructions" style="margin-top:20px">
+            <b>Now:</b> ${stepGuidance.apparatus.now}<br>
+            <b>Next:</b> ${stepGuidance.apparatus.next}
+        </div>
+        </div>`;
+
+        gifContainer.innerHTML = html;
     }
 
-    function isHotspotStep(step) { return hotspotSteps.has(step.id); }
-    function isHotspotDone(step) { return !isHotspotStep(step) || hotspotCompleted[step.id]; }
+    function clearCleanup() {
+    if (typeof cleanupCurrent === 'function') {
+        cleanupCurrent();
+        cleanupCurrent = null;
+    }
+}
 
-    function setHotspotDone(stepId) { if (hotspotCompleted.hasOwnProperty(stepId)) hotspotCompleted[stepId] = true; }
+function isHotspotStep(step) {
+    return hotspotSteps.has(step.id);
+}
+
+function isHotspotDone(step) {
+    if (!isHotspotStep(step)) return true;
+    return hotspotCompleted[step.id] === true;
+}
+
+function setHotspotDone(stepId) {
+    hotspotCompleted[stepId] = true;
+}
+
+
 
     function showCurrentStep() {
         if (!gifContainer) return;
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
         clearCleanup();
-
-        if (step.id === 'step1') {
+        if (step.type === 'apparatus') {
+        renderApparatusStep();
+    }
+        else if (step.id === 'step1') {
             renderStep1DragDrop(step, timestamp);
         } else if (step.id === 'step4') {
             renderStep4DragDrop(step, timestamp);
@@ -104,7 +186,12 @@ document.addEventListener("DOMContentLoaded", function () {
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
         // if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1) || !isHotspotDone(step);
-        if (nextButton) nextButton.disabled = false;
+        if (nextButton) {
+    nextButton.disabled =
+        (currentStepIndex === totalSteps - 1) ||
+        !isHotspotDone(step);
+}
+
 
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
@@ -428,23 +515,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            if (currentStepIndex > 0) {
-                currentStepIndex--;
-                showCurrentStep();
-            }
-        });
-    }
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            if (currentStepIndex < totalSteps - 1) {
-                currentStepIndex++;
-                showCurrentStep();
-            }
-        });
-    }
-
     function renderStep4DragDrop(step, timestamp) {
         if (nextButton) nextButton.disabled = true;
 
@@ -765,5 +835,27 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    showCurrentStep();
+        if (prevButton) {
+    prevButton.addEventListener('click', () => {
+        if (currentStepIndex > 0) {
+            currentStepIndex--;
+            showCurrentStep();
+        }
+    });
+}
+
+if (nextButton) {
+    nextButton.addEventListener('click', () => {
+        const step = steps[currentStepIndex];
+
+        if (!isHotspotDone(step)) return;
+
+        if (currentStepIndex < totalSteps - 1) {
+            currentStepIndex++;
+            showCurrentStep();
+        }
+    });
+}
+
+showCurrentStep();
 });
