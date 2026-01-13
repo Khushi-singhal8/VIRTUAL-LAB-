@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", function() {
         {
             id: 'step1',
             title: 'Measure internal diameter of workpiece',
-            src: 'img/simulation/1.mp4',
+            src: 'images/simulation/1.mp4',
             type: 'video',
             substeps: [
                 { time: 1.45, hotspot:{x: 0.346542783059637, y: 0.3661370273305878, w: 0.05604148660328436, h: 0.09014601272931487}, instruction:'Unscrew the lock screw' },
@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function() {
         {
             id: 'step2',
             title: 'Measure outer diameter of workpiece',
-            src: 'img/simulation/2.mp4',
+            src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
                 { time: 1.65, hotspot:{x: 0.4674157303370786, y: 0.16657431673530512, w: 0.06258426966292134, h: 0.1021265443654062}, instruction:'Unscrew the lock screw.' },
@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
         {
             id: 'step3',
             title: 'Measure thickness',
-            src: 'img/simulation/3.mp4',
+            src: 'images/simulation/3.mp4',
             type: 'video',
             substeps: [
                 { time: 1.825, hotspot:{x: 0.6723768366464996, y: 0.7156510670160988, w: 0.06369922212618842, h: 0.12202920254586297}, instruction:'Unscrew the lock screw.' },
@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function() {
         {
             id: 'step4',
             title: 'Measure depth',
-            src: 'img/simulation/4.mp4',
+            src: 'images/simulation/4.mp4',
             type: 'video',
             substeps: [
                 { time: 1.03, hotspot:{x: 0.8568366464995678, y: 0.18019318607263196, w: 0.13901469317199655, h: 0.3447323099962561}, instruction:'Move workpiece to correct position.'},

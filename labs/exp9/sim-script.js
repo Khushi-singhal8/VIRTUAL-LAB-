@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const steps = [
         { id: 'step1', mode: 'drag', title: 'Place workpiece on apparatus (drag & drop).',
-            background: 'img/simulation/1.png', tool: 'img/simulation/1-tool.png',
+            background: 'images/simulation/1.png', tool: 'images/simulation/1-tool.png',
             target: { mode: 'rel', x: 0.48, y: 0.67 },        
             init:   { mode: 'rel', x: 0.82, y: 0.30 },       
             anchor: { x: 0.5, y: 0.5 }, 
@@ -20,15 +20,15 @@ document.addEventListener("DOMContentLoaded", function() {
             tolerance: 55,
             instruction: 'Drag the workpiece onto the marked location on the apparatus.' },
         { id: 'step2', mode: 'drag', title: 'Setup handle on apparatus (drag & drop).',
-            background: 'img/simulation/2.png', tool: 'img/simulation/2-tool.png',
+            background: 'images/simulation/2.png', tool: 'images/simulation/2-tool.png',
             target: { mode: 'rel', x: 0.46, y: 0.44 },   
             init:   { mode: 'rel', x: 0.80, y: 0.25 },
             anchor: { x: 0.25, y: 0.2 },            
             toolSize: { widthRel: 0.30 },
             tolerance: 55,
             instruction: 'Drag the handle so its hinge (top-left) snaps into place.' },
-        { id: 'step3', mode: 'hotspot', title: 'Start operation and measure angle', src: 'img/simulation/3.mp4' },
-        { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'img/simulation/4.mp4' }
+        { id: 'step3', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
+        { id: 'step4', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' }
     ];
 
     const angleTextByStep = {
