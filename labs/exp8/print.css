@@ -22,7 +22,7 @@
     .result-mode .button-container,
     .result-mode .step-indicator,
     .result-mode .drag-instructions,
-    .no-print {
+    .no-print, #page-heading {
         display: none !important;
     }
 }

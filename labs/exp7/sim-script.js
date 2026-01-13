@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${step.src}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${step.src}?t=${timestamp}" style="width:100%; height:100%;" playsinline></video>
                 </div>
                 <div id="step4_5-instruction" class="drag-instructions">Start welding at 5mm/s</div>
             </div>
@@ -557,9 +557,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
-            { pauseAt: 2.4, hotspot: { x: 0.095556, y: 0.150123, w: 0.154444, h: 0.161975 }, instruction: 'Set pressure for acetylene to 120kPa' },
-            { pauseAt: 7.4, hotspot: { x: 0.457778, y: 0.316049, w: 0.154444, h: 0.161975 }, instruction: 'Set pressure for oxygen to 250kPa.' },
-            { pauseAt: 14.45, hotspot: { x: 0.078889, y: 0.244938, w: 0.150000, h: 0.266667 }, instruction: 'Open acetylene valve slightly.' }
+            { pauseAt: 2.4, hotspot: { x: 0.162568, y: 0.111718, w: 0.159836, h: 0.170006 }, instruction: 'Set pressure for acetylene to 120kPa' },
+            { pauseAt: 7.4, hotspot: { x: 0.568306, y: 0.289010, w: 0.159836, h: 0.170006 }, instruction: 'Set pressure for oxygen to 250kPa.' },
+            { pauseAt: 15, hotspot: { x: 0.342896, y: 0.425015, w: 0.109290, h: 0.194293 }, instruction: 'Open acetylene valve slightly.' }
         ];
 
         // Phase 3 hotspot configuration (one hotspot at the beginning)
@@ -1191,7 +1191,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step4-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:auto;" playsinline></video>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions">

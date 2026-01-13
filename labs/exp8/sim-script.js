@@ -434,8 +434,6 @@ document.addEventListener("DOMContentLoaded", function () {
             renderStep4_5Video(step, timestamp);
         } else if (step.id === 'step5') {
             renderStep5DragDrop(step, timestamp);
-        } else if (step.id === 'step6') {
-            renderStep6DragDrop(step, timestamp);
         } else if (step.id === 'result') {
             document.body.classList.add('result-mode');
             renderResultStep();
@@ -535,7 +533,7 @@ document.addEventListener("DOMContentLoaded", function () {
         let cfgSeq;
         if (step.id === 'step2') {
             cfgSeq = [
-                { pauseAt: 0, hotspot: { x: 0.3433333333333333, y: 0.5251851851851852, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the first plate.' },
+                { pauseAt: 0, hotspot: { x: 0.3, y: 0.5251851851851852, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the first plate.' },
                 { pauseAt: 1.95, hotspot: { x: 0.7144444444444444, y: 0.591604938271605, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the second plate.' }
             ];
 
@@ -986,9 +984,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
-            { pauseAt: 2.4, hotspot: { x: 0.095556, y: 0.150123, w: 0.154444, h: 0.161975 }, instruction: 'Set pressure for acetylene to 120kPa' },
-            { pauseAt: 7.4, hotspot: { x: 0.457778, y: 0.316049, w: 0.154444, h: 0.161975 }, instruction: 'Set pressure for oxygen to 250kPa.' },
-            { pauseAt: 14.45, hotspot: { x: 0.078889, y: 0.244938, w: 0.150000, h: 0.266667 }, instruction: 'Open acetylene valve slightly.' }
+            { pauseAt: 2.4, hotspot: { x: 0.162568, y: 0.111718, w: 0.159836, h: 0.170006 }, instruction: 'Set pressure for acetylene to 120kPa' },
+            { pauseAt: 7.4, hotspot: { x: 0.568306, y: 0.289010, w: 0.159836, h: 0.170006 }, instruction: 'Set pressure for oxygen to 250kPa.' },
+            { pauseAt: 15, hotspot: { x: 0.342896, y: 0.425015, w: 0.109290, h: 0.194293 }, instruction: 'Open acetylene valve slightly.' }
         ];
 
         // Phase 3 hotspot configuration (one hotspot at the beginning)
@@ -1767,7 +1765,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <hr>
 
                 <div style="text-align:center; margin:20px 0;">
-                    <img src="${getAssetSrc('images/simulation/print1.png')}" alt="Final Welded Butt Joint" style="max-width:90%; border:1px solid #ccc; border-radius:6px;">
+                    <img src="${getAssetSrc('images/simulation/print1.png')}" alt="Final Welded Butt Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
                     <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
                 </div>
 
