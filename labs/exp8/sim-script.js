@@ -112,6 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/4.mp4",
         "images/simulation/4.png",
         "images/simulation/4-tool1.png",
+        "images/simulation/4-tool2.png",
 
         // Step 4.5
         "images/simulation/4.5.mp4",
@@ -241,7 +242,7 @@ document.addEventListener("DOMContentLoaded", function () {
             next: "Start the welding process."
         },
         step4_5: {
-            now: "Perform continuous welding.",
+            now: "Drag the torch to the starting position to begin welding.",
             next: "Cleaning."
         },
         step5: {
@@ -282,7 +283,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function isInteractiveStep(stepId) {
-        return stepId === 'step1' || stepId === 'step1_5' || stepId === 'step2' || stepId === 'step3_1' || stepId === 'step3' || stepId === 'step4' || stepId === 'step5';
+        return stepId === 'step1' || stepId === 'step1_5' || stepId === 'step2' || stepId === 'step3_1' || stepId === 'step3' || stepId === 'step4' || stepId === 'step4_5' || stepId === 'step5';
     }
 
     function isInteractiveCompleted(stepId) {
@@ -431,7 +432,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (step.id === 'step4') {
             renderStep4DragDrop(step, timestamp);
         } else if (step.id === 'step4_5') {
-            renderStep4_5Video(step, timestamp);
+            renderStep4_5DragDrop(step, timestamp);
         } else if (step.id === 'step5') {
             renderStep5DragDrop(step, timestamp);
         } else if (step.id === 'result') {
@@ -486,42 +487,224 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    function renderStep4_5Video(step, timestamp) {
+    function renderStep4_5DragDrop(step, timestamp) {
+        step4_5Completed = false;
+        if (nextButton) nextButton.disabled = true;
+
+        const videoSrc = 'images/simulation/4.5.mp4';
+        const bgPath = 'images/simulation/4.png';
+        const tool1Path = 'images/simulation/4-tool1.png';
+        const tool2Path = 'images/simulation/4-tool2.png';
+
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline></video>
+                
+                <!-- Drag Phase -->
+                <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
+                    <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
+                    <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
+
+                    <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step4_5-drop-zone2" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
-                <div id="step4_5-instruction" class="drag-instructions">Start welding at 5mm/s</div>
+
+                <!-- Video Phase -->
+                <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                    <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                </div>
+                
+                <div id="step4_5-instruction" class="drag-instructions">
+                    Drag the torch to the starting position to begin welding.
+                </div>
             </div>
         `;
 
-        const video = document.getElementById('step-video');
+        const dragStage = document.getElementById('step4_5-drag-stage');
+        const tool1 = document.getElementById('draggable-tool1-4_5');
+        const tool2 = document.getElementById('draggable-tool2-4_5');
+        const dropZone1 = document.getElementById('step4_5-drop-zone1');
+        const dropZone2 = document.getElementById('step4_5-drop-zone2');
+        const dragBg = dragStage.querySelector('.stage-bg');
+
+        const playStage = document.getElementById('step4_5-play-stage');
+        const video = document.getElementById('step4_5-video');
         const instructionElem = document.getElementById('step4_5-instruction');
 
-        const onMeta = () => {
-            video.play().catch(() => { });
-        };
+        // Drop zone targets (same as step 4 in E7)
+        const target1Rel = { x: 0.5, y: 0.6 };
+        const target2Rel = { x: 0.36, y: 0.55 };
+        const tolerancePx = 80;
 
-        video.addEventListener('loadedmetadata', onMeta, { once: true });
+        let tool1Placed = false;
+        let tool2Placed = false;
+        let activeTool = null;
 
-        video.addEventListener('ended', () => {
-            instructionElem.innerHTML =
-                "<b>Step complete.</b> Now next step is: " +
-                stepGuidance.step4_5.next;
+        // Initially hide tool2 and its drop zone
+        tool2.style.display = 'none';
+        dropZone2.style.display = 'none';
 
-            if (nextButton) nextButton.disabled = false;
-        });
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            const w = rect.width * 0.05;
+            const h = w;
 
+            // Layout drop zone 1
+            const tx1 = rect.width * target1Rel.x;
+            const ty1 = rect.height * target1Rel.y;
+            dropZone1.style.width = w + 'px';
+            dropZone1.style.height = h + 'px';
+            dropZone1.style.left = (tx1 - w / 2) + 'px';
+            dropZone1.style.top = (ty1 - h / 2) + 'px';
 
-        cleanupCurrent = function () {
+            // Layout drop zone 2
+            const tx2 = rect.width * target2Rel.x;
+            const ty2 = rect.height * target2Rel.y;
+            dropZone2.style.width = w + 'px';
+            dropZone2.style.height = h + 'px';
+            dropZone2.style.left = (tx2 - w / 2) + 'px';
+            dropZone2.style.top = (ty2 - h / 2) + 'px';
+        }
+
+        if (dragBg.complete && dragBg.naturalWidth) setDropZoneLayout();
+        else dragBg.onload = setDropZoneLayout;
+        window.addEventListener('resize', setDropZoneLayout);
+
+        // Drag Logic
+        let dragging = false;
+        let startX = 0, startY = 0;
+
+        function onPointerDown(e) {
+            if (e.target !== tool1 && e.target !== tool2) return;
+
+            activeTool = e.target;
+            dragging = true;
+            activeTool.classList.add('dragging');
+
+            const rect = activeTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging || !activeTool) return;
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = activeTool.getBoundingClientRect();
+
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+
+            activeTool.style.left = newLeft + 'px';
+            activeTool.style.top = newTop + 'px';
+        }
+
+        function onPointerUp() {
+            if (!dragging || !activeTool) return;
+            dragging = false;
+            activeTool.classList.remove('dragging');
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = activeTool.getBoundingClientRect();
+
+            const toolCenter = {
+                x: toolRect.left - stageRect.left + toolRect.width / 2,
+                y: toolRect.top - stageRect.top + toolRect.height / 2
+            };
+
+            const dropZone = (activeTool === tool1) ? dropZone1 : dropZone2;
+            const dzRect = dropZone.getBoundingClientRect();
+
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                // Snap tool
+                activeTool.style.left = (targetX - toolRect.width / 2) + 'px';
+                activeTool.style.top = (targetY - toolRect.height / 2) + 'px';
+
+                // Lock this tool
+                activeTool.style.pointerEvents = 'none';
+                activeTool.style.cursor = 'default';
+
+                dropZone.classList.add('success');
+
+                // Mark completion
+                if (activeTool === tool1) {
+                    tool1Placed = true;
+                    dropZone1.style.display = 'none';
+                    tool2.style.display = 'block';
+                    dropZone2.style.display = 'block';
+                    instructionElem.textContent = "Good! Now position the filler rod.";
+                }
+                if (activeTool === tool2) {
+                    tool2Placed = true;
+                    instructionElem.textContent = "Great! Starting welding process...";
+                }
+
+                // When BOTH are placed → play video
+                if (tool1Placed && tool2Placed) {
+                    setTimeout(startVideoPhase, 500);
+                }
+            }
+
+            activeTool = null;
+        }
+
+        tool1.addEventListener('mousedown', onPointerDown);
+        tool1.addEventListener('touchstart', onPointerDown);
+        tool2.addEventListener('mousedown', onPointerDown);
+        tool2.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        function startVideoPhase() {
+            // Cleanup drag listeners
+            window.removeEventListener('resize', setDropZoneLayout);
+            window.removeEventListener('mousemove', onPointerMove);
+            window.removeEventListener('touchmove', onPointerMove);
+            window.removeEventListener('mouseup', onPointerUp);
+            window.removeEventListener('touchend', onPointerUp);
+
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+            instructionElem.textContent = "Welding in progress...";
+
+            video.onended = () => {
+                instructionElem.innerHTML =
+                    "<b>Step complete.</b> " +
+                    stepGuidance.step4_5.next;
+
+                step4_5Completed = true;
+                if (nextButton) nextButton.disabled = false;
+            };
+
+            video.play();
+        }
+
+        cleanupCurrent = () => {
             try {
-                video.pause();
-                video.removeAttribute('src');
-                video.load();
-                video.removeEventListener('loadedmetadata', onMeta);
+                window.removeEventListener('resize', setDropZoneLayout);
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
             } catch (_) { }
         };
     }
@@ -984,9 +1167,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
-            { pauseAt: 2.4, hotspot: { x: 0.162568, y: 0.111718, w: 0.159836, h: 0.170006 }, instruction: 'Set pressure for acetylene to 120kPa' },
-            { pauseAt: 7.4, hotspot: { x: 0.568306, y: 0.289010, w: 0.159836, h: 0.170006 }, instruction: 'Set pressure for oxygen to 250kPa.' },
-            { pauseAt: 15, hotspot: { x: 0.342896, y: 0.425015, w: 0.109290, h: 0.194293 }, instruction: 'Open acetylene valve slightly.' }
+            { pauseAt: 2.4, hotspot: { x: 0.090164, y: 0.376442, w: 0.181694, h: 0.170006 }, instruction: 'Set pressure for acetylene to 120kPa' },
+            { pauseAt: 7.4, hotspot: { x: 0.532787, y: 0.434730, w: 0.184426, h: 0.170006 }, instruction: 'Set pressure for oxygen to 250kPa.' },
+            { pauseAt: 15, hotspot: { x: 0.239071, y: 0.405586, w: 0.109290, h: 0.194293 }, instruction: 'Open acetylene valve slightly.' }
         ];
 
         // Phase 3 hotspot configuration (one hotspot at the beginning)

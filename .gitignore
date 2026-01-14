@@ -10,3 +10,5 @@ Desktop.ini
 .vscode/
 .idea/
 
+/labs/exp7/coord-helper.js
+/optimize_assets.py
