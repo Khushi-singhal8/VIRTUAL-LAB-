@@ -88,6 +88,11 @@ body {font-family: Arial;}
       #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
           }
+      @media print {
+    .simulation-title {
+        display: none !important;
+    }
+}
     </style>
     </head>
 
@@ -231,7 +236,7 @@ body {font-family: Arial;}
           
          
         </section>
-        <script type="text/javascript">
+        <script type="text/javascript">git 
           // Popup window code
                                 function newPopup(url) {
                                   popupWindow = window.open(url,'popUpWindow','height=500,width=400,left=10,top=10,resizable=yes,scrollbars=yes,toolbar=no,menubar=no,location=no,directories=no,status=yes')
@@ -245,7 +250,8 @@ body {font-family: Arial;}
         </section>
         <!-- Main content -->
         <section class="content">
-          <h3 style="margin-top:5%">Simulation</h3>
+          <h3 class="simulation-title" style="margin-top:5%">Simulation</h3>
+
            
             <!--Simulation content goes here -->
             <a href="simulation-page.html">LINK</a>

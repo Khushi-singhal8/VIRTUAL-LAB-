@@ -79,18 +79,48 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step2', title: 'Set current', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step3', title: 'Setup shielding gas', src: 'images/simulation/3.mp4', type: 'video' },
         { id: 'step4', title: 'Welding', src: 'images/simulation/4.mp4', type: 'video' },
-        { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' }
+        { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
+        { id: 'print', title: 'Print Experiment', type: 'print' }
     ];
 
     const stepGuidance = {
-        apparatus: { now: "Observe the apparatus.", next: "Click Next to start simulation." },
-        step0: { now: "Align plates.", next: "Clean workpiece." },
-        step1: { now: "Cleaning surface.", next: "Set current." },
-        step2: { now: "Adjust current.", next: "Setup gas." },
-        step3: { now: "Set gas flow.", next: "Start welding." },
-        step4: { now: "Perform welding.", next: "Clean weld." },
-        step5: { now: "Cleaning weld.", next: "Finish." }
-    };
+    apparatus: {
+        now: "Carefully observe all the apparatus shown above. Read the name and use of each item.",
+        next: "Click on the Next button to begin the welding simulation."
+    },
+
+    step0: {
+        now: "Click on both metal plates one by one to align them properly before welding.",
+        next: "After alignment, proceed to clean the metal surface."
+    },
+
+    step1: {
+        now: "Drag the wire brush and place it on the metal surface to remove dust, rust, and impurities.",
+        next: "Once the surface is clean, set the welding current."
+    },
+
+    step2: {
+        now: "Click on the control and adjust the welding current to 60 Amperes (60A).",
+        next: "After setting the current, adjust the shielding gas supply."
+    },
+
+    step3: {
+        now: "Set the shielding gas flow rate to 10 LPM (Liters Per Minute) to protect the weld area.",
+        next: "After gas setup, start the welding process."
+    },
+
+    step4: {
+        now: "Drag the welding torch to the joint area to start welding the plates together.",
+        next: "After welding is completed, clean the welded joint."
+    },
+
+    step5: {
+        now: "Drag the cleaning tool over the welded joint to remove slag and improve finish.",
+        next: "The welding process is now complete."
+    }
+};
+
+
 
     let currentStepIndex = 0;
     const totalSteps = steps.length;
@@ -171,6 +201,9 @@ function setHotspotDone(stepId) {
         if (step.type === 'apparatus') {
         renderApparatusStep();
     }
+    else if (step.type === 'print') {
+    renderPrintStep();
+}
         else if (step.id === 'step1') {
             renderStep1DragDrop(step, timestamp);
         } else if (step.id === 'step4') {
@@ -834,6 +867,47 @@ function setHotspotDone(stepId) {
             } catch (_) { }
         };
     }
+
+    function renderPrintStep() {
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper print-page">
+            <h2 style="text-align:center;">Welding Experiment Report</h2>
+
+            <p><b>Experiment Name:</b> Gas Tungsten Arc Welding (GTAW)</p>
+            <p><b>Objective:</b> To perform welding of metal plates using proper parameters.</p>
+
+            <h3>Steps Performed</h3>
+            <ol>
+                <li>Aligned the metal plates</li>
+                <li>Cleaned the workpiece</li>
+                <li>Set current to 60A</li>
+                <li>Set shielding gas to 10 LPM</li>
+                <li>Performed welding</li>
+                <li>Cleaned the welded joint</li>
+            </ol>
+
+            <h3>Result</h3>
+            <p>The plates were successfully welded successfully.</p>
+
+            <div style="text-align:center; margin-top:30px;">
+                <button onclick="window.print()" style="
+                    padding:12px 24px;
+                    font-size:16px;
+                    border:none;
+                    border-radius:6px;
+                    background:#007bff;
+                    color:white;
+                    cursor:pointer;
+                ">
+                    🖨 Print Experiment
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (nextButton) nextButton.disabled = true;
+}
+
 
         if (prevButton) {
     prevButton.addEventListener('click', () => {
