@@ -204,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const stepGuidance = {
         apparatus: {
-            now: "Carefully observe all the apparatus shown above. Read the name and use of each item.",
+            now: "Carefully observe all the apparatus shown above.",
             next: "Begin the welding simulation."
         },
 
@@ -287,8 +287,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
 
         <div class="drag-instructions" style="margin-top:20px">
-            <b>Now:</b> ${stepGuidance.apparatus.now}<br>
-            <b>Next:</b> ${stepGuidance.apparatus.next}
+            ${stepGuidance.apparatus.now}<br>
+            Click next to: ${stepGuidance.apparatus.next}
         </div>
         </div>`;
 
