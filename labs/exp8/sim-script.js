@@ -319,15 +319,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 Step ${currentStepIndex + 1} of ${totalSteps}
             </div>
 
-            <div style="
-                display:grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap:20px;
-                margin-top:20px;
-                max-width: 900px;
-                margin-left: auto;
-                margin-right: auto;
-            ">
+            <div class="sim-media-container">
+                <div style="
+                    display:grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap:20px;
+                    margin-top:20px;
+                    max-width: 900px;
+                    margin-left: auto;
+                    margin-right: auto;
+                ">
     `;
 
         // First 3 items in first row
@@ -380,7 +381,7 @@ document.addEventListener("DOMContentLoaded", function () {
         `;
         }
 
-        html += `</div>
+        html += `</div></div>
 
             <!-- BLUE INSTRUCTION BOX -->
             <div class="drag-instructions" style="margin-top:20px;">
@@ -465,9 +466,11 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+            <div class="sim-media-container">
                 <div class="play-stage" id="play-stage">
                     <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                 </div>
+            </div>
             </div>
         `;
 
@@ -501,19 +504,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
-                    <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
+                <div class="sim-media-container">
+                    <!-- Drag Phase -->
+                    <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%;">
+                        <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
+                        <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
 
-                    <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                    <div id="step4_5-drop-zone2" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                </div>
+                        <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                        <div id="step4_5-drop-zone2" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <!-- Video Phase -->
+                    <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                        <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    </div>
                 </div>
                 
                 <div id="step4_5-instruction" class="drag-instructions">
@@ -604,8 +609,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+            // removed clamping to allow dragging outside the box
+            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            // newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
             activeTool.style.left = newLeft + 'px';
             activeTool.style.top = newTop + 'px';
@@ -731,9 +737,11 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
-                    <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                <div class="sim-media-container">
+                    <div class="play-stage" id="play-stage">
+                        <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                        <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>
@@ -861,16 +869,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
-                    <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <!-- Drag Phase -->
+                    <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                        <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                        <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <!-- Video Phase -->
+                    <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                        <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    </div>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
@@ -887,7 +897,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step1-instruction');
 
         // Drop zone target (adjust x and y for the plate edge location)
-        const targetRel = { x: 0.57, y: 0.5 };
+        const targetRel = { x: 0.5, y: 0.6 };
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
@@ -1017,16 +1027,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step3_1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
-                    <div id="step3_1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <!-- Drag Phase -->
+                    <div class="drag-stage" id="step3_1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                        <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                        <div id="step3_1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step3_1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step3_1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <!-- Video Phase -->
+                    <div class="play-stage" id="step3_1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                        <video id="step3_1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    </div>
                 </div>
                 
                 <div id="step3_1-instruction" class="drag-instructions">Drag the flux to the plate joint.</div>
@@ -1167,9 +1179,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
-            { pauseAt: 2.4, hotspot: { x: 0.090164, y: 0.376442, w: 0.181694, h: 0.170006 }, instruction: 'Set pressure for acetylene to 120kPa' },
-            { pauseAt: 7.4, hotspot: { x: 0.532787, y: 0.434730, w: 0.184426, h: 0.170006 }, instruction: 'Set pressure for oxygen to 250kPa.' },
-            { pauseAt: 15, hotspot: { x: 0.239071, y: 0.405586, w: 0.109290, h: 0.194293 }, instruction: 'Open acetylene valve slightly.' }
+            { pauseAt: 2.4, hotspot: { x: 0.011111, y: 0.272593, w: 0.181111, h: 0.169877 }, instruction: 'Set pressure for acetylene to 120kPa' },
+            { pauseAt: 7.4, hotspot: { x: 0.556667, y: 0.213333, w: 0.183333, h: 0.169877 }, instruction: 'Set pressure for oxygen to 250kPa.' },
+            { pauseAt: 18.2, hotspot: { x: 0.186667, y: 0.377284, w: 0.108889, h: 0.193580 }, instruction: 'Open acetylene valve slightly.' }
         ];
 
         // Phase 3 hotspot configuration (one hotspot at the beginning)
@@ -1188,17 +1200,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Phase 1 & 3: Video Stage -->
-                <div class="play-stage" id="step3-play-stage">
-                    <video id="step3-video" style="width:100%; height:100%;" playsinline muted></video>
-                    <button id="step3-hotspot" class="play-hotspot" style="display:none;"></button>
-                </div>
+                <div class="sim-media-container">
+                    <!-- Phase 1 & 3: Video Stage -->
+                    <div class="play-stage" id="step3-play-stage">
+                        <video id="step3-video" style="width:100%; height:100%;" playsinline muted></video>
+                        <button id="step3-hotspot" class="play-hotspot" style="display:none;"></button>
+                    </div>
 
-                <!-- Phase 2: Drag Stage -->
-                <div class="drag-stage" id="step3-drag-stage" style="position: relative; width: 100%; overflow: hidden; display: none;">
-                    <img src="${formatSrc('images/simulation/3.png', timestamp)}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 10%;"/>
-                    <div id="step3-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <!-- Phase 2: Drag Stage -->
+                    <div class="drag-stage" id="step3-drag-stage" style="position: relative; width: 100%; overflow: hidden; display: none;">
+                        <img src="${formatSrc('images/simulation/3.png', timestamp)}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
+                        <div id="step3-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
                 </div>
 
                 <div id="step3-instruction" class="drag-instructions"></div>
@@ -1464,16 +1478,18 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
-                    <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <!-- Drag Phase -->
+                    <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                        <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                        <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <!-- Video Phase -->
+                    <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                        <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    </div>
                 </div>
                 
                 <div id="step1_5-instruction" class="drag-instructions">Drag the tool to the plate edge.</div>
@@ -1620,17 +1636,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
-                    
-                    <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <!-- Drag Phase -->
+                    <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                        <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
+                        
+                        <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <!-- Video Phase -->
+                    <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                        <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    </div>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions">
@@ -1787,17 +1805,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
-                    
-                    <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <!-- Drag Phase -->
+                    <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%;">
+                        <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
+                        <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                        
+                        <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <!-- Video Phase -->
+                    <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                        <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    </div>
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions">
@@ -1816,7 +1836,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step5-instruction');
 
         // Drop zone target
-        const targetRel = { x: 0.5, y: 0.6 }; // Adjust as needed based on image
+        const targetRel = { x: 0.56, y: 0.57 }; // Adjust as needed based on image
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
@@ -1865,8 +1885,8 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            // newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
             tool.style.left = newLeft + 'px';
             tool.style.top = newTop + 'px';
@@ -1947,67 +1967,69 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h2 style="text-align:center;">Experiment Result</h2>
                 <hr>
 
-                <div style="text-align:center; margin:20px 0;">
-                    <img src="${getAssetSrc('images/simulation/print1.png')}" alt="Final Welded Butt Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
-                    <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
-                </div>
+                <div class="sim-media-container" style="max-width: 800px; margin: 20px auto;">
+                    <div style="text-align:center; margin-bottom:20px;">
+                        <img src="${getAssetSrc('images/simulation/print1.png')}" alt="Final Welded Butt Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
+                        <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
+                    </div>
 
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Sheet Material</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Brass</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Flux used</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Borax</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Joint quality</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Clean and leak-proof</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Notes</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Smooth finish</td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <table style="border-collapse:collapse; width:100%; border:1px solid #000; font-family: sans-serif">
+                        <tbody>
+                            <tr>
+                                <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Sheet Material</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">Brass</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Flux used</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">Borax</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Joint quality</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">Clean and leak-proof</td>
+                            </tr>
+                            <tr>
+                                <td style="border:1px solid #000; padding:10px 15px;">Notes</td>
+                                <td style="border:1px solid #000; padding:10px 15px;">Smooth finish</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
 
                 <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
                     <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>

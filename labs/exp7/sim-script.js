@@ -387,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
                 <!-- Drag Phase -->
-                <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
                     <img src="${tool1Path}?t=${timestamp}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
                     <img src="${tool2Path}?t=${timestamp}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
@@ -489,8 +489,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+            // removed clamping to allow dragging outside the box
+            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            // newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
             activeTool.style.left = newLeft + 'px';
             activeTool.style.top = newTop + 'px';
@@ -739,14 +740,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
-            { pauseAt: 2.4, hotspot: { x: 0.090164, y: 0.376442, w: 0.181694, h: 0.170006 }, instruction: 'Set pressure for acetylene to 120kPa' },
-            { pauseAt: 7.4, hotspot: { x: 0.532787, y: 0.434730, w: 0.184426, h: 0.170006 }, instruction: 'Set pressure for oxygen to 250kPa.' },
-            { pauseAt: 15, hotspot: { x: 0.239071, y: 0.405586, w: 0.109290, h: 0.194293 }, instruction: 'Open acetylene valve slightly.' }
+            { pauseAt: 2.4, hotspot: { x: 0.011111, y: 0.272593, w: 0.181111, h: 0.169877 }, instruction: 'Set pressure for acetylene to 120kPa' },
+            { pauseAt: 7.4, hotspot: { x: 0.556667, y: 0.213333, w: 0.183333, h: 0.169877 }, instruction: 'Set pressure for oxygen to 250kPa.' },
+            { pauseAt: 18.2, hotspot: { x: 0.186667, y: 0.377284, w: 0.108889, h: 0.193580 }, instruction: 'Open acetylene valve slightly.' }
         ];
 
         // Phase 3 hotspot configuration (one hotspot at the beginning)
         const phase3Cfg = [
-            { pauseAt: 0, hotspot: { x: 0.721111, y: 0.256790, w: 0.083333, h: 0.148148 }, instruction: 'Click to increase oxygen to obtain neutral flame.' }
+            { pauseAt: 0.45, hotspot: { x: 0.755556, y: 0.393086, w: 0.094444, h: 0.167901 }, instruction: 'Click to increase oxygen to obtain neutral flame.' }
         ];
 
         // Drag target for Phase 2
@@ -769,7 +770,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Phase 2: Drag Stage -->
                 <div class="drag-stage" id="step3-drag-stage" style="position: relative; width: 100%; overflow: hidden; display: none;">
                     <img src="images/simulation/3.png?t=${timestamp}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
-                    <img src="images/simulation/3-tool.png?t=${timestamp}" id="step3-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 10%;"/>
+                    <img src="images/simulation/3-tool.png?t=${timestamp}" id="step3-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
                     <div id="step3-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -860,7 +861,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (currentPhase === 3) {
                 // Phase 3 ended -> step complete
                 setInteractiveCompleted(step.id, true);
-                instructionElem.innerHTML = "<b>Step complete.</b> Now next step is: " + stepGuidance[step.id].next;
+                instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
                 if (nextButton) nextButton.disabled = false;
             }
         }
@@ -1045,7 +1046,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                    <img src="${toolPath}?t=${timestamp}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 20%;"/>
                     <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -1068,7 +1069,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step1-instruction');
 
         // Drop zone target (adjust x and y for the plate edge location)
-        const targetRel = { x: 0.57, y: 0.5 };
+        const targetRel = { x: 0.5, y: 0.6 };
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
@@ -1164,7 +1165,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step1.next;
 
                 step1Completed = true;
@@ -1224,7 +1225,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step1_5-instruction');
 
         // Drop zone target (adjust x and y for the plate edge location)
-        const targetRel = { x: 0.43, y: 0.5 };
+        const targetRel = { x: 0.5, y: 0.6 };
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
@@ -1320,7 +1321,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step1_5.next;
 
                 step1_5Completed = true;
@@ -1556,7 +1557,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step4.next;
 
                 step4Completed = true;
@@ -1591,9 +1592,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
                 <!-- Drag Phase -->
-                <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-hammer-7" class="draggable" alt="Chipping hammer" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: -4%; right: -9%;"/>
+                    <img src="${toolPath}?t=${timestamp}" id="draggable-hammer-7" class="draggable" alt="Chipping hammer" style="position: absolute; z-index: 20; cursor: grab; width: 45%; top: 10%; right: 3%;"/>
                     <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -1616,7 +1617,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step7-instruction');
 
         // Drop zone target (adjust x and y for the weld location)
-        const targetRel = { x: 0.5, y: 0.5 };
+        const targetRel = { x: 0.5, y: 0.8 };
         const tolerancePx = 120;
 
         function setDropZoneLayout() {
@@ -1660,8 +1661,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - hammerRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - hammerRect.height));
+            // removed clamping to allow dragging outside the box
+            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - hammerRect.width));
+            // newTop = Math.max(0, Math.min(newTop, stageRect.height - hammerRect.height));
 
             hammerTool.style.left = newLeft + 'px';
             hammerTool.style.top = newTop + 'px';
@@ -1712,7 +1714,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step7.next;
 
                 step7Completed = true;
@@ -1747,7 +1749,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
                 <!-- Drag Phase -->
-                <div class="drag-stage" id="step8-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                <div class="drag-stage" id="step8-drag-stage" style="position: relative; width: 100%;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" alt="Welded joint for inspection" style="width: 100%; height: auto; display: block;"/>
                     <img src="${toolPath}?t=${timestamp}" id="draggable-tool-8" class="draggable" alt="Inspection tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
                     <div id="step8-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
@@ -1772,7 +1774,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step8-instruction');
 
         // Drop zone target (adjust x and y for the inspection location)
-        const targetRel = { x: 0.5, y: 0.9 };
+        const targetRel = { x: 0.5, y: 0.93 };
         const tolerancePx = 120;
 
         function setDropZoneLayout() {
@@ -1816,8 +1818,9 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+            // removed clamping to allow dragging outside the box
+            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            // newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
             tool.style.left = newLeft + 'px';
             tool.style.top = newTop + 'px';
@@ -1868,7 +1871,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step8.next;
 
                 step8Completed = true;
