@@ -250,7 +250,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const stepGuidance = {
         apparatus: {
             now: "Identify the apparatus used in gas welding.",
-            next: "Clean the plate edges using a file."
+            next: "Begin the welding simulation."
         },
         step1: {
             now: "Drag the file to the plate edge.",
@@ -385,8 +385,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <!-- BLUE INSTRUCTION BOX -->
             <div class="drag-instructions" style="margin-top:20px;">
-                <b>Now:</b> ${stepGuidance.apparatus.now}<br>
-                <b>Next:</b> ${stepGuidance.apparatus.next}
+                ${stepGuidance.apparatus.now}<br>
+                Click next to: ${stepGuidance.apparatus.next}
             </div>
         </div>
     `;

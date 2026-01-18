@@ -215,7 +215,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const stepGuidance = {
         apparatus: {
             now: "Identify the apparatus used in gas welding.",
-            next: "Clean the plate edges using a file."
+            next: "Begin the welding simulation."
         },
         step1: {
             now: "Drag the file to the plate edge.",
@@ -385,8 +385,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             <!-- BLUE INSTRUCTION BOX -->
             <div class="drag-instructions" style="margin-top:20px;">
-                <b>Now:</b> ${stepGuidance.apparatus.now}<br>
-                <b>Next:</b> ${stepGuidance.apparatus.next}
+                ${stepGuidance.apparatus.now}<br>
+                Click next to: ${stepGuidance.apparatus.next}
             </div>
         </div>
     `;
@@ -993,7 +993,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step1.next;
 
                 step1Completed = true;
@@ -1152,7 +1152,7 @@ document.addEventListener("DOMContentLoaded", function () {
             video.onended = () => {
                 setInteractiveCompleted(step.id, true);
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step3_1.next;
 
                 if (nextButton) nextButton.disabled = false;
@@ -1302,7 +1302,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else if (currentPhase === 3) {
                 // Phase 3 ended -> step complete
                 setInteractiveCompleted(step.id, true);
-                instructionElem.innerHTML = "<b>Step complete.</b> Now next step is: " + stepGuidance[step.id].next;
+                instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
                 if (nextButton) nextButton.disabled = false;
             }
         }
@@ -1602,7 +1602,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Now next step is: " +
+                    "<b>Step complete.</b> Click next to: " +
                     stepGuidance.step1_5.next;
 
                 step1_5Completed = true;
