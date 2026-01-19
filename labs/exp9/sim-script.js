@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         step5: {
             now: "Drag the wire brush over the welded joint to remove slag and improve finish.",
-            next: "The welding process is now complete."
+            next: "View result."
         }
     };
 

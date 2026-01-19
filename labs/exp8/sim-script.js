@@ -694,8 +694,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> " +
-                    stepGuidance.step4_5.next;
+                    "<b>Step complete.</b> Click next to: " + stepGuidance.step4_5.next;
 
                 step4_5Completed = true;
                 if (nextButton) nextButton.disabled = false;
@@ -820,7 +819,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onEnded() {
             setInteractiveCompleted(step.id, true);
             instructionElem.innerHTML =
-                "<b>Step complete.</b> Now next step is: " +
+                "<b>Step complete.</b> Click next to: " +
                 stepGuidance[step.id].next;
 
             if (nextButton) nextButton.disabled = false;
@@ -1772,7 +1771,7 @@ document.addEventListener("DOMContentLoaded", function () {
             video.onended = () => {
                 const nextStepTitle = stepGuidance.step4 ? stepGuidance.step4.next : "Next Step";
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> " + nextStepTitle;
+                    "<b>Step complete.</b> Click next to: " + nextStepTitle;
 
                 step4Completed = true;
                 if (nextButton) nextButton.disabled = false;
@@ -1939,7 +1938,7 @@ document.addEventListener("DOMContentLoaded", function () {
             video.onended = () => {
                 const nextStepTitle = stepGuidance.step5 ? stepGuidance.step5.next : "Next Step";
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> " + nextStepTitle;
+                    "<b>Step complete.</b> Click next to: " + nextStepTitle;
 
                 step5Completed = true;
                 if (nextButton) nextButton.disabled = false;
