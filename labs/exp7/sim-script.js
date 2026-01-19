@@ -1165,7 +1165,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 20%;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 20%;"/>
                     <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -1188,7 +1188,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step1-instruction');
 
         // Drop zone target (adjust x and y for the plate edge location)
-        const targetRel = { x: 0.5, y: 0.6 };
+        const targetRel = { x: 0.4, y: 0.55 };
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
@@ -1321,7 +1321,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
                     <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -1344,7 +1344,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step1_5-instruction');
 
         // Drop zone target (adjust x and y for the plate edge location)
-        const targetRel = { x: 0.5, y: 0.6 };
+        const targetRel = { x: 0.6, y: 0.55 };
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
