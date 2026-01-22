@@ -213,12 +213,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         step0: {
             now: "Click on both metal plates one by one to align them properly before welding.",
-            next: "Proceed to clean the metal surface."
+            next: "Clean the metal surface."
         },
 
         step1: {
             now: "Drag the wire brush and place it on the metal surface to remove dust, rust, and impurities.",
-            next: "Once the surface is clean, we will attach the ground clamp."
+            next: "Attach the ground clamp."
         },
 
         step1_5: {
@@ -377,7 +377,7 @@ document.addEventListener("DOMContentLoaded", function () {
             step1: { x: 0.6506482281763181, y: 0.29908199176338446, w: 0.28988764044943816, h: 0.2500001497566455, instruction: 'Click brush to proceed.' },
             step1_5: { x: 0.434444, y: 0.746667, w: 0.061111, h: 0.108642, instruction: 'Click to attach the ground clamp.' },
             step2: { x: 0.441257, y: 0.573163, w: 0.054645, h: 0.097146, instruction: 'Set current to 60A.' },
-            step3: { x: 0.367486, y: 0.014572, w: 0.300546, h: 0.250152, instruction: 'Set sheilding gas flow rate to 10 LPM (liters per minute).' }
+            step3: { x: 0.355556, y: 0.013827, w: 0.320000, h: 0.268642, instruction: 'Set shielding gas flow rate to 10 LPM (liters per minute).' }
         };
 
         let config = hotspotMap[step.id] || [{ time: 0, x: 0.45, y: 0.45, w: 0.15, h: 0.15, instruction: 'Click to continue.' }];
@@ -684,7 +684,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderStep1_5DragDrop(step, timestamp) {
-        if (nextButton) nextButton.disabled = true;
+        // if (nextButton) nextButton.disabled = true;
 
         const bgPath = 'images/simulation/1.5.png';
         const toolPath = 'images/simulation/1.5-tool.png';
@@ -1211,7 +1211,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-        if (nextButton) nextButton.disabled = true;
+        // if (nextButton) nextButton.disabled = true;
     }
 
 
