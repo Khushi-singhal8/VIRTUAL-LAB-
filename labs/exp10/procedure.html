@@ -30,6 +30,24 @@
           #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
           }
+          .procedure-step img {
+  width: 350px;
+  height: auto;
+  display: block;
+  margin: 10px 0 25px 0;   /* left aligned */
+  border-radius: 6px;
+}
+
+
+  .procedure-step p {
+    font-size: 130%;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .procedure-step h2 {
+    margin-top: 30px;
+  }
         </style>
     </head>
 
@@ -56,7 +74,7 @@
         	<header class="main-header">
         <!-- Logo -->
         <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
-        <p align="center" style="font-size:1em;"><b>Lab Name <!-- Write lab name here --> </b></p>
+        <p align="center" style="font-size:1em;"><b>Manufacturing Process Lab</b></p>
     </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" style="background-color:#009dff;"> 
@@ -67,10 +85,10 @@
           <section class="content-header">
             <ol class="breadcrumb">
               <li>
-                <a href="../index.html"><i class="fa fa-dashboard"></i>Lab Name <!-- Write lab name here --> </a>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
               </li>
               <li>
-                <a href="#">Experiment Name <!-- Write experiment name here --> </a>
+                <a href="#">MIG WELDING</a>
               </li>
               <li class="active">Procedure</li>
             </ol>
@@ -174,50 +192,55 @@
                     <h3 style="margin-top:5%"> Procedure </h3>
                     <p style="font-size:130%; margin-top:2%">
 
-                <p>This simulation replicates a MIG welding workstation, enabling users to select different components and simulate the welding of a butt joint with a V-groove.</p>
+                <section id="step-1" class="procedure-step">
+  <h2>Step 1: Select First Plate</h2>
+  <p>Click on the highlighted area on the first plate to begin alignment.</p>
+  <img src="images/procedure/aa.png" alt="First plate selection" />
+</section>
 
-               <ol>
-    <li><b>Clean Workpiece Using Wire Brush:</b>
-        <ul>
-            <li>Use a wire brush to thoroughly clean the surface of the workpiece.</li>
-            <li>Remove dirt, rust, paint, oil, or any impurities to ensure a strong weld bond.</li>
-        </ul>
-    </li>
+<section id="step-2" class="procedure-step">
+  <h2>Step 2: Select Second Plate</h2>
+  <p>Click on the highlighted area on the second plate to align both plates together.</p>
+  <img src="images/procedure/bb.png" alt="Second plate selection" />
+</section>
 
-    <li><b>Turn On Shielding Gas:</b>
-        <ul>
-            <li>Open the valve of the shielding gas cylinder (commonly CO₂ or Argon).</li>
-        </ul>
-    </li>
+<section id="step-3" class="procedure-step">
+  <h2>Step 3: Surface Cleaning</h2>
+  <p>Drag the wire brush over the plate surface to remove rust and impurities.</p>
+  <img src="images/procedure/cc.png" alt="Wire brush cleaning" />
+</section>
 
-    <li><b>Adjust Voltage:</b>
-        <ul>
-            <li>Set the welding machine voltage according to the material thickness.</li>
-        </ul>
-    </li>
+<section id="step-4" class="procedure-step">
+  <h2>Step 4: Set Welding volatege</h2>
+  <p>Adjust the welding voltage to the required value using the power source control.</p>
+  <img src="images/procedure/aaa.png" alt="Set welding current" />
+</section>
 
-    <li><b>Extrude the electrode wire:</b>
-        <ul>
-            <li>Check that the wire feeds smoothly and extends slightly beyond the tip.</li>
-        </ul>
-    </li>
+<section id="step-5" class="procedure-step">
+  <h2>Step 5: Adjust Gas Flow</h2>
+  <p>Set the shielding gas flow rate to 10 LPM for proper arc protection.</p>
+  <img src="images/procedure/ee.png" alt="Adjust gas flow" />
+</section>
 
-    <li><b>Welding Process – Move Torch Steadily Across Joint:</b>
-        <ul>
-            <li>Strike the arc and begin welding along the joint line.</li>
-            <li>Maintain a steady torch movement to ensure uniform bead formation.</li>
-            <li>Keep a consistent distance between the tip and the workpiece.</li>
-        </ul>
-    </li>
+<section id="step-6" class="procedure-step">
+  <h2>Step 6: Start Welding</h2>
+  <p>Drag the welding torch along the joint area to start welding the plates.</p>
+  <img src="images/procedure/bbb.png" alt="Start welding" />
+</section>
 
-    <li><b>Clean the Weld to Remove Slag:</b>
-        <ul>
-            <li>After the weld cools, use a chipping hammer and wire brush to remove slag.</li>
-        </ul>
-    </li>
-</ol>
+<section id="step-7" class="procedure-step">
+  <h2>Step 7: Complete Welding</h2>
+  <p>Continue moving the torch along the joint until the weld bead is formed completely.</p>
+  <img src="images/procedure/ccc.png" alt="Welding completed" />
+</section>
 
-                    </p>
+<section id="step-8" class="procedure-step">
+  <h2>Step 8: Slag Removal</h2>
+  <p>Drag the cleaning tool over the welded joint to remove slag and residues.</p>
+  <img src="images/procedure/ddd.png" alt="Slag removal" />
+</section>
+
+               
                 </section>
             <!-- /.content -->
             </div>
