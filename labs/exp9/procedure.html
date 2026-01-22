@@ -30,6 +30,24 @@
           #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
           }
+          .procedure-step img {
+  width: 350px;
+  height: auto;
+  display: block;
+  margin: 10px 0 25px 0;   /* left aligned */
+  border-radius: 6px;
+}
+
+
+  .procedure-step p {
+    font-size: 130%;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .procedure-step h2 {
+    margin-top: 30px;
+  }
         </style>
     </head>
 
@@ -173,55 +191,59 @@
                     <section class="content">
                     <h3 style="margin-top:5%"> Procedure </h3>
                     <p style="font-size:130%; margin-top:2%">
+      <section id="step-1" class="procedure-step">
+  <h2>Step 1: Select First Plate</h2>
+  <p>Click on the highlighted area on the first plate to begin alignment.</p>
+  <img src="images/procedure/aa.png" alt="First plate selection" />
+</section>
 
-                  <p>
-    This simulation replicates a TIG welding workstation, enabling users to weld a stainless-steel specimen with controls for arc ignition, torch angle, and current setting.
-</p>
+<section id="step-2" class="procedure-step">
+  <h2>Step 2: Select Second Plate</h2>
+  <p>Click on the highlighted area on the second plate to align both plates together.</p>
+  <img src="images/procedure/bb.png" alt="Second plate selection" />
+</section>
 
-<ol>
-    <li><b>Clean Workpiece Using Wire Brush:</b>
-        <ul>
-            <li>Use a stainless-steel wire brush to clean the workpiece surface.</li>
-            <li>Remove dirt, rust, oil, or other impurities to ensure a strong weld.</li>
-        </ul>
-    </li>
+<section id="step-3" class="procedure-step">
+  <h2>Step 3: Surface Cleaning</h2>
+  <p>Drag the wire brush over the plate surface to remove rust and impurities.</p>
+  <img src="images/procedure/cc.png" alt="Wire brush cleaning" />
+</section>
 
-    <li><b>Turn On Shielding Gas:</b>
-        <ul>
-            <li>Open the argon shielding gas cylinder valve.</li>
-            <li>Ensure proper flow to protect the weld from oxidation.</li>
-        </ul>
-    </li>
+<section id="step-4" class="procedure-step">
+  <h2>Step 4: Set Welding Current</h2>
+  <p>Adjust the welding current to the required value using the power source control.</p>
+  <img src="images/procedure/dd.png" alt="Set welding current" />
+</section>
 
-    <li><b>Adjust Current:</b>
-        <ul>
-            <li>Set the welding machine current according to material thickness (e.g., 60–90 A).</li>
-        </ul>
-    </li>
+<section id="step-5" class="procedure-step">
+  <h2>Step 5: Adjust Gas Flow</h2>
+  <p>Set the shielding gas flow rate to 10 LPM for proper arc protection.</p>
+  <img src="images/procedure/ee.png" alt="Adjust gas flow" />
+</section>
 
-    <li><b>Ignite Arc:</b>
-        <ul>
-            <li>Use high-frequency start to initiate the "Ignite arc".</li>
-            
-        </ul>
-    </li>
+<section id="step-6" class="procedure-step">
+  <h2>Step 6: Start Welding</h2>
+  <p>Drag the welding torch along the joint area to start welding the plates.</p>
+  <img src="images/procedure/ff.png" alt="Start welding" />
+</section>
 
-    <li><b>Set Torch Angle and Distance; Move Torch Steadily Across Joint:</b>
-        <ul>
-            <li>Maintain a torch angle of about 15° from vertical.</li>
-            <li>Keep a steady arc length and uniform speed.</li>
-            <li>Move along the joint line to form a consistent weld bead.</li>
-        </ul>
-    </li>
+<section id="step-7" class="procedure-step">
+  <h2>Step 7: Complete Welding</h2>
+  <p>Continue moving the torch along the joint until the weld bead is formed completely.</p>
+  <img src="images/procedure/gg.png" alt="Welding completed" />
+</section>
 
-    <li><b>Clean the Weld to Remove Slag:</b>
-        <ul>
-            <li>Allow the weld to cool before cleaning.</li>
-            <li>Use a wire brush to remove slag and reveal the final weld bead.</li>
-        </ul>
-    </li>
-</ol>
+<section id="step-8" class="procedure-step">
+  <h2>Step 8: Slag Removal</h2>
+  <p>Drag the cleaning tool over the welded joint to remove slag and residues.</p>
+  <img src="images/procedure/hh.png" alt="Slag removal" />
+</section>
 
+<section id="step-9" class="procedure-step">
+  <h2>Step 9: Final Cleaned Joint</h2>
+  <p>The welded joint is cleaned and the welding process is successfully completed.</p>
+  <img src="images/procedure/ii.png" alt="Final result" />
+</section>
                     </p>
                 </section>
             <!-- /.content -->
