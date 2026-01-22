@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation E6 script loaded');
 
-    /* ---------------- CSS ---------------- */
+    
     const style = document.createElement('style');
     style.innerHTML = `
     .apparatus-img-box {
@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }`;
     document.head.appendChild(style);
 
-    /* ---------------- DOM ---------------- */
+    
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
     const gifContainer = document.getElementById('gif-container');
@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
 ];
 
 
-    /* ---------------- STEPS ---------------- */
+    
     const steps = [
         { id: 'apparatus', title: 'Apparatus Used', type: 'apparatus' },
         { id: 'step0', title: 'Align the plates', src: 'images/simulation/0.5.mp4', type: 'video' },
@@ -125,7 +125,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentStepIndex = 0;
     const totalSteps = steps.length;
     if (totalStepsElement) totalStepsElement.textContent = totalSteps;
-
+ 
     /* ---------------- APPARATUS RENDER ---------------- */
     function renderApparatusStep() {
         let html = `
