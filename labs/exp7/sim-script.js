@@ -235,14 +235,14 @@ document.addEventListener("DOMContentLoaded", function () {
     const steps = [
         { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
 
-        { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
+        { id: 'step1', title: 'Clean plate edges', src: 'images/simulation/1.mp4', type: 'video' },
         { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step3', title: 'Ignite flame', src: 'images/simulation/3.1.mp4', type: 'video' },
-        { id: 'step4', title: 'Apply small tack welds at both ends of the plates', src: 'images/simulation/4.mp4', type: 'video' },
+        { id: 'step4', title: 'Apply tack welds at both ends of the plates', src: 'images/simulation/4.mp4', type: 'video' },
         { id: 'step4_5', title: 'Welding', src: 'images/simulation/4.5.mp4', type: 'video' },
-        { id: 'step7', title: 'Use a chipping hammer to remove slag', src: 'images/simulation/7.mp4', type: 'video' },
-        { id: 'step8', title: 'File edges inspection', src: 'images/simulation/8.mp4', type: 'video' },
+        { id: 'step7', title: 'Remove slag', src: 'images/simulation/7.mp4', type: 'video' },
+        { id: 'step8', title: 'File edges', src: 'images/simulation/8.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
 
     ];
@@ -1870,7 +1870,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step8-drag-stage" style="position: relative; width: 100%;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint for inspection" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-8" class="draggable" alt="Inspection tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-8" class="draggable" alt="Inspection tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     <div id="step8-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
 
@@ -1893,7 +1893,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step8-instruction');
 
         // Drop zone target (adjust x and y for the inspection location)
-        const targetRel = { x: 0.5, y: 0.93 };
+        const targetRel = { x: 0.55, y: 0.68 };
         const tolerancePx = 120;
 
         function setDropZoneLayout() {

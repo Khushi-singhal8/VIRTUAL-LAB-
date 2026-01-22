@@ -43,6 +43,100 @@ document.addEventListener("DOMContentLoaded", function() {
     const hotspotSteps = new Set(['step0','step2','step3','step4']);
     const hotspotCompleted = { step0:false, step2:false, step3:false };
 
+    /* ---------------- ASSET PRELOADING ---------------- */
+    const assetList = [
+        // Apparatus
+        "images/simulation/apparatus/brush.png",
+        "images/simulation/apparatus/cylinder.png",
+        "images/simulation/apparatus/plates.png",
+        "images/simulation/apparatus/machine.png",
+        "images/simulation/apparatus/torch.png",
+        "images/simulation/apparatus/clip.png",
+        "images/simulation/apparatus/wire.png",
+
+        // Steps
+        "images/simulation/0.5.mp4",
+        "images/simulation/1.mp4",
+        "images/simulation/1.png",
+        "images/simulation/1-tool.png",
+        "images/simulation/2.mp4",
+        "images/simulation/3.mp4",
+        "images/simulation/4.mp4",
+        "images/simulation/5.mp4",
+        "images/simulation/5.png",
+        "images/simulation/5-tool.png",
+        "images/simulation/6.mp4",
+        "images/simulation/6.png",
+
+        // Result
+        "images/simulation/result.png"
+    ];
+
+    const assetCache = {};
+    function getAssetSrc(originalUrl) {
+        return assetCache[originalUrl] || originalUrl;
+    }
+    function formatSrc(url, timestamp) {
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
+    }
+    async function preloadAssets() {
+        const overlay = document.createElement('div');
+        overlay.id = 'preload-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = '#fff';
+        overlay.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
+            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
+            </div>
+            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressBar = document.getElementById('preload-progress');
+        const progressText = document.getElementById('preload-text');
+        let loadedCount = 0;
+
+        const promises = assetList.map(async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                assetCache[url] = objectUrl;
+            } catch (err) {
+                console.error(`Error preloading ${url}:`, err);
+            } finally {
+                loadedCount++;
+                const percent = Math.round((loadedCount / assetList.length) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+            }
+        });
+
+        await Promise.all(promises);
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showCurrentStep();
+            }, 500);
+        }, 500);
+    }
+
     /* ---------------- APPARATUS DATA ---------------- */
     const apparatusData = [
         {
@@ -172,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const a = apparatusData[i];
             html += `
             <div style="background:#f5f5f5;padding:15px;border-radius:12px;text-align:center">
-                <div class="apparatus-img-box"><img src="${a.img}" alt="${a.name}"></div>
+                <div class="apparatus-img-box"><img src="${getAssetSrc(a.img)}" alt="${a.name}"></div>
                 <h4>${i + 1}. ${a.name}</h4>
                 <p>${a.desc}</p>
             </div>`;
@@ -185,7 +279,7 @@ document.addEventListener("DOMContentLoaded", function() {
             const a = apparatusData[i];
             html += `
             <div style="width:280px;background:#f5f5f5;padding:15px;border-radius:12px;text-align:center">
-                <div class="apparatus-img-box"><img src="${a.img}" alt="${a.name}"></div>
+                <div class="apparatus-img-box"><img src="${getAssetSrc(a.img)}" alt="${a.name}"></div>
                 <h4>${i + 1}. ${a.name}</h4>
                 <p>${a.desc}</p>
             </div>`;
@@ -210,7 +304,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <hr>
 
                 <div style="text-align:center; margin:20px 0;">
-                    <img src="images/simulation/result.png" alt="Final Welded Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
+                    <img src="${getAssetSrc('images/simulation/result.png')}" alt="Final Welded Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
                     <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
                 </div>
 
@@ -344,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" preload="auto" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%;height:100%;" preload="auto" playsinline muted></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
@@ -437,7 +531,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%;height:100%;" playsinline muted></video>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
@@ -476,14 +570,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-tool" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
                     <div id="step1-drop-zone" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5; display: block;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions"></div>
@@ -638,14 +732,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step6-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;" alt="Welded workpiece"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-tool-6" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 10;" alt="Wire brush"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;" alt="Welded workpiece"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-6" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 10;" alt="Wire brush"/>
                     <div id="step6-drop-zone" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5; display: block;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step6-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step6-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step6-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                 </div>
                 
                 <div id="step6-instruction" class="drag-instructions"></div>
@@ -795,14 +889,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;" alt="Workpiece setup"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-tool-5" class="draggable" style="position: absolute; width: 30%; top: 10%; right: 10%; cursor: grab; z-index: 10;" alt="Welding torch"/>
+                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;" alt="Workpiece setup"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-5" class="draggable" style="position: absolute; width: 30%; top: 10%; right: 10%; cursor: grab; z-index: 10;" alt="Welding torch"/>
                     <div id="step5-drop-zone" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5; display: block;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step5-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions"></div>
@@ -957,5 +1051,5 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    showCurrentStep();
+    preloadAssets();
 });
