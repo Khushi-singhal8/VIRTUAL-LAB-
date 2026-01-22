@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
             type: 'video',
             initialInstruction: 'Set the pressure of acetylene cylinder to 3 PSI',
             finalInstruction: 'Click on next to ignite the flame',
-            interaction: { pauseAt: 1.5, hotspot: { x: 0.36484440599106716, y: 0.2239508188783387, w: 0.21985737820308607, h: 0.15423028092564836 }, instruction: 'Set the pressure of acetylene cylinder to 3 PSI' }
+            interaction: { pauseAt: 1.6, hotspot: { x: 0.36484440599106716, y: 0.2239508188783387, w: 0.21985737820308607, h: 0.15423028092564836 }, instruction: 'Set the pressure of acetylene cylinder to 3 PSI' }
         },
         {
             id: 'step5_5',
