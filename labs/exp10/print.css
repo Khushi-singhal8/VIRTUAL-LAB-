@@ -11,6 +11,10 @@
         padding: 20px;
         margin: 0;
     }
+
+    h1, h2, .simulation-title {
+        display: none !important;
+    }
     
     /* Hide "Back to Lab" button */
     button[onclick*="simulation.html"],
