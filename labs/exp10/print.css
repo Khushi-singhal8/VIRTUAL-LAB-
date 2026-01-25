@@ -1,0 +1,28 @@
+/* labs/exp7/print.css */
+@media print {
+    /* Remove browser headers and footers (date, URL, page numbers) */
+    @page {
+        margin: 0;
+    }
+    
+    /* Add padding to body to compensate for removed margins */
+    body {
+        background: #fff;
+        padding: 20px;
+        margin: 0;
+    }
+    
+    /* Hide "Back to Lab" button */
+    button[onclick*="simulation.html"],
+    .result-mode button[onclick*="Back to Lab"] {
+        display: none !important;
+    }
+    
+    /* Hide navigation buttons and other non-printable elements */
+    .result-mode .button-container,
+    .result-mode .step-indicator,
+    .result-mode .drag-instructions,
+    .no-print {
+        display: none !important;
+    }
+}

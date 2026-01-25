@@ -62,6 +62,10 @@ document.addEventListener("DOMContentLoaded", function() {
         "images/simulation/2.mp4",
         "images/simulation/3.mp4",
         "images/simulation/4.mp4",
+        "images/simulation/1.5.mp4",
+        "images/simulation/1.5.png",
+        "images/simulation/1.5-tool.png",
+        "images/simulation/1.5.2.png",
         "images/simulation/5.mp4",
         "images/simulation/5.png",
         "images/simulation/5-tool.png",
@@ -178,6 +182,7 @@ document.addEventListener("DOMContentLoaded", function() {
         { id: 'step2', title: 'Turn on shielding gas', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step3', title: 'Adjust voltage and wire feed rate', src: 'images/simulation/3.mp4', type: 'video' },
         { id: 'step4', title: 'Extrude the electrode wire', src: 'images/simulation/4.mp4', type: 'video' },
+        { id: 'step1_5', title: 'Attaching the ground clamp', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step5', title: 'Welding process', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'step6', title: 'Clean the weld to remove slag', src: 'images/simulation/6.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
@@ -308,59 +313,53 @@ document.addEventListener("DOMContentLoaded", function() {
                     <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
                 </div>
 
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
+                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
                     <tbody>
                         <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">Welding Parameters</td>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
                         </tr>
                         <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Welding Process</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Gas Metal Arc Welding (GMAW/MIG)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Welding Voltage</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">22 Volts (22V)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Wire Feed Rate</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">80 mm/s</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Shielding Gas</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">CO2/Argon Mix (75% Argon, 25% CO2)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Gas Flow Rate</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">10 LPM (liters per minute)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Workpiece Material</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">Plate Material</td>
                             <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
                         </tr>
                         <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">MIG Wire</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Solid wire</td>
-                        </tr>
-<!--                        <tr>-->
-<!--                            <td style="border:1px solid #000; padding:10px 15px;">Welding Gun Travel Speed</td>-->
-<!--                            <td style="border:1px solid #000; padding:10px 15px;">3.0 mm/s</td>-->
-<!--                        </tr>-->
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">Result</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">ER70S-6</td>
                         </tr>
                         <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Joint Quality</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">High-quality, uniform weld bead</td>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
                         </tr>
                         <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Finish</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Slag removed, smooth surface</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
                         </tr>
                     </tbody>
                 </table>
 
                 <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                    <button onclick="window.print()" style="padding: 12px 24px; font-size: 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 6px;">🖨 Print Results</button>
+                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
                 </div>
             </div>
         `;
@@ -381,9 +380,12 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         else if (step.id === 'step1') {
             renderStep1DragDrop(step, timestamp);
-        } else if (step.id === 'step5') {
+        }else if (step.id === 'step1_5') {
+            renderStep1_5DragDrop(step, timestamp);
+        }else if (step.id === 'step5') {
             renderStep5DragDrop(step, timestamp);
         } else if (step.id === 'step6') {
+
             renderStep6DragDrop(step, timestamp);
         } else if (isHotspotStep(step)) {
             renderHotspotStep(step, timestamp);
@@ -873,6 +875,150 @@ document.addEventListener("DOMContentLoaded", function() {
                 window.removeEventListener('touchend', onPointerUp);
                 window.removeEventListener('resize', setDropZoneLayout);
                 video.pause();
+            } catch (_) { }
+        };
+    }
+
+    function renderStep1_5DragDrop(step, timestamp) {
+        if (nextButton) nextButton.disabled = true;
+
+        const bgPath = 'images/simulation/1.5.png';
+        const toolPath = 'images/simulation/1.5-tool.png';
+        const finalPath = 'images/simulation/1.5.2.png';
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                
+                <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                    <img src="${formatSrc(bgPath, timestamp)}" id="step1_5-bg" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
+                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-1_5" class="draggable" style="position: absolute; width: 12%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
+                    <div id="step1_5-drop-zone" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5; display: block;"></div>
+                </div>
+                
+                <div id="step1_5-instruction" class="drag-instructions"></div>
+            </div>
+        `;
+
+        const dragStage = document.getElementById('step1_5-drag-stage');
+        const bgImg = document.getElementById('step1_5-bg');
+        const tool = document.getElementById('draggable-tool-1_5');
+        const dropZone = document.getElementById('step1_5-drop-zone');
+        const instructionElem = document.getElementById('step1_5-instruction');
+
+        instructionElem.textContent = "Drag the ground clamp to the workpiece.";
+
+        // Hotspot target relative coordinates
+        const targetRel = { x: 0.465, y: 0.801 };
+        const tolerancePx = 100;
+
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            if (rect.width === 0) return;
+
+            const w = rect.width * 0.10;
+            const h = w;
+            const tx = rect.width * targetRel.x;
+            const ty = rect.height * targetRel.y;
+
+            dropZone.style.width = w + 'px';
+            dropZone.style.height = h + 'px';
+            dropZone.style.left = (tx - w / 2) + 'px';
+            dropZone.style.top = (ty - h / 2) + 'px';
+        }
+
+        setTimeout(setDropZoneLayout, 50);
+        window.addEventListener('resize', setDropZoneLayout);
+
+        // Drag Logic
+        let dragging = false;
+        let startX = 0, startY = 0;
+
+        function onPointerDown(e) {
+            dragging = true;
+            tool.style.cursor = 'grabbing';
+            const rect = tool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging) return;
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = tool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+
+            tool.style.left = newLeft + 'px';
+            tool.style.top = newTop + 'px';
+        }
+
+        function onPointerUp(e) {
+            if (!dragging) return;
+            dragging = false;
+            tool.style.cursor = 'grab';
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = tool.getBoundingClientRect();
+            const toolCenter = {
+                x: toolRect.left - stageRect.left + toolRect.width / 2,
+                y: toolRect.top - stageRect.top + toolRect.height / 2
+            };
+
+            const dzRect = dropZone.getBoundingClientRect();
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                // Success
+                tool.style.display = 'none';
+                dropZone.style.display = 'none';
+                bgImg.src = formatSrc(finalPath, timestamp);
+
+                if (stepGuidance[step.id]) {
+                    instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
+                } else {
+                    instructionElem.textContent = 'Step complete.';
+                }
+
+                if (nextButton) nextButton.disabled = false;
+
+                // Cleanup events since we are done interacting
+                try {
+                    window.removeEventListener('mousemove', onPointerMove);
+                    window.removeEventListener('touchmove', onPointerMove);
+                    window.removeEventListener('mouseup', onPointerUp);
+                    window.removeEventListener('touchend', onPointerUp);
+                } catch (_) { }
+            }
+        }
+
+        tool.addEventListener('mousedown', onPointerDown);
+        tool.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        cleanupCurrent = function () {
+            try {
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+                window.removeEventListener('resize', setDropZoneLayout);
             } catch (_) { }
         };
     }
