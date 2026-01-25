@@ -328,13 +328,10 @@ document.addEventListener("DOMContentLoaded", function () {
         apparatusData.forEach(item => {
             apparatusHTML += `
             <div style="
-                width: 260px;
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                padding: 12px;
-                text-align: center;
-                background: #fff;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+                background:#f5f5f5;
+                border-radius:12px;
+                padding:15px;
+                text-align:center;
             ">
                 <div class="apparatus-img-box">
                     <img src="${item.img}" alt="${item.name}">
@@ -351,11 +348,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="step-indicator">Step 1 of ${totalSteps}</div>
 
             <div style="
-                display: flex;
-                flex-wrap: wrap;
-                gap: 20px;
-                justify-content: center;
-                margin-top: 20px;
+                display:grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap:20px;
+                margin-top:20px;
             ">
                 ${apparatusHTML}
             </div>

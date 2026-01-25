@@ -1,67 +1,32 @@
+/* labs/exp7/print.css */
 @media print {
+    /* Remove browser headers and footers (date, URL, page numbers) */
     @page {
-        margin: 1cm;
-        size: landscape;
-        /* Optional: might help if table is very wide, but standard is usually portrait. Let's try to fit in portrait first, or allow auto. */
-    }
-
-    body * {
-        visibility: hidden;
-    }
-
-    .print-area,
-    .print-area * {
-        visibility: visible;
-    }
-
-    .print-area {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
         margin: 0;
-        padding: 0;
+    }
+    
+    /* Add padding to body to compensate for removed margins */
+    body {
+        background: #fff;
+        padding: 20px;
+        margin: 0;
     }
 
-    /* specific fixes for table */
-    .print-area table {
-        width: 100% !important;
-        border-collapse: collapse;
-        font-size: 12px;
-        /* Reduce font size */
-        table-layout: fixed;
-        /* helps with sizing */
-    }
-
-    .print-area th,
-    .print-area td {
-        padding: 5px;
-        /* scale down padding */
-        word-wrap: break-word;
-    }
-
-    /* specific fixes for images in table */
-    .print-area img {
-        max-width: 100% !important;
-        /* ensure images don't overflow their cells */
-        height: auto !important;
-        width: auto !important;
-        /* Allow shrinking */
-        max-height: 150px;
-        /* Limit height */
-    }
-
-    .no-print {
+    h1, h2, .simulation-title {
         display: none !important;
     }
-
-    /* Hide navigation buttons and other UI elements */
-    #prev-btn,
-    #next-btn,
-    .step-item,
-    .sidebar,
-    .button-container,
-    #reset-btn {
+    
+    /* Hide "Back to Lab" button */
+    button[onclick*="simulation.html"],
+    .result-mode button[onclick*="Back to Lab"] {
+        display: none !important;
+    }
+    
+    /* Hide navigation buttons and other non-printable elements */
+    .result-mode .button-container,
+    .result-mode .step-indicator,
+    .result-mode .drag-instructions,
+    .no-print {
         display: none !important;
     }
 }
