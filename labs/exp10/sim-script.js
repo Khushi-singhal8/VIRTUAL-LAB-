@@ -303,67 +303,101 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function renderResultStep() {
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">Experiment Result</h2>
-                <hr>
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+            <h2 style="text-align:center;">Experiment Result</h2>
+            <hr>
 
-                <div style="text-align:center; margin:20px 0;">
-                    <img src="${getAssetSrc('images/simulation/result.png')}" alt="Final Welded Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
-                    <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
-                </div>
-
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Plate Material</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">ER70S-6</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
-                </div>
+            <div style="text-align:center; margin:20px 0;">
+                <img src="${getAssetSrc('images/simulation/result.png')}" 
+                     alt="Final Welded Joint" 
+                     style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
+                <p style="font-size:14px; margin-top:6px;">
+                    Final welded joint after cleaning
+                </p>
             </div>
-        `;
-    }
+
+            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
+                <tbody>
+
+                    <!-- Welding Parameters -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">
+                            Welding Parameters
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Welding Process</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Gas Metal Arc Welding (GMAW / MIG)</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Workpiece Material</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Welding Voltage</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">22 V</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">MIG Wire Type</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Solid Wire</td>
+                    </tr>
+
+                    <!-- Wire & Gas Settings -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">
+                            Wire Feed & Gas Settings
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Wire Feed Rate</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">80 mm/s</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Shielding Gas</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">75% Argon + 25% CO₂</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Gas Flow Rate</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">10 LPM</td>
+                    </tr>
+
+                    <!-- Result -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">
+                            Result
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Joint Quality</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">High-quality, uniform weld bead</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Finish</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Slag removed, smooth surface</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
+                <button onclick="window.print()" 
+                        style="padding:10px 20px; font-size:16px; cursor:pointer; background-color:#2196F3; color:white; border:none; border-radius:4px;">
+                    🖨 Print Results
+                </button>
+            </div>
+        </div>
+    `;
+}
 
     function showCurrentStep() {
         if (!gifContainer) return;
