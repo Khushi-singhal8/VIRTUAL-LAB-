@@ -12,29 +12,32 @@
         background: #fff;
     }
 
-    /* ⭐ ONLY CONTAINER FIX */
+    /* ⭐ ONLY CONTAINER FIX (no cutting) */
     .print-area,
     .gif-wrapper {
         height: auto !important;          /* allow full height */
-        overflow: visible !important;    /* remove scroll clipping */
+        overflow: visible !important;     /* remove scroll clipping */
         width: 100% !important;
         max-width: 100% !important;
-        box-sizing: border-box !important; /* include padding inside width */
+        box-sizing: border-box !important;
 
         margin: 0 !important;
         padding: 10px !important;
     }
 
-    h2 {
+    /* remove top gap */
+    .print-area h2 {
         margin-top: 0 !important;
     }
 
-    /* hide non-print UI */
-    .no-print,
+    /* 🔥 STRONGER HIDE RULES (title fix) */
+    h1,
+    h2.simulation-title,
+    .simulation-title,
     .button-container,
     .step-indicator,
     .drag-instructions,
-    .simulation-title,
+    .no-print,
     button {
         display: none !important;
     }
