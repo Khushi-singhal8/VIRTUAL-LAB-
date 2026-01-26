@@ -1,28 +1,41 @@
-/* labs/exp8/print.css */
 @media print {
-    /* Remove browser headers and footers (date, URL, page numbers) */
+
+    /* keep page same */
     @page {
+        size: A4 portrait;
         margin: 0;
     }
-    
-    /* Add padding to body to compensate for removed margins */
+
     body {
+        margin: 0 !important;
+        padding: 0 !important;
         background: #fff;
-        padding: 20px;
-        margin: 0;
     }
-    
-    /* Hide "Back to Lab" button */
-    button[onclick*="simulation.html"],
-    .result-mode button[onclick*="Back to Lab"] {
-        display: none !important;
+
+    /* ⭐ ONLY CONTAINER FIX */
+    .print-area,
+    .gif-wrapper {
+        height: auto !important;          /* allow full height */
+        overflow: visible !important;    /* remove scroll clipping */
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important; /* include padding inside width */
+
+        margin: 0 !important;
+        padding: 10px !important;
     }
-    
-    /* Hide navigation buttons and other non-printable elements */
-    .result-mode .button-container,
-    .result-mode .step-indicator,
-    .result-mode .drag-instructions,
-    .no-print, #page-heading {
+
+    h2 {
+        margin-top: 0 !important;
+    }
+
+    /* hide non-print UI */
+    .no-print,
+    .button-container,
+    .step-indicator,
+    .drag-instructions,
+    .simulation-title,
+    button {
         display: none !important;
     }
 }
