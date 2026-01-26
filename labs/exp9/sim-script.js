@@ -1148,71 +1148,109 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderResultStep() {
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">Experiment Result</h2>
-                <hr>
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+            <h2 style="text-align:center;">Experiment Result</h2>
+            <hr>
 
-                <div style="text-align:center; margin:20px 0;">
-                    <img src="${getAssetSrc('images/simulation/result.png')}" alt="Final Welded Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
-                    <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
-                </div>
-
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">Welding Parameters</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Welding Process</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Gas Tungsten Arc Welding (GTAW)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Welding Current</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">60 Amperes (60A)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Shielding Gas</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Argon</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Gas Flow Rate</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">10 LPM (liters per minute)</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Workpiece material</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Stainless steel</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Filler material</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">ER308L</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Welding gun travel speed</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">2.5 mm/s</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">Result</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Joint quality</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">High-quality, clean weld</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Dressing</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Slag removed, smooth finish</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                    <button onclick="window.print()" style="padding: 12px 24px; font-size: 16px; cursor: pointer; background-color: #007bff; color: white; border: none; border-radius: 6px;">🖨 Print Results</button>
-                </div>
+            <div style="text-align:center; margin:20px 0;">
+                <img src="${getAssetSrc('images/simulation/result.png')}" 
+                     alt="Final Welded Joint" 
+                     style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
+                <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
             </div>
-        `;
 
-        if (nextButton) nextButton.disabled = true;
-    }
+            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family:sans-serif;">
+                <tbody>
+
+                    <!-- Welding Parameters -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
+                            Welding Parameters
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Welding Process</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Gas Tungsten Arc Welding (GTAW / TIG)</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Workpiece Material</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Stainless Steel</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Welding Current</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">60 Amperes (60 A)</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Filler Material</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">ER308L</td>
+                    </tr>
+
+                    <!-- Shielding Gas Settings -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
+                            Shielding Gas Settings
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Shielding Gas</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Argon</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Gas Flow Rate</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">10 LPM (liters per minute)</td>
+                    </tr>
+
+                    <!-- Welding Operation Parameters -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
+                            Welding Operation Parameters
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Welding Gun Travel Speed</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">2.5 mm/s</td>
+                    </tr>
+
+                    <!-- Result -->
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
+                            Result
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Joint Quality</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">High-quality, clean weld</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Dressing</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Slag removed, smooth finish</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
+                <button onclick="window.print()" 
+                        style="padding:12px 24px; font-size:16px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:6px;">
+                    🖨 Print Results
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (nextButton) nextButton.disabled = true;
+}
+
 
 
     if (prevButton) {
