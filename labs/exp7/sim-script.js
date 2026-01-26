@@ -2012,71 +2012,91 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderResultStep() {
-        document.body.classList.add('result-mode');
+    document.body.classList.add('result-mode');
 
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">Experiment Result</h2>
-                <hr>
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+            <h2 style="text-align:center;">Experiment Result</h2>
+            <hr>
 
-                <div style="text-align:center; margin:20px 0;">
-                    <img src="${getAssetSrc('images/simulation/print .png')}" alt="Final Welded Butt Joint" style="max-width:90%; border:1px solid #ccc; border-radius:6px;">
-                    <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
-                </div>
-
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Plate Material</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">ER70S-6</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
-                </div>
+            <div style="text-align:center; margin:20px 0;">
+                <img src="${getAssetSrc('images/simulation/print .png')}" alt="Final Welded Butt Joint" style="max-width:90%; border:1px solid #ccc; border-radius:6px;">
+                <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
             </div>
-        `;
 
-        if (nextButton) nextButton.disabled = true;
-    }
+            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
+                <tbody>
+
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Plate Material</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">ER70S-6</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Joint Quality</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Proper fusion with smooth and clean weld bead</td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
+                <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">
+                    🖨 Print Results
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (nextButton) nextButton.disabled = true;
+}
+
 
 
 
