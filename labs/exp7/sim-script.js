@@ -855,7 +855,8 @@ document.addEventListener("DOMContentLoaded", function () {
     // Step 3 Multi-Phase: Part 1 (video with hotspots) -> Part 2 (drag-and-drop) -> Part 3 (video with one hotspot)
     function renderStep3MultiPhase(step, timestamp) {
         setInteractiveCompleted(step.id, false);
-        if (nextButton) nextButton.disabled = true;
+        // Enable next button to allow manual phase navigation
+        if (nextButton) nextButton.disabled = false;
 
         // Phase 1 hotspots configuration (existing hotspots from 3.1.mp4)
         const phase1Cfg = [
@@ -975,13 +976,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function onVideoEnded() {
             if (currentPhase === 1) {
-                // Phase 1 ended -> transition to Phase 2 (drag-and-drop)
                 startPhase2();
             } else if (currentPhase === 3) {
-                // Phase 3 ended -> step complete
                 setInteractiveCompleted(step.id, true);
                 instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
                 if (nextButton) nextButton.disabled = false;
+                window.customNextHandler = null; // Clear handler when done
             }
         }
 
@@ -1036,8 +1036,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const stageRect = dragStage.getBoundingClientRect();
             const toolRect = draggable.getBoundingClientRect();
-            const anchorX = 0.8;  // 20% from left edge
-            const anchorY = 0.1;  // 90% from top (near bottom)
+            const anchorX = 0.8;
+            const anchorY = 0.1;
             const toolCenter = {
                 x: toolRect.left - stageRect.left + toolRect.width * anchorX,
                 y: toolRect.top - stageRect.top + toolRect.height * anchorY
@@ -1051,7 +1051,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dist < tolerancePx) {
                 dropZone.classList.add('success');
-                // Cleanup drag listeners and transition to Phase 3
                 window.removeEventListener('resize', setDropZoneLayout);
                 window.removeEventListener('mousemove', onDragPointerMove);
                 window.removeEventListener('touchmove', onDragPointerMove);
@@ -1067,21 +1066,24 @@ document.addEventListener("DOMContentLoaded", function () {
             dragStage.style.display = 'block';
             instructionElem.textContent = 'Drag the ignitor to the torch.';
 
-            // Reset video listeners for phase 3
+            video.pause(); // Ensure video is stopped
             video.removeEventListener('ended', onVideoEnded);
 
-            // Setup drop zone layout
             if (dragBg.complete && dragBg.naturalWidth) setDropZoneLayout();
             else dragBg.onload = setDropZoneLayout;
             window.addEventListener('resize', setDropZoneLayout);
 
-            // Attach drag listeners
             draggable.addEventListener('mousedown', onDragPointerDown);
             draggable.addEventListener('touchstart', onDragPointerDown);
             window.addEventListener('mousemove', onDragPointerMove);
             window.addEventListener('touchmove', onDragPointerMove);
             window.addEventListener('mouseup', onDragPointerUp);
             window.addEventListener('touchend', onDragPointerUp);
+
+            // Handler for "next" button in Phase 2
+            window.customNextHandler = () => {
+                startPhase3();
+            };
         }
 
         function startPhase3() {
@@ -1090,26 +1092,35 @@ document.addEventListener("DOMContentLoaded", function () {
             playStage.style.display = 'block';
             instructionElem.textContent = 'Click to ignite the flame.';
 
-            // Reset for Phase 3
             segmentIndex = 0;
             pausedForSegment = false;
             currentCfg = phase3Cfg;
 
-            // Load Phase 3 video
             video.src = formatSrc('images/simulation/3.2.mp4', Date.now());
             video.addEventListener('ended', onVideoEnded, { once: true });
             video.addEventListener('loadedmetadata', () => {
                 layoutHotspot();
                 video.play().catch(() => { });
             }, { once: true });
+
+            // Handler for "next" button in Phase 3
+            window.customNextHandler = () => {
+                video.pause();
+                setInteractiveCompleted(step.id, true);
+                window.customNextHandler = null;
+                // Trigger next step
+                if (currentStepIndex < totalSteps - 1) {
+                    currentStepIndex++;
+                    showCurrentStep();
+                }
+            };
         }
 
-        // ========== START PHASE 1 ==========
         function startPhase1() {
             currentPhase = 1;
             currentCfg = phase1Cfg;
             segmentIndex = 0;
-            passwordForSegment = false;
+            pausedForSegment = false; // Fixed typo 'passwordForSegment'
 
             video.src = formatSrc('images/simulation/3.1.mp4', timestamp);
             video.addEventListener('ended', onVideoEnded, { once: true });
@@ -1117,6 +1128,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 layoutHotspot();
                 video.play().catch(() => { });
             }, { once: true });
+
+            // Handler for "next" button in Phase 1
+            window.customNextHandler = () => {
+                startPhase2();
+            };
         }
 
         video.addEventListener('play', onPlay);
@@ -1127,6 +1143,7 @@ document.addEventListener("DOMContentLoaded", function () {
         startPhase1();
 
         cleanupCurrent = function () {
+            window.customNextHandler = null; // Cleanup handler
             try {
                 window.removeEventListener('resize', layoutHotspot);
                 window.removeEventListener('resize', setDropZoneLayout);
@@ -2012,9 +2029,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderResultStep() {
-    document.body.classList.add('result-mode');
+        document.body.classList.add('result-mode');
 
-    gifContainer.innerHTML = `
+        gifContainer.innerHTML = `
         <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
             <h2 style="text-align:center;">Experiment Result</h2>
             <hr>
@@ -2094,8 +2111,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     `;
 
-    if (nextButton) nextButton.disabled = true;
-}
+        if (nextButton) nextButton.disabled = true;
+    }
 
 
 
@@ -2110,6 +2127,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (nextButton) {
         nextButton.addEventListener('click', function () {
+            if (typeof window.customNextHandler === 'function') {
+                window.customNextHandler();
+                return;
+            }
             if (currentStepIndex < totalSteps - 1) {
                 currentStepIndex++;
                 showCurrentStep();

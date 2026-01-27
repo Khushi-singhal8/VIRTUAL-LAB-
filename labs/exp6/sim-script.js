@@ -46,6 +46,109 @@ document.addEventListener("DOMContentLoaded", function () {
     let audioCtx = null;
     let hissBuffer = null;
 
+    /* ---------------- ASSET PRELOADING ---------------- */
+    const assetList = [
+        // Apparatus
+        "images/simulation/torch.png",
+        "images/simulation/oxygen cylinder.png",
+        "images/simulation/acetylene cylinderr.png",
+        "images/simulation/regulator.png",
+        "images/simulation/striker.png",
+
+        // Videos
+        "images/simulation/1.mp4",
+        "images/simulation/2.mp4",
+        "images/simulation/3.mp4",
+        "images/simulation/4.mp4",
+        "images/simulation/5.mp4",
+        "images/simulation/7.mp4",
+        "images/simulation/8.mp4",
+        "images/simulation/9.mp4",
+        "images/simulation/10.mp4",
+        "images/simulation/11.mp4",
+
+        // Drag Step
+        "images/simulation/6.png",
+        "images/simulation/6-tool.png",
+        "images/simulation/6.1.png",
+
+        // Result
+        "images/carbrizing flame.png",
+        "images/neutral flame.png",
+        "images/oxidising flame.png",
+
+        // Audio
+        "images/simulation/hiss.mp3"
+    ];
+
+    const assetCache = {};
+
+    function getAssetSrc(originalUrl) {
+        return assetCache[originalUrl] || originalUrl;
+    }
+
+    function formatSrc(url, timestamp) {
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
+    }
+
+    async function preloadAssets() {
+        const overlay = document.createElement('div');
+        overlay.id = 'preload-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = '#fff';
+        overlay.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
+            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
+            </div>
+            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressBar = document.getElementById('preload-progress');
+        const progressText = document.getElementById('preload-text');
+        let loadedCount = 0;
+
+        const promises = assetList.map(async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                assetCache[url] = objectUrl;
+            } catch (err) {
+                console.error(`Error preloading ${url}:`, err);
+            } finally {
+                loadedCount++;
+                const percent = Math.round((loadedCount / assetList.length) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+            }
+        });
+
+        await Promise.all(promises);
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showCurrentStep();
+            }, 500);
+        }, 500);
+    }
+
     async function initAudio() {
         if (!audioCtx) {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -55,7 +158,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         if (!hissBuffer) {
             try {
-                const response = await fetch('images/simulation/hiss.mp3');
+                const src = getAssetSrc('images/simulation/hiss.mp3');
+                const response = await fetch(src);
                 const arrayBuffer = await response.arrayBuffer();
                 hissBuffer = await audioCtx.decodeAudioData(arrayBuffer);
             } catch (e) {
@@ -313,7 +417,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div style="height: 400px; display: flex; align-items: center; justify-content: center;">
-                    <img src="${step.src}?t=${timestamp}" class="step-gif" alt="${step.title}">
+                    <img src="${formatSrc(step.src, timestamp)}" class="step-gif" alt="${step.title}">
                 </div>
                 <div class="drag-instructions">${step.initialInstruction}</div>
             </div>
@@ -334,7 +438,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 text-align:center;
             ">
                 <div class="apparatus-img-box">
-                    <img src="${item.img}" alt="${item.name}">
+                    <img src="${getAssetSrc(item.img)}" alt="${item.name}">
                 </div>
                 <h4 style="margin: 10px 0 6px;">${item.name}</h4>
                 <p style="font-size: 14px;">${item.desc}</p>
@@ -369,8 +473,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="drag-stage" id="drag-stage">
-                    <img src="${step.src}?t=${timestamp}" alt="Background" class="stage-bg" id="drag-bg"/>
-                    <img src="${step.tool}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable" style="width: 20%; cursor:grab;"/>
+                    <img src="${formatSrc(step.src, timestamp)}" alt="Background" class="stage-bg" id="drag-bg"/>
+                    <img src="${formatSrc(step.tool, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="width: 20%; cursor:grab;"/>
                     <div id="drop-zone" class="drop-zone" aria-hidden="true"></div>
                 </div>
                 <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.initialInstruction}</div>
@@ -490,7 +594,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 setTimeout(() => {
                     tool.onclick = function () {
                         tool.style.display = 'none';
-                        document.getElementById('drag-bg').src = 'images/simulation/6.1.png';
+                        document.getElementById('drag-bg').src = getAssetSrc('images/simulation/6.1.png');
                         instructionElem.textContent = step.finalInstruction;
                         setInteractiveCompleted(step.id, true);
                         if (nextButton) nextButton.disabled = false;
@@ -517,7 +621,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${step.src}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;">${step.initialInstruction}</div>
@@ -684,7 +788,8 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    showCurrentStep();
+    // Start with preloading
+    preloadAssets();
 
     function renderResultStep() {
         if (nextButton) nextButton.disabled = true;
@@ -717,7 +822,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <tr>
                     <td style="text-align:center;">
                         <strong>${f.name}</strong><br>
-                        <img src="${f.img}" style="width:235px;">
+                        <img src="${getAssetSrc(f.img)}" style="width:235px;">
                     </td>
                     <td>${f.desc}</td>
                     <td>${f.app}</td>
