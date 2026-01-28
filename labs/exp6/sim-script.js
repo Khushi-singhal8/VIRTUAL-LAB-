@@ -436,6 +436,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 border-radius:12px;
                 padding:15px;
                 text-align:center;
+                width: calc(33.33% - 20px);
+                min-width: 250px;
+                flex: 0 1 auto;
+                box-sizing: border-box;
             ">
                 <div class="apparatus-img-box">
                     <img src="${getAssetSrc(item.img)}" alt="${item.name}">
@@ -452,10 +456,11 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="step-indicator">Step 1 of ${totalSteps}</div>
 
             <div style="
-                display:grid;
-                grid-template-columns: repeat(3, 1fr);
-                gap:20px;
-                margin-top:20px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 20px;
             ">
                 ${apparatusHTML}
             </div>
