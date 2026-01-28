@@ -181,8 +181,8 @@ document.addEventListener("DOMContentLoaded", function() {
         { id: 'step1', title: 'Clean workpiece', src: 'images/simulation/1.mp4', type: 'video' },
         { id: 'step2', title: 'Turn on shielding gas', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step3', title: 'Adjust voltage and wire feed rate', src: 'images/simulation/3.mp4', type: 'video' },
-        { id: 'step4', title: 'Extrude the electrode wire', src: 'images/simulation/4.mp4', type: 'video' },
         { id: 'step1_5', title: 'Attaching the ground clamp', src: 'images/simulation/1.5.mp4', type: 'video' },
+        { id: 'step4', title: 'Extrude the electrode wire', src: 'images/simulation/4.mp4', type: 'video' },
         { id: 'step5', title: 'Welding process', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'step6', title: 'Clean the weld to remove slag', src: 'images/simulation/6.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }

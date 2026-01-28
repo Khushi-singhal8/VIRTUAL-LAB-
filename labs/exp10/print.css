@@ -1,6 +1,7 @@
+/* labs/exp7/print.css */
+
 @media print {
 
-    /* keep page same */
     @page {
         size: A4 portrait;
         margin: 0;
@@ -8,34 +9,44 @@
 
     body {
         margin: 0 !important;
-        padding: 0 !important;
-        background: #fff;
+        padding: 20px !important;
+        background: #fff !important;
+
+        /* ⭐ CENTER FIX ONLY */
+        display: flex;
+        justify-content: center;
     }
 
-    /* ⭐ ONLY CONTAINER FIX */
-    .print-area,
-    .gif-wrapper {
-        height: auto !important;          /* allow full height */
-        overflow: visible !important;    /* remove scroll clipping */
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important; /* include padding inside width */
-
-        margin: 0 !important;
-        padding: 10px !important;
-    }
-
+    /* Hide simulation title */
+    .simulation-title,
+    h1,
     h2 {
-        margin-top: 0 !important;
+        display: none !important;
     }
 
-    /* hide non-print UI */
-    .no-print,
+    /* Hide buttons */
+    button,
     .button-container,
+    .result-mode button,
+    button[onclick*="simulation.html"] {
+        display: none !important;
+    }
+
+    /* Hide other UI */
     .step-indicator,
     .drag-instructions,
-    .simulation-title,
-    button {
+    .navigation,
+    .controls,
+    .no-print {
         display: none !important;
+    }
+
+    /* ⭐ ONLY CENTER THE CONTAINER */
+    .print-area,
+    .gif-wrapper,
+    .content,
+    .container {
+        width: 90% !important;      /* smaller than 100% */
+        margin: 0 auto !important; /* center horizontally */
     }
 }
