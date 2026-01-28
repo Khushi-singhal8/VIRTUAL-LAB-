@@ -197,9 +197,9 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'apparatus', title: 'Apparatus Used', type: 'apparatus' },
         { id: 'step0', title: 'Align the plates', src: 'images/simulation/0.5.mp4', type: 'video' },
         { id: 'step1', title: 'Clean workpiece using wire brush', src: 'images/simulation/1.mp4', type: 'video' },
-        { id: 'step1_5', title: 'Attaching the ground clamp', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step2', title: 'Set current', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step3', title: 'Setup shielding gas', src: 'images/simulation/3.mp4', type: 'video' },
+        { id: 'step1_5', title: 'Attaching the ground clamp', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step4', title: 'Welding', src: 'images/simulation/4.mp4', type: 'video' },
         { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
@@ -218,12 +218,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         step1: {
             now: "Drag the wire brush and place it on the metal surface to remove dust, rust, and impurities.",
-            next: "Once the surface is clean, we will attach the ground clamp."
+            next: "Once the surface is clean, we will set the current."
         },
 
         step1_5: {
             now: "Click to attach the ground clamp to the workpiece.",
-            next: "Set the welding current."
+            next: "Start the welding process."
         },
 
         step2: {
@@ -233,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         step3: {
             now: "Set the shielding gas flow rate to 10 LPM (Liters Per Minute) to protect the weld area.",
-            next: "Start the welding process."
+            next: "Attach the clamp to the workpiece."
         },
 
         step4: {
