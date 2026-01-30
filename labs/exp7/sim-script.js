@@ -1004,7 +1004,7 @@ document.addEventListener("DOMContentLoaded", function () {
         setInteractiveCompleted(step.id, false);
         if (nextButton) nextButton.disabled = true;
 
-        const dragTarget = { x: 0.3, y: 0.6 };
+        const dragTarget = { x: 0.32, y: 0.6 };
         const tolerancePx = 80;
 
         gifContainer.innerHTML = `
@@ -1286,7 +1286,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
@@ -1442,7 +1442,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
                 </div>
                 
                 <div id="step1_5-instruction" class="drag-instructions">Drag the tool to the plate edge.</div>
@@ -1834,7 +1834,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
                 </div>
                 
                 <div id="step7-instruction" class="drag-instructions">Drag the chipping hammer to the weld to remove slag.</div>
@@ -2139,7 +2139,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
             </div>
 
-            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
+            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
                 <tbody>
 
                     <tr>
@@ -2154,6 +2154,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
                         <td style="border:1px solid #000; padding:10px 15px;">ER70S-6</td>
+                    </tr>
+
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
                     </tr>
 
                     <tr>
@@ -2182,11 +2187,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
                         <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
-                    </tr>
-
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
-                        <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
                     </tr>
 
                     <tr>

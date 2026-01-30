@@ -202,15 +202,19 @@ document.addEventListener("DOMContentLoaded", function() {
         },
         step1: {
             now: "Drag the wire brush and place it on the metal surface to remove dust, rust, and impurities.",
-            next: "Turn on the shielding gas."
+            next: "Adjust voltage and wire feed."
+        },
+        step1_5: {
+            now: "Attach ground clamp to the workpiece to complete the electrical circuit.",
+            next: "Adjust shielding gas flow rate."
         },
         step2: {
             now: "Click to turn on the shielding gas to protect the weld area.",
-            next: "Adjust the voltage."
+            next: "Extrude the electrode wire."
         },
         step3: {
             now: "Click to adjust the voltage controls for the welding process.",
-            next: "Extrude the electrode wire."
+            next: "Attach ground clamp."
         },
         step4: {
             now: "Click to extrude the electrode wire.",
@@ -317,7 +321,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 </p>
             </div>
 
-            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000;">
+            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
                 <tbody>
 
                     <!-- Welding Parameters -->
@@ -452,7 +456,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 2, x: 0.210383, y: 0.570735, w: 0.163934, h: 0.291439, instruction: 'Click to align second plate.' }
             ],
             step1: { x: 0.6506482281763181, y: 0.29908199176338446, w: 0.28988764044943816, h: 0.2500001497566455, instruction:'Click brush to proceed.' },
-            step2: { x: 0.330000, y: 0.043457, w: 0.362222, h: 0.242963, instruction:'Set pressure of shielding gas to 10LPM{liters per minute.' },
+            step2: { x: 0.330000, y: 0.043457, w: 0.362222, h: 0.242963, instruction:'Set pressure of shielding gas to 10 LPM (liters per minute).' },
             step3: [
                 { time: 0, x: 0.445556, y: 0.647901, w: 0.044444, h: 0.079012, instruction: 'Click on the yellow knob to set the voltage to 22V.' },
                 { time: 2.5, x: 0.445556, y: 0.719012, w: 0.044444, h: 0.079012, instruction: 'Click on the red knob to set the wire feed rate to 80mm/s.' }
@@ -1076,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline></video>
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions"></div>

@@ -213,27 +213,27 @@ document.addEventListener("DOMContentLoaded", function () {
 
         step0: {
             now: "Click on both metal plates one by one to align them properly before welding.",
-            next: "Proceed to clean the metal surface."
+            next: "Clean the metal surface."
         },
 
         step1: {
             now: "Drag the wire brush and place it on the metal surface to remove dust, rust, and impurities.",
-            next: "Once the surface is clean, we will set the current."
+            next: "Set the current."
         },
 
         step1_5: {
             now: "Click to attach the ground clamp to the workpiece.",
-            next: "Start the welding process."
+            next: "Adjust shielding gas flow rate"
         },
 
         step2: {
             now: "Click on the control and adjust the welding current to 60 Amperes (60A).",
-            next: "Adjust the shielding gas supply."
+            next: "Attach the ground clamp."
         },
 
         step3: {
             now: "Set the shielding gas flow rate to 10 LPM (Liters Per Minute) to protect the weld area.",
-            next: "Attach the clamp to the workpiece."
+            next: "Start welding process."
         },
 
         step4: {
@@ -848,7 +848,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline></video>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions"></div>

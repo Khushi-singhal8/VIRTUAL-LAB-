@@ -17,13 +17,6 @@
         justify-content: center;
     }
 
-    /* Hide simulation title */
-    .simulation-title,
-    h1,
-    h2 {
-        display: none !important;
-    }
-
     /* Hide buttons */
     button,
     .button-container,

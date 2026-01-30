@@ -526,7 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
-                    <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
+                    <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 15%; right: 70%;"/>
 
                     <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                     <div id="step4_5-drop-zone2" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
@@ -1312,7 +1312,7 @@ function renderStep3_2(step, timestamp) {
     setInteractiveCompleted(step.id, false);
     if (nextButton) nextButton.disabled = true;
 
-    const dragTarget = { x: 0.3, y: 0.6 };
+    const dragTarget = { x: 0.32, y: 0.6 };
     const tolerancePx = 80;
 
     gifContainer.innerHTML = `
@@ -2091,6 +2091,10 @@ function renderResultStep() {
                             <td style="border:1px solid #000; padding:10px 15px;">Borax</td>
                         </tr>
                         <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
+                        </tr>
+                        <tr>
                             <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
                         </tr>
                         <tr>
@@ -2111,10 +2115,6 @@ function renderResultStep() {
                         <tr>
                             <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
                             <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
                         </tr>
                         <tr>
                             <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
