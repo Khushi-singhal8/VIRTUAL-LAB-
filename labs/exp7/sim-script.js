@@ -267,7 +267,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         step2: {
             now: "Click the highlighted areas to align plates.",
-            next: "Ignite the welding flame."
+            next: "Adjust gas pressure."
         },
         step3_1: {
             now: "Follow the steps to set pressure and open acetylene valve.",
@@ -454,8 +454,6 @@ document.addEventListener("DOMContentLoaded", function () {
             renderStep4DragDrop(step, timestamp);
         } else if (step.id === 'step4_5') {
             renderStep4_5DragDrop(step, timestamp);
-        } else if (step.id === 'step6') {
-            renderStep6DragDrop(step, timestamp);
         } else if (step.id === 'step7') {
             renderStep7DragDrop(step, timestamp);
         } else if (step.id === 'step8') {
