@@ -2229,6 +2229,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     `;
 
+    
+
         if (nextButton) nextButton.disabled = true;
     }
 
