@@ -139,6 +139,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Step 3
         "images/simulation/3.1.mp4",
         "images/simulation/3.2.mp4",
+        "images/simulation/3.1.5.mp4",
         "images/simulation/3.png",
         "images/simulation/3.1.png",
         "images/simulation/3-tool.png",
@@ -294,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
             next: "File the edges."
         },
         step8: {
-            now: "Drag the filing tool tool to stasrt filing edges.",
+            now: "Drag the filing tool tool to start filing edges.",
             next: "View results."
         }
 
@@ -1014,6 +1015,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3_2-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
                     <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
+
+                <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                    <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" style="width:100%; height:100%;" playsinline></video>
+                </div>
+                
                 <div id="step3_2-instruction" class="drag-instructions">Drag the ignitor to the torch.</div>
             </div>
         `;
@@ -1023,6 +1029,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const dropZone = document.getElementById('step3_2-drop-zone');
         const dragBg = dragStage.querySelector('.stage-bg');
         const instructionElem = document.getElementById('step3_2-instruction');
+
+        const playStage = document.getElementById('step3_2-play-stage');
+        const video = document.getElementById('step3_2-video');
 
         function setDropZoneLayout() {
             const rect = dragStage.getBoundingClientRect();
@@ -1078,8 +1087,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const stageRect = dragStage.getBoundingClientRect();
             const toolRect = draggable.getBoundingClientRect();
-            const anchorX = 0.8;
-            const anchorY = 0.1;
+            const anchorX = 0.6;
+            const anchorY = 0.2;
             const toolCenter = {
                 x: toolRect.left - stageRect.left + toolRect.width * anchorX,
                 y: toolRect.top - stageRect.top + toolRect.height * anchorY
@@ -1092,6 +1101,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
+                // Snap to target
+                const zoneCenterRelX = dropZone.offsetLeft + dropZone.offsetWidth / 2;
+                const zoneCenterRelY = dropZone.offsetTop + dropZone.offsetHeight / 2;
+
+                draggable.style.left = (zoneCenterRelX - draggable.offsetWidth * anchorX) + 'px';
+                draggable.style.top = (zoneCenterRelY - draggable.offsetHeight * anchorY) + 'px';
+
                 dropZone.style.display = 'none';
                 instructionElem.textContent = 'Click the ignitor to ignite the flame.';
 
@@ -1111,11 +1127,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onToolClick() {
-            draggable.style.display = 'none';
-            dragBg.src = formatSrc('images/simulation/3.1.png', timestamp);
-            setInteractiveCompleted(step.id, true);
-            instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
-            if (nextButton) nextButton.disabled = false;
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+            instructionElem.textContent = "Igniting...";
+
+            video.onended = () => {
+                setInteractiveCompleted(step.id, true);
+                instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
+                if (nextButton) nextButton.disabled = false;
+            };
+
+            video.play();
         }
 
         draggable.addEventListener('mousedown', onPointerDown);
@@ -1989,7 +2011,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step8-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step8-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step8-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
                 </div>
                 
                 <div id="step8-instruction" class="drag-instructions">Drag the filing tool to its highlighted position for cleaning.</div>

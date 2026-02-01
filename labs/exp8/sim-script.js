@@ -103,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/3.1.mp4", // Phase 1
         "images/simulation/3.png",     // Phase 2 BG
         "images/simulation/3.1.png", // [NEW] Phase 2 ignited
+        "images/simulation/3.1.5.mp4", // [NEW] Phase 2 ignited
         "images/simulation/3-tool.png",// Phase 2 Tool
         "images/simulation/3.2.mp4",   // Phase 3
 
@@ -236,7 +237,7 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         step2_5: {
             now: "Flux coating",
-            next: "Ignite the flame."
+            next: "Adjust the pressure."
         },
         step3_1: {
             now: "Follow the steps to set pressure and open acetylene valve.",
@@ -1309,13 +1310,13 @@ function renderStep3_1(step, timestamp) {
 }
 
 function renderStep3_2(step, timestamp) {
-    setInteractiveCompleted(step.id, false);
-    if (nextButton) nextButton.disabled = true;
+        setInteractiveCompleted(step.id, false);
+        if (nextButton) nextButton.disabled = true;
 
-    const dragTarget = { x: 0.32, y: 0.6 };
-    const tolerancePx = 80;
+        const dragTarget = { x: 0.32, y: 0.6 };
+        const tolerancePx = 80;
 
-    gifContainer.innerHTML = `
+        gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
@@ -1324,128 +1325,149 @@ function renderStep3_2(step, timestamp) {
                     <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3_2-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
                     <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
                 </div>
+
+                <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                    <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" style="width:100%; height:100%;" playsinline></video>
+                </div>
+                
                 <div id="step3_2-instruction" class="drag-instructions">Drag the ignitor to the torch.</div>
             </div>
         `;
 
-    const dragStage = document.getElementById('step3_2-drag-stage');
-    const draggable = document.getElementById('step3_2-draggable');
-    const dropZone = document.getElementById('step3_2-drop-zone');
-    const dragBg = dragStage.querySelector('.stage-bg');
-    const instructionElem = document.getElementById('step3_2-instruction');
+        const dragStage = document.getElementById('step3_2-drag-stage');
+        const draggable = document.getElementById('step3_2-draggable');
+        const dropZone = document.getElementById('step3_2-drop-zone');
+        const dragBg = dragStage.querySelector('.stage-bg');
+        const instructionElem = document.getElementById('step3_2-instruction');
 
-    function setDropZoneLayout() {
-        const rect = dragStage.getBoundingClientRect();
-        const w = rect.width * 0.10;
-        const h = w;
-        const tx = rect.width * dragTarget.x;
-        const ty = rect.height * dragTarget.y;
-        dropZone.style.width = w + 'px';
-        dropZone.style.height = h + 'px';
-        dropZone.style.left = (tx - w / 2) + 'px';
-        dropZone.style.top = (ty - h / 2) + 'px';
-    }
+        const playStage = document.getElementById('step3_2-play-stage');
+        const video = document.getElementById('step3_2-video');
 
-    if (dragBg.complete && dragBg.naturalWidth) setDropZoneLayout();
-    else dragBg.onload = setDropZoneLayout;
-    window.addEventListener('resize', setDropZoneLayout);
-
-    let dragging = false;
-    let startX = 0, startY = 0;
-
-    function onPointerDown(e) {
-        dragging = true;
-        draggable.classList.add('dragging');
-        const rect = draggable.getBoundingClientRect();
-        const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-        const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-        startX = clientX - rect.left;
-        startY = clientY - rect.top;
-        e.preventDefault();
-    }
-
-    function onPointerMove(e) {
-        if (!dragging) return;
-        const stageRect = dragStage.getBoundingClientRect();
-        const toolRect = draggable.getBoundingClientRect();
-        const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-        const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-
-        let newLeft = clientX - stageRect.left - startX;
-        let newTop = clientY - stageRect.top - startY;
-
-        newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-        newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
-
-        draggable.style.left = newLeft + 'px';
-        draggable.style.top = newTop + 'px';
-    }
-
-    function onPointerUp() {
-        if (!dragging) return;
-        dragging = false;
-        draggable.classList.remove('dragging');
-
-        const stageRect = dragStage.getBoundingClientRect();
-        const toolRect = draggable.getBoundingClientRect();
-        const anchorX = 0.8;
-        const anchorY = 0.1;
-        const toolCenter = {
-            x: toolRect.left - stageRect.left + toolRect.width * anchorX,
-            y: toolRect.top - stageRect.top + toolRect.height * anchorY
-        };
-
-        const dzRect = dropZone.getBoundingClientRect();
-        const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
-        const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
-
-        const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
-
-        if (dist < tolerancePx) {
-            dropZone.style.display = 'none';
-            instructionElem.textContent = 'Click the ignitor to ignite the flame.';
-
-            draggable.style.cursor = 'pointer';
-            draggable.removeEventListener('mousedown', onPointerDown);
-            draggable.removeEventListener('touchstart', onPointerDown);
-            window.removeEventListener('mousemove', onPointerMove);
-            window.removeEventListener('touchmove', onPointerMove);
-            window.removeEventListener('mouseup', onPointerUp);
-            window.removeEventListener('touchend', onPointerUp);
-
-            // Delay adding click listener to avoid 'click' from mouseup triggering immediately
-            setTimeout(() => {
-                draggable.addEventListener('click', onToolClick);
-            }, 100);
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            const w = rect.width * 0.10;
+            const h = w;
+            const tx = rect.width * dragTarget.x;
+            const ty = rect.height * dragTarget.y;
+            dropZone.style.width = w + 'px';
+            dropZone.style.height = h + 'px';
+            dropZone.style.left = (tx - w / 2) + 'px';
+            dropZone.style.top = (ty - h / 2) + 'px';
         }
+
+        if (dragBg.complete && dragBg.naturalWidth) setDropZoneLayout();
+        else dragBg.onload = setDropZoneLayout;
+        window.addEventListener('resize', setDropZoneLayout);
+
+        let dragging = false;
+        let startX = 0, startY = 0;
+
+        function onPointerDown(e) {
+            dragging = true;
+            draggable.classList.add('dragging');
+            const rect = draggable.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging) return;
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = draggable.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+
+            draggable.style.left = newLeft + 'px';
+            draggable.style.top = newTop + 'px';
+        }
+
+        function onPointerUp() {
+            if (!dragging) return;
+            dragging = false;
+            draggable.classList.remove('dragging');
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = draggable.getBoundingClientRect();
+            const anchorX = 0.6;
+            const anchorY = 0.2;
+            const toolCenter = {
+                x: toolRect.left - stageRect.left + toolRect.width * anchorX,
+                y: toolRect.top - stageRect.top + toolRect.height * anchorY
+            };
+
+            const dzRect = dropZone.getBoundingClientRect();
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                // Snap to target
+                const zoneCenterRelX = dropZone.offsetLeft + dropZone.offsetWidth / 2;
+                const zoneCenterRelY = dropZone.offsetTop + dropZone.offsetHeight / 2;
+
+                draggable.style.left = (zoneCenterRelX - draggable.offsetWidth * anchorX) + 'px';
+                draggable.style.top = (zoneCenterRelY - draggable.offsetHeight * anchorY) + 'px';
+
+                dropZone.style.display = 'none';
+                instructionElem.textContent = 'Click the ignitor to ignite the flame.';
+
+                draggable.style.cursor = 'pointer';
+                draggable.removeEventListener('mousedown', onPointerDown);
+                draggable.removeEventListener('touchstart', onPointerDown);
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+
+                // Delay adding click listener to avoid 'click' from mouseup triggering immediately
+                setTimeout(() => {
+                    draggable.addEventListener('click', onToolClick);
+                }, 100);
+            }
+        }
+
+        function onToolClick() {
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+            instructionElem.textContent = "Igniting...";
+
+            video.onended = () => {
+                setInteractiveCompleted(step.id, true);
+                instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
+                if (nextButton) nextButton.disabled = false;
+            };
+
+            video.play();
+        }
+
+        draggable.addEventListener('mousedown', onPointerDown);
+        draggable.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        cleanupCurrent = function () {
+            try {
+                window.removeEventListener('resize', setDropZoneLayout);
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+                draggable.removeEventListener('click', onToolClick);
+            } catch (_) { }
+        };
     }
-
-    function onToolClick() {
-        draggable.style.display = 'none';
-        dragBg.src = formatSrc('images/simulation/3.1.png', timestamp);
-        setInteractiveCompleted(step.id, true);
-        instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance[step.id].next;
-        if (nextButton) nextButton.disabled = false;
-    }
-
-    draggable.addEventListener('mousedown', onPointerDown);
-    draggable.addEventListener('touchstart', onPointerDown);
-    window.addEventListener('mousemove', onPointerMove);
-    window.addEventListener('touchmove', onPointerMove);
-    window.addEventListener('mouseup', onPointerUp);
-    window.addEventListener('touchend', onPointerUp);
-
-    cleanupCurrent = function () {
-        try {
-            window.removeEventListener('resize', setDropZoneLayout);
-            window.removeEventListener('mousemove', onPointerMove);
-            window.removeEventListener('touchmove', onPointerMove);
-            window.removeEventListener('mouseup', onPointerUp);
-            window.removeEventListener('touchend', onPointerUp);
-            draggable.removeEventListener('click', onToolClick);
-        } catch (_) { }
-    };
-}
 
 function renderStep3_3(step, timestamp) {
     setInteractiveCompleted(step.id, false);
