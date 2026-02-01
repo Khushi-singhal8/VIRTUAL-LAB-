@@ -152,6 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Step 4.5
         "images/simulation/4.5.mp4",
+        "images/simulation/4.5.png",
 
         // Step 7
         "images/simulation/7.mp4",
@@ -517,7 +518,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (nextButton) nextButton.disabled = true;
 
         const videoSrc = 'images/simulation/4.5.mp4';
-        const bgPath = 'images/simulation/4.png';
+        const bgPath = 'images/simulation/4.5.png';
         const tool1Path = 'images/simulation/4-tool1.png';
         const tool2Path = 'images/simulation/4-tool2.png';
 
