@@ -529,8 +529,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
                     <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 15%; right: 70%;"/>
 
-                    <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
-                    <div id="step4_5-drop-zone2" class="drop-zone" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" ></div>
+                    <div id="step4_5-drop-zone2" class="drop-zone" ></div>
                 </div>
 
                 <!-- Video Phase -->
@@ -887,7 +887,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
-                    <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" ></div>
                 </div>
 
                 <!-- Video Phase -->
@@ -1043,7 +1043,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="drag-stage" id="step2_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
-                    <div id="step2_5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step2_5-drop-zone" class="drop-zone" aria-hidden="true" ></div>
                 </div>
 
                 <!-- Video Phase -->
@@ -1323,7 +1323,7 @@ function renderStep3_2(step, timestamp) {
                 <div class="drag-stage" id="step3_2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc('images/simulation/3.png', timestamp)}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3_2-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
-                    <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" ></div>
                 </div>
 
                 <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
@@ -1611,7 +1611,7 @@ function renderStep1_5DragDrop(step, timestamp) {
                 <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
-                    <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" ></div>
                 </div>
 
                 <!-- Video Phase -->
@@ -1768,7 +1768,7 @@ function renderStep4DragDrop(step, timestamp) {
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
                     
-                    <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" ></div>
                 </div>
 
                 <!-- Video Phase -->
@@ -1935,7 +1935,7 @@ function renderStep5DragDrop(step, timestamp) {
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     
-                    <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" ></div>
                 </div>
 
                 <!-- Video Phase -->
