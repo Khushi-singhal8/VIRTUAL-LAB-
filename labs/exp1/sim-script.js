@@ -305,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     setupSubstep();
                 } else {
                     instructionElem.textContent = s.instruction || 'Step complete!';
-                    if (nextButton) nextButton.disabled = true;
+                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
                 }
             }
         }
@@ -356,52 +356,74 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    function renderSimpleVideo(step, timestamp) {
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="simple-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
-                </div>
-                <div id="play-instruction" class="drag-instructions"></div>
-            </div>`;
-        const video = document.getElementById('simple-video');
-        const inst = document.getElementById('play-instruction');
-        if (inst) inst.style.whiteSpace = 'pre-line';
-        video.addEventListener('loadedmetadata', () => { video.play().catch(()=>{}); }, { once:true });
-        video.addEventListener('ended', () => { if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1); }, { once:true });
-        cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_){} };
-    }
-
-    /* ================= RESULT PAGE ================= */
-function renderResultPage() {
-    const step = steps[currentStepIndex]; // should be step5
-    if (!gifContainer) return;
+   function renderSimpleVideo(step, timestamp) {
 
     gifContainer.innerHTML = `
-        <div class="gif-wrapper" style="text-align:center;">
-            <h2>${step.title}</h2>
-            <p style="white-space: pre-line;">${step.instruction}</p>
-            <button onclick="printResults()" style="padding:10px 20px; font-size:16px;">🖨️ Print Results</button>
+        <div class="gif-wrapper">
+            <h3>${step.title}</h3>
+
+            <div class="step-indicator">
+                Step ${currentStepIndex + 1} of ${totalSteps}
+            </div>
+
+            <div class="play-stage" id="play-stage">
+                <video
+                    id="simple-video"
+                    src="${step.src}?t=${timestamp}"
+                    style="width:100%; height:100%;"
+                    playsinline
+                    muted>
+                </video>
+            </div>
+
+            <div id="play-instruction" class="drag-instructions"></div>
         </div>
     `;
 
-    if (nextButton) nextButton.disabled = true; // no next step after result
-    if (prevButton) prevButton.disabled = false;
+    const video = document.getElementById('simple-video');
+    const inst  = document.getElementById('play-instruction');
+
+    if (inst) {
+        inst.style.whiteSpace = 'pre-line';
+    }
+
+    // Auto play when metadata loads
+    video.addEventListener(
+        'loadedmetadata',
+        () => {
+            video.play().catch(() => {});
+        },
+        { once: true }
+    );
+
+    // Enable next button when video ends
+    video.addEventListener(
+        'ended',
+        () => {
+            if (nextButton) {
+                nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            }
+        },
+        { once: true }
+    );
+
+    // Cleanup function
+    cleanupCurrent = () => {
+        try {
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+        } catch (_) {}
+    };
 }
 
 
-/* ================= PREV BUTTON ================= */
+/* =========================
+   Navigation Buttons
+   ========================= */
 
 if (prevButton) {
     prevButton.addEventListener('click', () => {
-        if (currentStepIndex === totalSteps - 1) {
-            // coming back from result page → go to last video step
-            currentStepIndex = totalSteps - 2;
-            showCurrentStep();
-            return;
-        }
         if (currentStepIndex > 0) {
             currentStepIndex--;
             showCurrentStep();
@@ -409,24 +431,19 @@ if (prevButton) {
     });
 }
 
-
-
-/* ================= NEXT BUTTON ================= */
 if (nextButton) {
     nextButton.addEventListener('click', () => {
-        if (currentStepIndex >= totalSteps - 1) {
-            // last step → render result page
-            renderResultPage();
-            return;
+        if (currentStepIndex < totalSteps - 1) {
+            currentStepIndex++;
+            showCurrentStep();
         }
-
-        currentStepIndex++;
-        showCurrentStep();
     });
 }
 
 
-/* ================= START ================= */
+/* =========================
+   Initial Load
+   ========================= */
 
 showCurrentStep();
 });
