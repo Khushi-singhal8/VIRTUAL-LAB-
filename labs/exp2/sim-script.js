@@ -73,85 +73,156 @@ document.addEventListener("DOMContentLoaded", function() {
                 'Vernier reading = 7 divisions → 7 × 0.002 = 0.014 mm \n' +
                 'Final reading = 0.75 + 0.1 + 0.014 = 0.864 mm '
         },
-        {
+       {
     id: 'step7',
     title: '7. Final Result',
     type: 'final',
     instruction: 'Click the button below to print the results.',
     action: 'print',
+
     content: `
         <div style="overflow-y:auto; padding:20px; font-family:Arial, sans-serif;">
-            <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
+
+            <h2 style="text-align:center; margin-bottom:20px;">
+                Measurement Results
+            </h2>
+
             <hr style="margin-bottom:30px;">
 
-            <!-- Vernier Caliper Section -->
-            <div style="text-align:center; margin-bottom:20px;">
-                <img src="images/vernier.png" 
-                     alt="Vernier Caliper" 
-                     style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
-                <p style="font-size:14px; margin-top:6px;">Vernier Caliper</p>
-            </div>
 
-            <!-- Vernier Caliper Table -->
-            <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
-                <tbody>
-                    <tr style="background:#f0f0f0; font-weight:bold;">
-                        <td colspan="2" style="padding:10px; text-align:center;">Vernier Caliper Details</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Vernier Scale Divisions</td>
-                        <td style="border:1px solid #000; padding:10px;">50 divisions</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Least Count</td>
-                        <td style="border:1px solid #000; padding:10px;">0.02 mm</td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- ================================================= -->
+            <!-- THICKNESS OF SHEET -->
+            <!-- ================================================= -->
 
-            <!-- Workpiece Section -->
-            <div style="text-align:center; margin-bottom:20px;">
-                <img src="images/wood.png" 
-                     alt="Workpiece" 
+            <h3 style="text-align:center;">Thickness of Sheet</h3>
+
+            <p style="font-size:14px; line-height:1.7;">
+                Sleeve reading = 2 mm <br><br>
+
+                Thimble reading = 4 × 0.02 = 0.08 mm
+            </p>
+
+            <!-- Thimble Image -->
+            <div style="text-align:center; margin:10px 0;">
+                <img src="images/1.png"
                      style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
-                <p style="font-size:14px; margin-top:6px;">Workpiece</p>
             </div>
 
-            <!-- Workpiece Table -->
-            <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
-                <tbody>
-                    <tr style="background:#f0f0f0; font-weight:bold;">
-                        <td colspan="2" style="padding:10px; text-align:center;">Workpiece Measurements</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Outer Diameter</td>
-                        <td style="border:1px solid #000; padding:10px;">30.1 mm</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Inner Diameter</td>
-                        <td style="border:1px solid #000; padding:10px;">25.9 mm</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Depth</td>
-                        <td style="border:1px solid #000; padding:10px;">30.06 mm</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Thickness</td>
-                        <td style="border:1px solid #000; padding:10px;">2.1 mm</td>
-                    </tr>
-                </tbody>
+            <p style="font-size:14px; line-height:1.7;">
+                Vernier reading = 3 × 0.002 = 0.006 mm
+            </p>
+
+            <!-- Vernier Image -->
+            <div style="text-align:center; margin:10px 0;">
+                <img src="images/2.png"
+                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <p style="font-size:14px;">
+                <b>Total = 2 + 0.08 + 0.006 = 2.086 mm</b>
+            </p>
+            <div style="text-align:center; margin:10px 0;">
+                <img src="images/3.png"
+                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <!-- Table -->
+            <table style="border-collapse:collapse; width:100%; max-width:650px; margin:20px auto 40px; border:1px solid #000; font-size:14px;">
+                <tr style="background:#f0f0f0; font-weight:bold;">
+                    <td style="border:1px solid #000; padding:8px;">Trial</td>
+                    <td style="border:1px solid #000; padding:8px;">Sleeve (mm)</td>
+                    <td style="border:1px solid #000; padding:8px;">Thimble Div</td>
+                    <td style="border:1px solid #000; padding:8px;">Vernier Div</td>
+                    <td style="border:1px solid #000; padding:8px;">LC (mm)</td>
+                    <td style="border:1px solid #000; padding:8px;">VLC (mm)</td>
+                    <td style="border:1px solid #000; padding:8px;">Final Reading (mm)</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:8px;">1</td>
+                    <td style="border:1px solid #000; padding:8px;">2.000</td>
+                    <td style="border:1px solid #000; padding:8px;">4</td>
+                    <td style="border:1px solid #000; padding:8px;">3</td>
+                    <td style="border:1px solid #000; padding:8px;">0.02</td>
+                    <td style="border:1px solid #000; padding:8px;">0.002</td>
+                    <td style="border:1px solid #000; padding:8px;">2.086</td>
+                </tr>
             </table>
 
-            <!-- Print Button -->
+
+
+            <!-- ================================================= -->
+            <!-- DIAMETER OF WIRE -->
+            <!-- ================================================= -->
+
+            <h3 style="text-align:center;">Diameter of Wire</h3>
+
+            <p style="font-size:14px; line-height:1.7;">
+                Sleeve reading = 0.75 mm <br><br>
+
+                Thimble reading = 5 × 0.02 = 0.1 mm
+            </p>
+
+            <!-- Thimble Image -->
+            <div style="text-align:center; margin:10px 0;">
+                <img src="images/4.png"
+                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <p style="font-size:14px; line-height:1.7;">
+                Vernier reading = 7 × 0.002 = 0.0014 mm
+            </p>
+
+            <!-- Vernier Image -->
+            <div style="text-align:center; margin:10px 0;">
+                <img src="images/5.png"
+                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <p style="font-size:14px;">
+                <b>Total = 0.75 + 0.1 + 0.0014 = 0.8514 mm</b>
+            </p>
+            <div style="text-align:center; margin:10px 0;">
+                <img src="images/6.png"
+                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+            </div>
+
+            <!-- Table -->
+            <table style="border-collapse:collapse; width:100%; max-width:650px; margin:20px auto 40px; border:1px solid #000; font-size:14px;">
+                <tr style="background:#f0f0f0; font-weight:bold;">
+                    <td style="border:1px solid #000; padding:8px;">Trial</td>
+                    <td style="border:1px solid #000; padding:8px;">Sleeve (mm)</td>
+                    <td style="border:1px solid #000; padding:8px;">Thimble Div</td>
+                    <td style="border:1px solid #000; padding:8px;">Vernier Div</td>
+                    <td style="border:1px solid #000; padding:8px;">LC (mm)</td>
+                    <td style="border:1px solid #000; padding:8px;">VLC (mm)</td>
+                    <td style="border:1px solid #000; padding:8px;">Final Reading (mm)</td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid #000; padding:8px;">1</td>
+                    <td style="border:1px solid #000; padding:8px;">0.75</td>
+                    <td style="border:1px solid #000; padding:8px;">5</td>
+                    <td style="border:1px solid #000; padding:8px;">7</td>
+                    <td style="border:1px solid #000; padding:8px;">0.02</td>
+                    <td style="border:1px solid #000; padding:8px;">0.002</td>
+                    <td style="border:1px solid #000; padding:8px;">0.8514</td>
+                </tr>
+            </table>
+
+
+
+            <!-- PRINT BUTTON -->
             <div style="text-align:center; margin-top:30px;">
-                <button onclick="window.print()" 
-                        style="padding:12px 24px; font-size:16px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:6px;">
+                <button onclick="window.print()"
+                        style="padding:12px 24px; font-size:16px; background:#007bff; color:white; border:none; border-radius:6px;">
                     🖨 Print Results
                 </button>
             </div>
+
         </div>
     `
 }
+
+
     ];
 
     let currentStepIndex = 0;
