@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     style.innerHTML = `
 .apparatus-img-box {
     width: 100%;
-    height: 190px;          /* ✅ increased */
+    height: 190px;
     border: 1px solid #ccc;
     border-radius: 6px;
     display: flex;
@@ -63,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const gifContainer = document.getElementById('gif-container');
     const currentStepElement = document.getElementById('current-step');
     const totalStepsElement = document.getElementById('total-steps');
-    const stepsList = document.getElementById('steps-list');
 
     let cleanupCurrent = null;
     let step1Completed = false;
@@ -306,23 +305,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let currentStepIndex = 0;
     const totalSteps = steps.length;
 
-    if (stepsList) {
-        stepsList.innerHTML = '';
-        steps.forEach((step, index) => {
-            const item = document.createElement('div');
-            item.className = 'step-item';
-            item.dataset.step = index + 1;
-            const titleDiv = document.createElement('div');
-            titleDiv.className = 'step-item-title';
-            titleDiv.innerHTML = `<h4 style="margin:0">${index + 1}. ${step.title}</h4>`;
-            item.appendChild(titleDiv);
-            item.setAttribute('aria-disabled', 'true');
-            item.style.cursor = 'default';
-            item.title = 'Use Previous/Next to navigate';
-            stepsList.appendChild(item);
-        });
-    }
-
     if (totalStepsElement) totalStepsElement.textContent = totalSteps;
 
     function clearCleanup() {
@@ -476,14 +458,6 @@ document.addEventListener("DOMContentLoaded", function () {
             //             nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
             // nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
         }
-
-        if (stepsList) {
-            const items = stepsList.querySelectorAll('.step-item');
-            items.forEach((itm, idx) => {
-                if (idx === currentStepIndex) itm.classList.add('active');
-                else itm.classList.remove('active');
-            });
-        }
     }
 
     function renderPlainVideoStep(step, timestamp) {
@@ -492,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
                 </div>
             </div>
         `;
@@ -533,13 +507,13 @@ document.addEventListener("DOMContentLoaded", function () {
                     <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
                     <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
 
-                    <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -100%; --arrow-left: 50%;"></div>
+                    <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -230%; --arrow-left: 100%;"></div>
                     <div id="step4_5-drop-zone2" class="drop-zone" style="--arrow-top: -250%; --arrow-left: 70%;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step4_5-instruction" class="drag-instructions">
@@ -560,7 +534,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step4_5-instruction');
 
         // Drop zone targets (same as step 4)
-        const target1Rel = { x: 0.46, y: 0.55 };
+        const target1Rel = { x: 0.5, y: 0.55 };
         const target2Rel = { x: 0.36, y: 0.55 };
         const tolerancePx = 80;
 
@@ -604,6 +578,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function onPointerDown(e) {
             if (e.target !== tool1 && e.target !== tool2) return;
+            dropZone1.classList.add('dragging-active');
+            dropZone2.classList.add('dragging-active');
 
             activeTool = e.target;
             dragging = true;
@@ -757,7 +733,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
@@ -888,7 +864,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="step3_1-play-stage">
-                    <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
                     <button id="step3_1-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="step3_1-instruction" class="drag-instructions"></div>
@@ -1018,9 +994,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
 
                 <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" style="width:100%; height:100%;" playsinline></video>
+                    <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" playsinline></video>
                 </div>
-                
+
                 <div id="step3_2-instruction" class="drag-instructions">Drag the ignitor to the torch.</div>
             </div>
         `;
@@ -1056,6 +1032,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             draggable.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const rect = draggable.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1173,7 +1150,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="step3_3-play-stage">
-                    <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
                     <button id="step3_3-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="step3_3-instruction" class="drag-instructions"></div>
@@ -1297,7 +1274,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
@@ -1307,9 +1284,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
-                
+
                 <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
             </div>
         `;
@@ -1350,6 +1327,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             fileTool.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const rect = fileTool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1453,7 +1431,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
@@ -1463,9 +1441,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
-                
+
                 <div id="step1_5-instruction" class="drag-instructions">Drag the tool to the plate edge.</div>
             </div>
         `;
@@ -1506,6 +1484,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             fileTool.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const rect = fileTool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1610,23 +1589,23 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
-                   <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2"class="draggable"style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 10%; right: 25%;"/>
+                   <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2"class="draggable"style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 10%; left: 10%;"/>
 
-                    <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -480%; --arrow-left: 620%;"></div>
+                    <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -398%; --arrow-left: 490%;"></div>
                     <div id="step4-drop-zone2" class="drop-zone" aria-hidden="true" style="--arrow-top: -280%; --arrow-left: 470%;"></div>
 
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
-                
+
                 <div id="step4-instruction" class="drag-instructions">
     Drag the torch to the highlighted starting position as shown.
 </div>
@@ -1646,7 +1625,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step4-instruction');
 
         // Drop zone targets for both tack weld positions
-        const target1Rel = { x: 0.46, y: 0.55 };
+        const target1Rel = { x: 0.5, y: 0.55 };
         const target2Rel = { x: 0.36, y: 0.55 };
         const tolerancePx = 80;
 
@@ -1695,6 +1674,8 @@ document.addEventListener("DOMContentLoaded", function () {
             activeTool = e.target;
             dragging = true;
             activeTool.classList.add('dragging');
+            dropZone1.classList.add('dragging-active');
+            dropZone2.classList.add('dragging-active');
 
             const rect = activeTool.getBoundingClientRect();
             const clientX = e.clientX ?? e.touches[0].clientX;
@@ -1730,6 +1711,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!dragging || !activeTool) return;
             dragging = false;
             activeTool.classList.remove('dragging');
+
+            // Remove arrow-hiding class from active tool's drop zone
+            // const activeDropZone = (activeTool === tool1) ? dropZone1 : dropZone2;
+            // activeDropZone.classList.remove('dragging-active');
 
             const stageRect = dragStage.getBoundingClientRect();
             const toolRect = activeTool.getBoundingClientRect();
@@ -1850,7 +1835,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step7-instruction" class="drag-instructions">Drag the chipping hammer to the weld to remove slag.</div>
@@ -1893,6 +1878,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             hammerTool.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const rect = hammerTool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1923,6 +1909,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!dragging) return;
             dragging = false;
             hammerTool.classList.remove('dragging');
+            // dropZone.classList.remove('dragging-active');
 
             const stageRect = dragStage.getBoundingClientRect();
             const hammerRect = hammerTool.getBoundingClientRect();
@@ -2007,7 +1994,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step8-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step8-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step8-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step8-instruction" class="drag-instructions">Drag the filing tool to its highlighted position for cleaning.</div>
@@ -2050,6 +2037,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             tool.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const rect = tool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -2080,6 +2068,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!dragging) return;
             dragging = false;
             tool.classList.remove('dragging');
+            // dropZone.classList.remove('dragging-active');
 
             const stageRect = dragStage.getBoundingClientRect();
             const toolRect = tool.getBoundingClientRect();

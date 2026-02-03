@@ -53,14 +53,16 @@
         .play-stage {
             position: relative;
             width: 100%;
-            border-radius: 8px;
+            /*border-radius: 8px;*/
             overflow: hidden;
         }
 
         .play-stage video {
             display: block;
-            width: 100%;
+            width: 99.9%;
             height: auto;
+            background-color: transparent;
+            object-fit: cover;
         }
 
         .play-hotspot {
@@ -217,37 +219,6 @@
             box-shadow: -1px 0 0 #ddd;
         }
 
-        .step-item {
-            padding: 10px;
-            cursor: default;
-            border-left: 4px solid transparent;
-            margin-bottom: 8px;
-        }
-
-        .step-item.active {
-            background-color: #eafbea;
-            border-left-color: #4CAF50;
-        }
-
-        .step-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .step-item-title h3 {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .wood-hotspot {
-            background-color: transparent !important;
-            border: none !important;
-            opacity: 0 !important;
-            pointer-events: auto;
-        }
-
-        .wood-hotspot:hover {
-            background-color: transparent !important;
-        }
     </style>
     <style>
         /* Overrides: larger media like exp1/exp2 and keep controls visible */
@@ -267,12 +238,6 @@
             object-fit: contain;
         }
 
-        .play-stage video {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
-
         .button-container {
             position: sticky;
             bottom: 0;
@@ -284,11 +249,6 @@
         /* Ensure generic media wrapper boxes auto-size and avoid clipping */
         .gif-wrapper>div[style*="height: 400px"] {
             height: auto !important;
-        }
-
-        .gif-wrapper video {
-            width: 100%;
-            height: auto;
         }
 
         /* Ensure drag stage also scales properly */
@@ -372,151 +332,16 @@
             animation: bounceArrow 1s infinite;
         }
 
-        @keyframes pulseHotspot {
-            0% {
-                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
-            }
-
-            50% {
-                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
-            }
-
-            100% {
-                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
-            }
-        }
-
-
-        @keyframes bounceArrow {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(8px);
-            }
+        .drop-zone.dragging-active::before {
+            display: none !important;
+            content: "";
+            animation: none;
         }
 
         .drop-zone.debug-highlight {
             background: rgba(255, 0, 0, 0.281);
             border: 3px solid red;
             animation: none;
-        }
-
-
-
-        /* Material and Thickness Selection Styles */
-        .selection-container {
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-        }
-
-        .selection-section {
-            margin-bottom: 25px;
-        }
-
-        .selection-section h4 {
-            margin: 0 0 12px 0;
-            color: #333;
-            font-size: 18px;
-        }
-
-        .material-options {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .material-card {
-            flex: 1;
-            min-width: 200px;
-            max-width: 280px;
-            padding: 20px;
-            background: white;
-            border: 3px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .material-card:hover {
-            border-color: #2196F3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .material-card.selected {
-            border-color: #4CAF50;
-            background-color: #e8f5e9;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-        }
-
-        .material-card h5 {
-            margin: 10px 0 5px 0;
-            color: #333;
-            font-size: 20px;
-        }
-
-        .material-card p {
-            margin: 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .material-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .thickness-options {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .thickness-btn {
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            background: white;
-            border: 3px solid #ddd;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 120px;
-        }
-
-        .thickness-btn:hover {
-            border-color: #2196F3;
-            background-color: #e3f2fd;
-        }
-
-        .thickness-btn.selected {
-            border-color: #4CAF50;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .selection-summary {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3e0;
-            border-left: 4px solid #ff9800;
-            border-radius: 4px;
-            font-size: 16px;
-            color: #e65100;
-        }
-
-        .selection-summary.complete {
-            background: #e8f5e9;
-            border-left-color: #4CAF50;
-            color: #2e7d32;
         }
     </style>
 

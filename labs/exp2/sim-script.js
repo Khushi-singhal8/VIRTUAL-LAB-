@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", function() {
             src: 'images/simulation/1.mp4',
             type: 'video',
             substeps: [
-                { time: 3.7, hotspot: {x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778}, instruction: 'Rotate the thimble and open micrometer' },
-                { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Place sheet between anvil and spindle' },
-                { time: 10.6, hotspot: {x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Rotate thimble until slip click' },
-                { time: 11.7, hotspot: {x: 0.7797125, y: 0.5840888888888889, w: 0.077300625, h: 0.19304088888888887}, instruction: 'Rotate ratchet for fine tuning' },
-                { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' }
+                { time: 3.7, hotspot: {x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778}, instruction: 'Click here to rotate the thimble and open micrometer' },
+                { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Click here to place sheet between anvil and spindle' },
+                { time: 10.6, hotspot: {x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Click here to rotate thimble until slip click' },
+                { time: 11.7, hotspot: {x: 0.7797125, y: 0.5840888888888889, w: 0.077300625, h: 0.19304088888888887}, instruction: 'Click here to rotate ratchet for fine tuning' },
+                { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Click here to lock the spindle using the lock lever' }
             ]
         },
         {
@@ -48,11 +48,11 @@ document.addEventListener("DOMContentLoaded", function() {
             src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
-                { time: 4.1, hotspot: {x: 0.69735125, y: 0.6095799721835883, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate the thimble and open micrometer' },
-                { time: 8.2, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Place wire between anvil and spindle' },
-                { time: 11, hotspot: {x: 0.71860125, y: 0.6162559109874827, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Rotate thimble until slip click' },
-                { time: 12, hotspot: {x: 0.80485125, y: 0.6318331015299027, w: 0.06639875, h: 0.1802058414464534}, instruction: 'Rotate ratchet for fine tuning' },
-                { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Lock the spindle using the lock lever' }
+                { time: 4.1, hotspot: {x: 0.69735125, y: 0.6095799721835883, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Click here to rotate the thimble and open micrometer' },
+                { time: 8.2, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Click here to place wire between anvil and spindle' },
+                { time: 11, hotspot: {x: 0.71860125, y: 0.6162559109874827, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Click here to rotate thimble until slip click' },
+                { time: 12, hotspot: {x: 0.80485125, y: 0.6318331015299027, w: 0.06639875, h: 0.1802058414464534}, instruction: 'Click here to rotate ratchet for fine tuning' },
+                { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Click here to lock the spindle using the lock lever' }
             ]
         },
         {
@@ -80,40 +80,20 @@ document.addEventListener("DOMContentLoaded", function() {
     instruction: 'Click the button below to print the results.',
     action: 'print',
     content: `
-        <div style="overflow-y:auto; padding:20px; font-family:Arial, sans-serif;">
+        <div style="padding:20px; font-family:Arial, sans-serif;">
             <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
             <hr style="margin-bottom:30px;">
 
-            <!-- Vernier Caliper Section -->
-            <div style="text-align:center; margin-bottom:20px;">
-                <img src="images/vernier.png" 
-                     alt="Vernier Caliper" 
-                     style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
-                <p style="font-size:14px; margin-top:6px;">Vernier Caliper</p>
-            </div>
-
-            <!-- Vernier Caliper Table -->
-            <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
-                <tbody>
-                    <tr style="background:#f0f0f0; font-weight:bold;">
-                        <td colspan="2" style="padding:10px; text-align:center;">Vernier Caliper Details</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Vernier Scale Divisions</td>
-                        <td style="border:1px solid #000; padding:10px;">50 divisions</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Least Count</td>
-                        <td style="border:1px solid #000; padding:10px;">0.02 mm</td>
-                    </tr>
-                </tbody>
-            </table>
-
             <!-- Workpiece Section -->
             <div style="text-align:center; margin-bottom:20px;">
-                <img src="images/wood.png" 
+            <div class="row" style="display:flex; gap:20px; justify-content:center; align-items:stretch;">
+                <img src="images/result1.png" 
                      alt="Workpiece" 
-                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+                     style="height:250px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
+                     <img src="images/result2.png" 
+                     alt="Workpiece" 
+                     style="height:250px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
+                     </div>
                 <p style="font-size:14px; margin-top:6px;">Workpiece</p>
             </div>
 
@@ -124,20 +104,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td colspan="2" style="padding:10px; text-align:center;">Workpiece Measurements</td>
                     </tr>
                     <tr>
-                        <td style="border:1px solid #000; padding:10px;">Outer Diameter</td>
-                        <td style="border:1px solid #000; padding:10px;">30.1 mm</td>
+                        <td style="border:1px solid #000; padding:10px;">Thickness of sheet</td>
+                        <td style="border:1px solid #000; padding:10px;">2.086 mm</td>
                     </tr>
                     <tr>
-                        <td style="border:1px solid #000; padding:10px;">Inner Diameter</td>
-                        <td style="border:1px solid #000; padding:10px;">25.9 mm</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Depth</td>
-                        <td style="border:1px solid #000; padding:10px;">30.06 mm</td>
-                    </tr>
-                    <tr>
-                        <td style="border:1px solid #000; padding:10px;">Thickness</td>
-                        <td style="border:1px solid #000; padding:10px;">2.1 mm</td>
+                        <td style="border:1px solid #000; padding:10px;">Diameter</td>
+                        <td style="border:1px solid #000; padding:10px;">0.8517 mm</td>
                     </tr>
                 </tbody>
             </table>
@@ -196,7 +168,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = false;
-        if (nextButton) nextButton.disabled = true;
+        if (nextButton) nextButton.disabled = false;
 
         return; // stop here (don't run video logic)
     }
@@ -217,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     if (nextButton) {
         const hasSubsteps = Array.isArray(step.substeps) && step.substeps.length > 0;
-        nextButton.disabled = hasSubsteps ? true : (currentStepIndex === totalSteps - 1);
+        // nextButton.disabled = hasSubsteps ? true : (currentStepIndex === totalSteps - 1);
     }
 
     if (stepsList) {
@@ -233,7 +205,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function renderSubstepVideo(step, timestamp) {
         const substeps = step.substeps;
         let currentSubstep = 0;
-        if (nextButton) nextButton.disabled = true;
+        if (nextButton) nextButton.disabled = false;
         const hotspotDebug = true;
         let finalHandled = false;
 

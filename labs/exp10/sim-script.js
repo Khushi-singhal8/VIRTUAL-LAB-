@@ -478,7 +478,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%;height:100%;" preload="auto" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" preload="auto" playsinline muted></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
@@ -571,7 +571,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%;height:100%;" playsinline muted></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
@@ -617,7 +617,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions"></div>
@@ -779,7 +779,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step6-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step6-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step6-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
                 </div>
                 
                 <div id="step6-instruction" class="drag-instructions"></div>
@@ -1080,7 +1080,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:100%;" playsinline></video>
+                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions"></div>

@@ -488,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline ></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline ></video>
                 </div>
             </div>
         `;
@@ -535,7 +535,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step4_5-instruction" class="drag-instructions">
@@ -754,7 +754,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline ></video>
+                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline ></video>
                     <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
@@ -892,7 +892,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
+                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline ></video>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
@@ -1044,11 +1044,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
                     <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
                     <div id="step2_5-drop-zone" class="drop-zone" aria-hidden="true" ></div>
+                    <div id="step2_5-drag-text" style="position: absolute; z-index: 15; font-size: 33px; color: #333; top: 22%; left: 73%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; white-space: nowrap; transition: opacity 0.01s ease;font-family: sans-serif">Filler rod</div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step2_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step2_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
+                    <video id="step2_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline ></video>
                 </div>
                 
                 <div id="step2_5-instruction" class="drag-instructions">Drag the flux to the plate joint.</div>
@@ -1091,6 +1092,10 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             fluxTool.classList.add('dragging');
+            const dragText = document.getElementById('step2_5-drag-text');
+            if (dragText) {
+                dragText.style.opacity = '0';
+            }
             const rect = fluxTool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1197,7 +1202,7 @@ function renderStep3_1(step, timestamp) {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="step3_1-play-stage">
-                    <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline ></video>
+                    <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" playsinline ></video>
                     <button id="step3_1-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="step3_1-instruction" class="drag-instructions"></div>
@@ -1327,7 +1332,7 @@ function renderStep3_2(step, timestamp) {
                 </div>
 
                 <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" style="width:100%; height:100%;" playsinline></video>
+                    <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step3_2-instruction" class="drag-instructions">Drag the ignitor to the torch.</div>
@@ -1482,7 +1487,7 @@ function renderStep3_3(step, timestamp) {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="step3_3-play-stage">
-                    <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline ></video>
+                    <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" playsinline ></video>
                     <button id="step3_3-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="step3_3-instruction" class="drag-instructions"></div>
@@ -1616,7 +1621,7 @@ function renderStep1_5DragDrop(step, timestamp) {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
+                    <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline ></video>
                 </div>
                 
                 <div id="step1_5-instruction" class="drag-instructions">Drag the tool to the plate edge.</div>
@@ -1773,7 +1778,7 @@ function renderStep4DragDrop(step, timestamp) {
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline></video>
+                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions">
