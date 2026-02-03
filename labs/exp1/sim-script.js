@@ -73,7 +73,90 @@ document.addEventListener("DOMContentLoaded", function() {
                 { time: 13.5, instruction:'Top view' },
                 { time: 14, instruction:'Take reading:\nMSR = 30 mm, VSR = 3 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 30 + (3 × 0.02) = 30 + 0.06 = 30.06 mm' }
             ]
-        }
+        },
+        {
+    id: 'step5',
+    title: '5. Final Result',
+    type: 'final',
+    instruction: 'Click the button below to print the results.',
+    action: 'print',
+    content: `
+        <div style="overflow-y:auto; padding:20px; font-family:Arial, sans-serif;">
+            <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
+            <hr style="margin-bottom:30px;">
+
+            <!-- Vernier Caliper Section -->
+            <div style="text-align:center; margin-bottom:20px;">
+                <img src="images/vernier.png" 
+                     alt="Vernier Caliper" 
+                     style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
+                <p style="font-size:14px; margin-top:6px;">Vernier Caliper</p>
+            </div>
+
+            <!-- Vernier Caliper Table -->
+            <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
+                <tbody>
+                    <tr style="background:#f0f0f0; font-weight:bold;">
+                        <td colspan="2" style="padding:10px; text-align:center;">Vernier Caliper Details</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px;">Vernier Scale Divisions</td>
+                        <td style="border:1px solid #000; padding:10px;">50 divisions</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px;">Least Count</td>
+                        <td style="border:1px solid #000; padding:10px;">0.02 mm</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Workpiece Section -->
+            <div style="text-align:center; margin-bottom:20px;">
+                <img src="images/wood.png" 
+                     alt="Workpiece" 
+                     style="max-width:250px; border:1px solid #ccc; border-radius:6px;">
+                <p style="font-size:14px; margin-top:6px;">Workpiece</p>
+            </div>
+
+            <!-- Workpiece Table -->
+            <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
+                <tbody>
+                    <tr style="background:#f0f0f0; font-weight:bold;">
+                        <td colspan="2" style="padding:10px; text-align:center;">Workpiece Measurements</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px;">Outer Diameter</td>
+                        <td style="border:1px solid #000; padding:10px;">30.1 mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px;">Inner Diameter</td>
+                        <td style="border:1px solid #000; padding:10px;">25.9 mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px;">Depth</td>
+                        <td style="border:1px solid #000; padding:10px;">30.06 mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px;">Thickness</td>
+                        <td style="border:1px solid #000; padding:10px;">2.1 mm</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Print Button -->
+            <div style="text-align:center; margin-top:30px;">
+                <button onclick="window.print()" 
+                        style="padding:12px 24px; font-size:16px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:6px;">
+                    🖨 Print Results
+                </button>
+            </div>
+        </div>
+    `
+}
+
+
+
+
     ];
 
     let currentStepIndex = 0;
@@ -106,28 +189,39 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function showCurrentStep() {
-        if (!gifContainer) return;
-        const step = steps[currentStepIndex];
-        const timestamp = Date.now();
-        clearCleanup();
+    if (!gifContainer) return;
 
-        if (Array.isArray(step.substeps) && step.substeps.length) {
-            renderSubstepVideo(step, timestamp);
-        } else {
-            renderSimpleVideo(step, timestamp);
-        }
+    if (currentStepIndex === totalSteps - 1 && steps[currentStepIndex].type === 'final') {
+    const step = steps[currentStepIndex];
+    gifContainer.innerHTML = step.content;  // <-- render the HTML content
+    if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
+    if (totalStepsElement) totalStepsElement.textContent = totalSteps;
+    if (prevButton) prevButton.disabled = false;
+    if (nextButton) nextButton.disabled = true;
+    return;
+}
 
-        if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
-        if (prevButton) prevButton.disabled = currentStepIndex === 0;
-        if (nextButton) nextButton.disabled = true;
 
-        if (stepsList) {
-            const items = stepsList.querySelectorAll('.step-item');
-            items.forEach((itm, idx) => {
-                if (idx === currentStepIndex) itm.classList.add('active'); else itm.classList.remove('active');
-            });
-        }
+    const step = steps[currentStepIndex];
+    clearCleanup();
+
+    if (Array.isArray(step.substeps) && step.substeps.length) {
+        renderSubstepVideo(step, Date.now());
+    } else {
+        renderSimpleVideo(step, Date.now());
     }
+
+    if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
+    if (prevButton) prevButton.disabled = currentStepIndex === 0;
+    if (nextButton) nextButton.disabled = currentStepIndex === totalSteps - 1;
+
+    if (stepsList) {
+        const items = stepsList.querySelectorAll('.step-item');
+        items.forEach((itm, idx) => {
+            if (idx === currentStepIndex) itm.classList.add('active'); else itm.classList.remove('active');
+        });
+    }
+}
 
     function renderSubstepVideo(step, timestamp) {
         const substeps = step.substeps;
@@ -211,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     setupSubstep();
                 } else {
                     instructionElem.textContent = s.instruction || 'Step complete!';
-                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    if (nextButton) nextButton.disabled = true;
                 }
             }
         }
@@ -280,16 +374,59 @@ document.addEventListener("DOMContentLoaded", function() {
         cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_){} };
     }
 
-    if (prevButton) {
-        prevButton.addEventListener('click', () => {
-            if (currentStepIndex > 0) { currentStepIndex--; showCurrentStep(); }
-        });
-    }
-    if (nextButton) {
-        nextButton.addEventListener('click', () => {
-            if (currentStepIndex < totalSteps - 1) { currentStepIndex++; showCurrentStep(); }
-        });
-    }
+    /* ================= RESULT PAGE ================= */
+function renderResultPage() {
+    const step = steps[currentStepIndex]; // should be step5
+    if (!gifContainer) return;
 
-    showCurrentStep();
+    gifContainer.innerHTML = `
+        <div class="gif-wrapper" style="text-align:center;">
+            <h2>${step.title}</h2>
+            <p style="white-space: pre-line;">${step.instruction}</p>
+            <button onclick="printResults()" style="padding:10px 20px; font-size:16px;">🖨️ Print Results</button>
+        </div>
+    `;
+
+    if (nextButton) nextButton.disabled = true; // no next step after result
+    if (prevButton) prevButton.disabled = false;
+}
+
+
+/* ================= PREV BUTTON ================= */
+
+if (prevButton) {
+    prevButton.addEventListener('click', () => {
+        if (currentStepIndex === totalSteps - 1) {
+            // coming back from result page → go to last video step
+            currentStepIndex = totalSteps - 2;
+            showCurrentStep();
+            return;
+        }
+        if (currentStepIndex > 0) {
+            currentStepIndex--;
+            showCurrentStep();
+        }
+    });
+}
+
+
+
+/* ================= NEXT BUTTON ================= */
+if (nextButton) {
+    nextButton.addEventListener('click', () => {
+        if (currentStepIndex >= totalSteps - 1) {
+            // last step → render result page
+            renderResultPage();
+            return;
+        }
+
+        currentStepIndex++;
+        showCurrentStep();
+    });
+}
+
+
+/* ================= START ================= */
+
+showCurrentStep();
 });
