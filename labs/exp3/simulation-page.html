@@ -64,26 +64,94 @@
 
         .play-hotspot {
             position: absolute;
-            background-color: rgba(255, 193, 7, 0.3);
-            border: 2px solid #ffc107;
+            width: 200px;
+            height: 200px;
+
+
+            background: radial-gradient(circle, #ffd54f, #ff9800);
+            border: 3px dashed #ff6f00;
             border-radius: 50%;
-            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
+
+            cursor: grab;
             z-index: 10;
+
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
+
+
             transition: all 0.3s ease;
+
+
+            animation: pulseHotspot 1.5s infinite;
         }
+
+
+        .play-hotspot::after {
+            content: "TAP";
+            font-size: 20PX;
+            font-weight: bold;
+            color: black
+        }
+
+
+        .play-hotspot::before {
+            content: "⬇";
+            position: absolute;
+            top: -80px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
 
         .play-hotspot:hover {
-            background-color: rgba(255, 193, 7, 0.5);
-            transform: scale(1.1);
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 152, 0, 1);
         }
+
+
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
 
         .play-hotspot.debug-highlight {
-            background-color: rgba(255, 0, 0, 0.3);
-            border: 2px solid red;
-        }
-
-        .play-hotspot.debug-highlight:hover {
-            background-color: rgba(255, 0, 0, 0.5);
+            background: rgba(255, 100, 100, 0.4);
+            border: 3px solid red;
+            animation: none;
         }
 
         .drag-instructions {
