@@ -30,12 +30,24 @@
           #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
           }
-            .proc-img {
-                width:260px;
-                height:auto;
-                display:block;          /* forces image on its own line */
-                margin:10px 0 20px 0;   /* top 10px, bottom 20px = one clear gap */
-            }
+          .procedure-step img {
+  width: 350px;
+  height: auto;
+  display: block;
+  margin: 10px 0 25px 0;   /* left aligned */
+  border-radius: 6px;
+}
+
+
+  .procedure-step p {
+    font-size: 130%;
+    margin-bottom: 8px;
+    text-align: left;
+  }
+
+  .procedure-step h2 {
+    margin-top: 30px;
+  }
 
         </style>
     </head>
@@ -175,168 +187,102 @@
                 <h1 align="center">
                      To study the bending process of a metal specimen and evaluate spring back effect.
                 </h1>
+
                 </section>
                     <!-- Main content -->
                     <section class="content">
                     <h3 style="margin-top:5%"> Procedure </h3>
                     <p style="font-size:130%; margin-top:2%">
-                    
-                    <ol>
-  <li>
-  <strong>Material and thickness selection:</strong>
-  The simulation interface displays material selection cards for 
-  <b>Aluminium</b>, <b>Brass</b>, and <b>Stainless Steel</b>.  
-  For each material, two thickness options are provided:
-  <span style="font-weight:bold; color:#007bff;">2&nbsp;mm</span> and
-  <span style="font-weight:bold; color:#007bff;">5&nbsp;mm</span>.
-  The user selects <span style="font-weight:bold; color:#0f0f0f;">Stainless Steel</span>
-  with the required thickness, and the selection is confirmed through the
-  <span style="font-weight:bold; color:#28a745;">green status bar</span>
-  displayed at the bottom of the screen.
-</li>
-<br>
-
-  <li>
-  <strong>Viewing the schematic diagram:</strong>
-  The schematic diagram of the selected metal strip is displayed, showing the top view and side view
-  with proper dimensions. This step helps the user understand the geometry and thickness of the specimen
-  before proceeding further.
-</li><br>
-
-<img src="images/procedure/top view.png" alt="Schematic diagram of specimen"
-     class="proc-img">
-
-    <li>
-  <strong>Marking the center of the specimen:</strong>
-  The center of the metal strip is marked using a measuring scale.
-  Equal distances of <strong>60&nbsp;mm</strong> are measured from both ends to locate the midpoint,
-  which will be used as the reference point for bending.
-</li><br>
-
-<img src="images/procedure/marker.png" alt="Center marking of specimen"
-     class="proc-img">
-
-  <li>
-    <strong>Placing the workpiece on the die:</strong>
-    The apparatus with the V-shaped lower die is visible, and the rectangular metal workpiece is shown to the right.
-    A <span style="font-weight:bold; color:#090908;">yellow dotted circular region</span> is marked on the die,
-    instructing the user to drag the workpiece into this highlighted zone to position it correctly for bending.
-  </li><br>
-
-  <img src="images/procedure/1.png" alt=" "
-     class="proc-img">
-
-  <li>
-    <strong>Workpiece positioned correctly:</strong>
-    The workpiece has been dragged onto the apparatus and now lies across the V-shaped lower die within the
-    <span style="font-weight:bold; color:#28a745;">green dotted circular area</span>.
-    A <span style="font-weight:bold; color:#28a745;">“Placed correctly!”</span> message appears above the setup,
-    indicating that the workpiece is in the correct location and the user can proceed.
-  </li><br>
-
-  <img src="images/procedure/2.png" alt=" "
-     class="proc-img">
-
-  <li>
-    <strong>Attaching the handle to the screw:</strong>
-    The upper part of the press with the vertical screw is shown, and the L‑shaped handle is displayed separately on the right side.
-    A <span style="font-weight:bold; color:#0f0e0e;">yellow dotted circular region</span> is highlighted around the screw head,
-    instructing the user to drag the handle so that its hinge aligns with this point to assemble the press.
-  </li><br>
-
-  <img src="images/procedure/3.png" alt=" "
-     class="proc-img">
-
-  <li>
-    <strong>Handle attached successfully:</strong>
-    The handle has been dragged and snapped onto the screw head, forming the complete lever mechanism for operating the press.
-    A <span style="font-weight:bold; color:#28a745;">“Placed correctly!”</span> message confirms that the handle is assembled properly
-    and the simulation is ready for the bending operation.
-  </li><br>
-
-  <img src="images/procedure/4.png" alt=" "
-     class="proc-img">
-
-  <li>
-    <strong>Starting the bending operation:</strong>
-    The complete press with the mounted workpiece and handle is shown.
-    A <span style="font-weight:bold; color:#dc3545;">red circular highlight</span> surrounds the free end of the handle,
-    indicating that the user should <span style="font-weight:bold; color:#dc3545;">click this handle</span> to initiate the downward
-    movement of the punch and start bending the metal strip.
-  </li><br>
-
-  <img src="images/procedure/5.png" alt=" "
-     class="proc-img">
-
-  <li>
-    <strong>Measuring bend angle before release:</strong>
-    A large protractor appears on the screen and can be dragged over the bent workpiece.
-    The user aligns the protractor with the arms of the bent sheet to visually measure the angle
-    while the punch is still pressing the workpiece. This step helps in observing the bend angle
-    before the release of force.
-</li><br>
-
-  <img src="images/procedure/6.png" alt=" "
-     class="proc-img">
+                <section id="step-1" class="procedure-step">
+  <h2>Step 1: Material and thickness selection</h2>
+  <p>Select the required material (Aluminium, Brass, or Stainless Steel) and choose the thickness (2 mm or 5 mm). The selection is confirmed through the green status bar.</p>
+</section>
 
 
-  <li>
-    <strong>Final bend angle and spring-back:</strong>
-    The protractor view appears again after the workpiece is released and allowed to relax.
-    The user rotates and aligns the protractor with the arms of the relaxed sheet to measure
-    the final bend angle. By comparing this angle with the bend angle before release,
-    the spring-back effect can be clearly observed.
-</li><br>
+<section id="step-2" class="procedure-step">
+  <h2>Step 2: Viewing the schematic diagram</h2>
+  <p>The schematic top and side view of the metal strip is displayed to understand the geometry and dimensions.</p>
+  <img src="images/procedure/top view.png" alt="Schematic diagram" />
+</section>
 
 
-  <img src="images/procedure/8.png" alt=" "
-     class="proc-img">
-
-  <li>
-    <strong>Removing the punch to observe spring-back:</strong>
-    The apparatus view returns, showing the punch still in contact with the bent workpiece.
-    A <span style="font-weight:bold; color:#dc3545;">red circular highlight</span> surrounds the handle again,
-    instructing the user to <span style="font-weight:bold; color:#dc3545;">click the handle</span> to move the punch back up,
-    remove the load, and observe how the angle of the workpiece changes due to spring‑back.
-  </li><br>
-
-  <img src="images/procedure/7.png" alt=" "
-     class="proc-img">
+<section id="step-3" class="procedure-step">
+  <h2>Step 3: Marking the center of the specimen</h2>
+  <p>Measure equal distances of 60 mm from both ends and mark the midpoint for bending reference.</p>
+  <img src="images/procedure/marker.png" alt="Center marking" />
+</section>
 
 
-  <li>
-    <strong>Measuring bend angle after punch removal:</strong>
-    After the punch is removed, a large protractor appears on the screen.
-    The user drags, rotates, and aligns the protractor with the arms of the bent workpiece
-    to visually measure the bend angle.
-</li><br>
-
-<img src="images/procedure/9.png" alt="Measuring bend angle after punch removal"
-     class="proc-img">
+<section id="step-4" class="procedure-step">
+  <h2>Step 4(i): Placing the workpiece on the die</h2>
+  <p>Drag the workpiece into the highlighted yellow dotted region on the V-shaped lower die.</p>
+  <img src="images/procedure/1.png" alt="Place workpiece" />
+</section>
 
 
-<li>
-    <strong>Measuring final bend angle after punch removal (spring-back):</strong>
-    After the punch is removed and the workpiece is allowed to relax completely,
-    the protractor appears again. The user rotates and aligns the protractor with
-    the arms of the relaxed sheet to measure the final bend angle and observe
-    the spring-back effect.
-</li><br>
-
-<img src="images/procedure/10.png" alt="Measuring final bend angle after punch removal"
-     class="proc-img">
+<section id="step-5" class="procedure-step">
+  <h2>Step 4(ii): Workpiece positioned correctly</h2>
+  <p>The workpiece lies across the die within the green area and the message “Placed correctly!” appears.</p>
+  <img src="images/procedure/2.png" alt="Workpiece placed" />
+</section>
 
 
-  
+<section id="step-6" class="procedure-step">
+  <h2>Step 5(i): Attaching the handle to the screw</h2>
+  <p>Drag the handle and align it with the screw head inside the yellow dotted region.</p>
+  <img src="images/procedure/3.png" alt="Attach handle" />
+</section>
 
-  
-  
-</ol>
+
+<section id="step-7" class="procedure-step">
+  <h2>Step 5(ii): Handle attached successfully</h2>
+  <p>The handle snaps into position forming the complete lever mechanism. The confirmation message appears.</p>
+  <img src="images/procedure/4.png" alt="Handle attached" />
+</section>
 
 
-                    </p>
-                </section>
-            <!-- /.content -->
+<section id="step-8" class="procedure-step">
+  <h2>Step 6(i): Starting the bending operation</h2>
+  <p>Click the highlighted red area on the handle to initiate the downward movement of the punch.</p>
+  <img src="images/procedure/5.png" alt="Start bending" />
+</section>
+
+
+<section id="step-9" class="procedure-step">
+  <h2>Step 6(ii): Measuring bend angle before release</h2>
+  <p>Align the protractor with the bent workpiece to measure the angle while the punch is still applying force.</p>
+  <img src="images/procedure/6.png" alt="Angle before release" />
+</section>
+
+
+<section id="step-10" class="procedure-step">
+  <h2>Step 6(iii): Final bend angle and spring-back</h2>
+  <p>After releasing the load, measure the relaxed angle using the protractor to observe the spring-back effect.</p>
+  <img src="images/procedure/8.png" alt="Springback angle" />
+</section>
+
+
+<section id="step-11" class="procedure-step">
+  <h2>Step 7(i): Removing the punch</h2>
+  <p>Click the handle again to move the punch upward and remove the applied force.</p>
+  <img src="images/procedure/7.png" alt="Remove punch" />
+</section>
+
+
+<section id="step-12" class="procedure-step">
+  <h2>Step 7(ii): Measuring bend angle after punch removal</h2>
+  <p>Align the protractor to measure the bend angle immediately after unloading.</p>
+  <img src="images/procedure/9.png" alt="Angle after removal" />
+</section>
+
+
+<section id="step-13" class="procedure-step">
+  <h2>Step 7(iii): Measuring final bend angle (spring-back)</h2>
+  <p>Allow the sheet to fully relax and measure the final angle to evaluate the spring-back effect.</p>
+  <img src="images/procedure/10.png" alt="Final springback angle" />
+</section>
+
+</section>  <!-- /.content -->
             </div>
             <footer class="main-footer">
                 <h4 align="center">Lab contributed by Galgotia University </h4>

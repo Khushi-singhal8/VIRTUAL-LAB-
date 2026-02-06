@@ -65,26 +65,94 @@
 
         .play-hotspot {
             position: absolute;
-            background-color: rgba(255, 193, 7, 0.3);
-            border: 2px solid #ffc107;
+            width: 70px;
+            height: 70px;
+
+
+            background: radial-gradient(circle, #ffd54f, #ff9800);
+            border: 3px dashed #ff6f00;
             border-radius: 50%;
-            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
+
+            cursor: grab;
             z-index: 10;
+
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
+
+
             transition: all 0.3s ease;
+
+
+            animation: pulseHotspot 1.5s infinite;
         }
+
+
+        .play-hotspot::after {
+            content: "TAP";
+            font-size: 20PX;
+            font-weight: bold;
+            color: black
+        }
+
+
+        .play-hotspot::before {
+            content: "⬇";
+            position: absolute;
+            top: -80px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
 
         .play-hotspot:hover {
-            background-color: rgba(255, 193, 7, 0.5);
-            transform: scale(1.1);
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 152, 0, 1);
         }
+
+
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
 
         .play-hotspot.debug-highlight {
-            background-color: rgba(255, 0, 0, 0.3);
-            border: 2px solid red;
-        }
-
-        .play-hotspot.debug-highlight:hover {
-            background-color: rgba(255, 0, 0, 0.5);
+            background: rgba(255, 100, 100, 0.4);
+            border: 3px solid red;
+            animation: none;
         }
 
         .drag-instructions {
@@ -252,43 +320,67 @@
 
         .drop-zone {
             position: absolute;
-            border: 2px dashed rgba(255, 255, 0, 0.7);
-            background: rgba(255, 255, 0, 0.2);
+            width: 70px;
+            height: 70px;
+
+
+            background: radial-gradient(circle, rgba(255, 230, 0, 0.558));
+            border: 3px solid #fdb409;
             border-radius: 50%;
-            z-index: 5;
-            pointer-events: none;
-        }
 
-        .drop-zone.success {
-            background: rgba(76, 175, 80, 0.3);
-            border-color: #4CAF50;
-        }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-sizing: border-box;
 
-        .drag-success {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(76, 175, 80, 0.9);
-            color: white;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-size: 18px;
+            font-size: 12px;
             font-weight: bold;
-            z-index: 100;
-            animation: fadeIn 0.3s ease;
+            color: #faf8f8;
+
+            cursor: grab;
+            z-index: 10;
+
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
+
+
+            transition: all 0.3s ease;
+
+
+            animation: pulseHotspot 1.5s infinite;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, -50%) scale(0.8);
-            }
 
-            to {
-                opacity: 1;
-                transform: translate(-50%, -50%) scale(1);
-            }
+        .drop-zone::after {
+            content: "DROP HERE";
+            font-size: 15PX;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+        }
+
+
+        .drop-zone::before {
+            content: "⬇";
+            position: absolute;
+            top: var(--arrow-top, -100%);
+            left: var(--arrow-left, 50%);
+            transform: translateX(-50%);
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
+        .drop-zone.dragging-active::before {
+            display: none !important;
+            content: "";
+            animation: none;
+        }
+
+        .drop-zone.debug-highlight {
+            background: rgba(255, 0, 0, 0.281);
+            border: 3px solid red;
+            animation: none;
         }
 
         /* Material and Thickness Selection Styles */
