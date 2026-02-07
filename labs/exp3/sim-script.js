@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div style="height:400px;display:flex;align-items:center;justify-content:center;background:#fff">
                     ${isVideo
-                    ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline style="width:100%;object-fit:contain;height:100%"></video>`
+                    ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline></video>`
                     : `<img src="${currentSrc}?t=${timestamp}" class="step-gif">`
                 }
                 </div>
@@ -429,13 +429,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase -->
                 <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 10%; right: 10%;"/>
-                    <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <img src="${toolPath}?t=${timestamp}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
+                    <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -170%; --arrow-left: 863%;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step7-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step7-video" src="${videoSrc}?t=${timestamp}" playsinline muted></video>
                 </div>
                 
                 <div id="step7-instruction" class="drag-instructions">Drag the sandpaper to the workpiece.</div>
@@ -480,6 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             sand.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const rect = sand.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -525,7 +526,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dist < tolerancePx) {
                 dropZone.classList.add('success');
-                // No snap, just proceed
+                // Successfully dropped - no snapping, keep current position
                 setTimeout(startVideoPhase, 500);
             }
         }
@@ -582,8 +583,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img id="step6-poster" alt="Operation" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <video id="step6-video" class="stage-bg" style="display:none; width: 100%; height: auto;" playsinline muted></video>
-                    <button id="play-hotspot" class="play-hotspot" aria-label="Start"></button>
+                    <video id="step6-video" class="stage-bg" style="display:none" playsinline muted></video>
+                    <button id="play-hotspot" class="play-hotspot debug-highlight" aria-label="Start"></button>
                 </div>
                 <div class="drag-instructions">Click the green button to start.</div>
             </div>
@@ -667,7 +668,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="play-stage">
-                    <video id="step3-video" src="${videoSrc}?t=${timestamp}" style="width:100%; height:100%;" playsinline muted></video>
+                    <video id="step3-video" src="${videoSrc}?t=${timestamp}" playsinline muted></video>
                     <button id="substep-hotspot-3" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="substep-instruction-3" class="drag-instructions"></div>
@@ -726,9 +727,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentSubstep++;
                     setupSubstep();
                 } else {
-                    instructionElem.textContent = 'Step complete! Now we will place the tool.';
+                    instructionElem.textContent = 'Step complete! Now we are ready to begin the process.';
+
+                    // Final step actions
                     step3Completed = true;
-                    if (nextButton) nextButton.disabled = false;
+                    if (nextButton) {
+                        nextButton.disabled = false;
+                        nextButton.removeAttribute('disabled');
+                    }
                 }
             }
         }
@@ -805,7 +811,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="drag-stage" id="drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
                     <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%;"/>
-                    <div id="drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -70%; --arrow-left: 801%;"></div>
                 </div>
                 <div class="drag-instructions">Drag the tool onto the tool post location highlighted on the machine.</div>
             </div>
@@ -907,6 +913,7 @@ document.addEventListener("DOMContentLoaded", function () {
             dragging = true;
             toolMovedByUser = true;
             tool.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
             offsetX = clientX - toolRect.left;
@@ -969,6 +976,13 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.classList.add('success');
             step5Completed = true;
             if (nextButton) nextButton.disabled = false;
+
+            // Remove the drop zone immediately when placed correctly
+            dropZone.style.opacity = '0';
+            dropZone.style.transition = 'opacity 0.3s ease';
+            setTimeout(() => {
+                dropZone.remove();
+            }, 300);
 
             // Update instruction text
             const instructions = gifContainer.querySelector('.drag-instructions');
@@ -1046,21 +1060,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 <!-- Drag Phase 1: Key -->
                 <div class="drag-stage" id="step2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${chunkBgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${keyPath}?t=${timestamp}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 10%; right: 10%;"/>
-                    <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <img src="${keyPath}?t=${timestamp}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
+                    <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -356%; --arrow-left: 415%;"></div>
                 </div>
 
                 <!-- Video Phase -->
                 <div class="play-stage" id="step2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step2-video" src="${video1Src}?t=${timestamp}" style="width:100%; height:auto;" playsinline muted></video>
+                    <video id="step2-video" src="${video1Src}?t=${timestamp}" playsinline muted style="width: 99.5%"></video>
                     <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
 
                 <!-- Drag Phase 2: Wood -->
                  <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
                     <img src="${chunkOpenBgPath}?t=${timestamp}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 10%;"/>
-                    <div id="step2-wood-drop-zone" class="drop-zone" aria-hidden="true" style="position: absolute; border: 2px dashed rgba(255, 255, 0, 0.7); background: rgba(255, 255, 0, 0.2); border-radius: 50%; z-index: 5;"></div>
+                    <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
+                    <div id="step2-wood-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -88%; --arrow-left: 275%;"></div>
                 </div>
                 
                 <div id="substep-instruction" class="drag-instructions">Drag the chuck key to the chuck.</div>
@@ -1087,7 +1101,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (hotspotDebug) hotspot.classList.add('debug-highlight');
 
         // --- Drag Logic 1 (Key) ---
-        const targetRel1 = { x: 0.58, y: 0.52 };
+        const targetRel1 = { x: 0.58, y: 0.54 };
         const tolerancePx = 50;
         let dragging = false;
         let startX = 0, startY = 0;
@@ -1140,6 +1154,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             dragging = true;
             currentDragObject.classList.add('dragging');
+            currentDropZone.classList.add('dragging-active');
             const rect = currentDragObject.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1172,31 +1187,31 @@ document.addEventListener("DOMContentLoaded", function () {
             // Check Drop
             const stageRect = currentStage.getBoundingClientRect();
             const objRect = currentDragObject.getBoundingClientRect();
+            const anchor = (currentDragObject === wood)
+                ? { x: 0.5, y: 0.5 }
+                : { x: 0.1, y: 0 };
             const objCenter = {
-                x: objRect.left - stageRect.left + objRect.width / 2,
-                y: objRect.top - stageRect.top + objRect.height / 2
+                x: objRect.left - stageRect.left + objRect.width * anchor.x,
+                y: objRect.top - stageRect.top + objRect.height * anchor.y
             };
 
-            // Re-calc target center based on drop zone (safer then saving logic vars)
+            // Re-calc target center based on drop zone
             const dzRect = currentDropZone.getBoundingClientRect();
             const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
             const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+            const tol = Math.max(tolerancePx, dzRect.width / 2);
 
             const dist = Math.hypot(objCenter.x - targetX, objCenter.y - targetY);
 
-            if (dist < tolerancePx) {
+            if (dist < tol) {
                 currentDropZone.classList.add('success');
-                // Snap to center of drop zone
-                const dzRect = currentDropZone.getBoundingClientRect();
-                const stageRect = currentStage.getBoundingClientRect();
-
-                // Calculate position relative to stage
-                const snapLeft = dzRect.left - stageRect.left + (dzRect.width / 2) - (objRect.width / 2);
-                const snapTop = dzRect.top - stageRect.top + (dzRect.height / 2) - (objRect.height / 2);
-
-                currentDragObject.style.left = snapLeft + 'px';
-                currentDragObject.style.top = snapTop + 'px';
-
+                if (currentDragObject === wood) {
+                    const left = targetX - objRect.width / 2;
+                    const top = targetY - objRect.height / 2;
+                    currentDragObject.style.left = left + 'px';
+                    currentDragObject.style.top = top + 'px';
+                }
+                // Successfully dropped - no snapping, keep current position
                 if (onCurrentDropSuccess) onCurrentDropSuccess();
             }
 
@@ -1307,8 +1322,12 @@ document.addEventListener("DOMContentLoaded", function () {
             dragStage2.style.display = 'block';
             instructionElem.textContent = "Drag the wood piece into the chuck.";
 
-            if (dragBg2.complete && dragBg2.naturalWidth) layout2();
-            else dragBg2.onload = layout2;
+            const layoutAfterShow = () => layout2();
+            if (dragBg2.complete && dragBg2.naturalWidth) {
+                requestAnimationFrame(layoutAfterShow);
+            } else {
+                dragBg2.onload = () => requestAnimationFrame(layoutAfterShow);
+            }
         }
 
 

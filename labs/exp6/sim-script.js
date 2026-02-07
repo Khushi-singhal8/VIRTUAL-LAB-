@@ -282,7 +282,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/11.mp4',
             type: 'video',
             initialInstruction: 'Close acetylene valve',
-            finalInstruction: 'Step complete!',
+            finalInstruction: 'Click on next to view result.',
             interaction: { pauseAt: 0, hotspot: { x: 0.8342696189111698, y: 0.67396520020934, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close acetylene valve' }
         },
         {

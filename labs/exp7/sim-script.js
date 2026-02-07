@@ -1150,7 +1150,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="play-stage" id="step3_3-play-stage">
-                    <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
+                    <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" playsinline></video>
                     <button id="step3_3-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
                 <div id="step3_3-instruction" class="drag-instructions"></div>
