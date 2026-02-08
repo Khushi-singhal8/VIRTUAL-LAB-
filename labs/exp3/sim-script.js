@@ -29,62 +29,70 @@ document.addEventListener("DOMContentLoaded", function () {
         { name: 'Mahogany', id: 'mahogany', hotspot: { x: 0.83, y: 0.03974230857537948, w: 0.16875, h: 0.8585458443321057 } }
     ];
 
-    // Base steps
     const baseSteps = [
-        {
-            id: 'step1',
-            title: 'Choose the wood to use for pattern making',
-            src: 'images/simulation/1.png',
-            isWoodSelection: true
-        },
-        {
-            id: 'step1.5',
-            title: 'Marking before starting the process',
-            src: 'images/simulation/1.5.mp4'
-        },
-        {
-            id: 'step2',
-            title: 'Put the workpiece in the chuck',
-            src: 'images/simulation/2.gif'
-        },
-        {
-            id: 'step3',
-            title: 'Prepare Machine: Move tool post and tail stock',
-            src: 'images/simulation/3.mp4'
-        },
+    {
+        id: 'step1',
+        title: 'Step 1: Select the wood for pattern making.',
+        instruction: 'Observe the types of wood available. Click on the wood you want to use to select it.',
+        src: 'images/simulation/1.png',
+        isWoodSelection: true
+    },
+    {
+        id: 'step1.5',
+        title: 'Step 2: Mark the wood before starting.',
+        instruction: 'Use the marking tool to make guides for your cutting. Watch the video carefully.',
+        src: 'images/simulation/1.5.mp4'
+    },
+    {
+        id: 'step2',
+        title: 'Step 3: Place the workpiece in the chuck.',
+        instruction: 'Make sure it is tightly secured. Drag it into the chuck position as shown.',
+        src: 'images/simulation/2.gif'
+    },
+    {
+        id: 'step3',
+        title: 'Step 4: Prepare the machine.',
+        instruction: 'Move the tool post and tailstock to their starting positions before operation.',
+        src: 'images/simulation/3.mp4'
+    },
+    {
+        id: 'step5',
+        title: 'Step 5: Move the tool to the tool post.',
+        instruction: 'Drag and drop the cutting tool into the tool post as shown in the image.',
+        src: 'images/simulation/5.png'
+    },
+    {
+        id: 'step6',
+        title: 'Step 6: Start the operation.',
+        instruction: 'Press the green button to start the machining process. Observe carefully.',
+        src: 'images/simulation/6.mp4'
+    },
+    {
+        id: 'step7',
+        title: 'Step 7: Finish with sandpaper.',
+        instruction: 'Use sandpaper to smooth the surface as shown in the video.',
+        src: 'images/simulation/7.mp4'
+    },
+    {
+        id: 'step8',
+        title: 'Step 8: Measure diameter with vernier caliper.',
+        instruction: 'Carefully check the diameter of the workpiece and note it.',
+        src: 'images/simulation/8.mp4'
+    },
+    {
+        id: 'step9',
+        title: 'Step 9: Measure length of segments with ruler.',
+        instruction: 'Check each segment carefully using a ruler and record your measurements.',
+        src: 'images/simulation/9.mp4'
+    },
+    {
+        id: 'step10',
+        title: 'Step 10: Observation & Result',
+        instruction: 'Print your results and observations for submission.',
+        isPrintStep: true
+    }
+];
 
-        {
-            id: 'step5',
-            title: 'Move the tool to the tool post (drag and drop).',
-            src: 'images/simulation/5.png'
-        },
-        {
-            id: 'step6',
-            title: 'Press green button to start operation.',
-            src: 'images/simulation/6.mp4'
-        },
-        {
-            id: 'step7',
-            title: 'Finishing process with the sand paper.',
-            src: 'images/simulation/7.mp4'
-        },
-        {
-            id: 'step8',
-            title: 'Vernier calliper is used to check the diameter.',
-            src: 'images/simulation/8.mp4'
-        },
-        {
-            id: 'step9',
-            title: 'Ruler is used to check the length of segments.',
-            src: 'images/simulation/9.mp4'
-        },
-        {
-            id: 'step10',
-            title: 'Observation & Result (Print)',
-            isPrintStep: true
-        }
-
-    ];
 
     let steps = baseSteps;
 
