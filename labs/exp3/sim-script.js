@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
+    const resetButton = document.getElementById('reset-btn');
     const gifContainer = document.getElementById('gif-container');
     const currentStepElement = document.getElementById('current-step');
     const totalStepsElement = document.getElementById('total-steps');
@@ -182,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="step-indicator">
                     Step ${currentStepIndex + 1} of ${totalSteps}
                 </div>
-                <div style="height:400px;display:flex;align-items:center;justify-content:center;background:#fff">
+                <div style="min-height:300px;display:flex;align-items:center;justify-content:center;background:#fff">
                     ${isVideo
                     ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline></video>`
                     : `<img src="${currentSrc}?t=${timestamp}" class="step-gif">`
@@ -202,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             const imgPath = getSimulationPath('images/simulation/1.5.png');
                             // We replace the video with the image
                             const container = v.parentElement;
-                            container.innerHTML = `<img src="${imgPath}?t=${timestamp}" class="step-gif" style="width:100%;height:100%;object-fit:contain;">`;
+                            container.innerHTML = `<img src="${imgPath}?t=${timestamp}" class="step-gif" style="width:100%;height:100%;object-fit:cover;">`;
                         }
 
                         if (step.id === 'step8') step8Completed = true;
@@ -259,75 +260,87 @@ document.addEventListener("DOMContentLoaded", function () {
                 break;
         }
         gifContainer.innerHTML = `
-        <div class="gif-wrapper print-area">
-            <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
+        <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+            <h2 style="text-align:center;">Experiment Result</h2>
             <hr>
 
-            <p><strong>Experiment:</strong> Pattern Making – Turning Operation</p>
-            <p><strong>Material Used:</strong> ${selectedWoodName || 'N/A'}</p>
-
-            <!-- MATERIAL IMAGE (ADD HERE) -->
-            ${selectedWood
-                ? `<div style="text-align:center; margin: 15px 0;">
-                       <img 
-                           src="images/simulation/${selectedWood}/${selectedWood}.png"
-                           alt="${selectedWood}"
-                           style="max-width:575px"
-                       >
-                   </div>`
+            <div style="text-align:center; margin:20px 0;">
+             <!-- Use the selected wood image as the result image for now, as there isn't a specific 'result' image logic defined other than the wood choice -->
+             ${selectedWood
+                ? `<img 
+                       src="images/simulation/${selectedWood}/${selectedWood}.png"
+                       alt="${selectedWood}"
+                       style="max-width:90%; border:1px solid #ccc; border-radius:6px;"
+                   >`
                 : ''
             }
-<h3>Measurements</h3>
-<table border="1" width="100%" cellpadding="8">
-    <tr>
-        <th>Parameter</th>
-        <th>Value</th>
-    </tr>
+                <p style="font-size:14px; margin-top:6px;">Final workpiece after turning operation</p>
+            </div>
 
-    <tr>
-        <td>Diameter – Part 1</td>
-        <td>${selectedWoodD1} mm</td>
-    </tr>
-    <tr>
-        <td>Diameter – Part 2</td>
-        <td>${selectedWoodD2} mm</td>
-    </tr>
-    <tr>
-        <td>Diameter – Part 3</td>
-        <td>${selectedWoodD3} mm</td>
-    </tr>
+            <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
+                <tbody>
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Experiment Details</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Experiment</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">Pattern Making – Turning Operation</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Material Used</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodName || 'N/A'}</td>
+                    </tr>
 
-    <tr>
-        <td>Length – Part 1</td>
-        <td>${selectedWoodLength} mm</td>
-    </tr>
-    <tr>
-        <td>Length – Part 2</td>
-        <td>${selectedWoodLength} mm</td>
-    </tr>
-    <tr>
-        <td>Length – Part 3</td>
-        <td>${selectedWoodLength} mm</td>
-    </tr>
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Measurements</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Diameter – Part 1</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodD1} mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Diameter – Part 2</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodD2} mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Diameter – Part 3</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodD3} mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Length – Part 1</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodLength} mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Length – Part 2</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodLength} mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;">Length – Part 3</td>
+                        <td style="border:1px solid #000; padding:10px 15px;">${selectedWoodLength} mm</td>
+                    </tr>
+                    <tr>
+                        <td style="border:1px solid #000; padding:10px 15px;"><strong>Total Length</strong></td>
+                        <td style="border:1px solid #000; padding:10px 15px;"><strong>${selectedWoodLength * 3} mm</strong></td>
+                    </tr>
 
-    <tr>
-        <td><strong>Total Length</strong></td>
-        <td><strong>${selectedWoodLength * 3} mm</strong></td>
-    </tr>
-</table>
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="border:1px solid #000; padding:10px 15px;">
+                            The turning operation was successfully completed and the diameter was measured using a Vernier Caliper.
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-
-            <h3 style="margin-top:20px;">Result</h3>
-            <p>
-                The turning operation was successfully completed and the diameter
-                was measured using a Vernier Caliper.
-            </p>
-
-            <div class="no-print" style="text-align:center; margin-top:30px;">
-                <button onclick="window.print()">🖨 Print Observation Sheet</button>
+            <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
+                <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">
+                    🖨 Print Results
+                </button>
             </div>
         </div>
-    `;
+        `;
 
         if (nextButton) nextButton.disabled = true;
     }
@@ -355,7 +368,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const hotspot = document.createElement('button');
                 hotspot.className = 'play-hotspot wood-hotspot';
                 hotspot.dataset.wood = wood.id;
-                hotspot.setAttribute('aria-label', `Select ${wood.name}`);
+                hotspot.setAttribute('aria-label', `Select ${wood.name} `);
                 hotspot.title = wood.name;
                 stage.appendChild(hotspot);
 
@@ -410,7 +423,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Show confirmation message
         const instructions = gifContainer.querySelector('.drag-instructions');
         if (instructions) {
-            instructions.textContent = `You selected: ${woodName}`;
+            instructions.textContent = `You selected: ${woodName} `;
         }
     }
 
@@ -420,27 +433,26 @@ document.addEventListener("DOMContentLoaded", function () {
         const videoSrc = getSimulationPath('images/simulation/7.mp4');
         const bgPath = getSimulationPath('images/simulation/7.png');
         const toolPath = getSimulationPath('images/simulation/sand.png');
-
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
+                <!--Drag Phase-->
                 <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
                     <img src="${toolPath}?t=${timestamp}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
                     <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -170%; --arrow-left: 863%;"></div>
                 </div>
 
-                <!-- Video Phase -->
+                <!--Video Phase-->
                 <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                     <video id="step7-video" src="${videoSrc}?t=${timestamp}" playsinline muted></video>
                 </div>
                 
                 <div id="step7-instruction" class="drag-instructions">Drag the sandpaper to the workpiece.</div>
             </div>
-        `;
+            `;
 
         const dragStage = document.getElementById('step7-drag-stage');
         const sand = document.getElementById('draggable-sand');
@@ -588,7 +600,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="drag-instructions">Click the green button to start.</div>
             </div>
-        `;
+            `;
 
         const stage = document.getElementById('play-stage');
         const poster = document.getElementById('step6-poster');
@@ -619,7 +631,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function startVideo() {
             poster.style.display = 'none';
             hotspot.style.display = 'none';
-            video.src = `${gifPath}?t=${timestamp}`;
+            video.src = `${gifPath}?t = ${timestamp} `;
             video.style.display = 'block';
             video.play();
 
@@ -631,7 +643,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        poster.src = `${posterPath}?t=${timestamp}`;
+        poster.src = `${posterPath}?t = ${timestamp} `;
         // Layout hotspot based on poster size initially
         poster.onload = layoutHotspot;
         window.addEventListener('resize', layoutHotspot);
@@ -673,7 +685,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div id="substep-instruction-3" class="drag-instructions"></div>
             </div>
-        `;
+            `;
 
         const video = document.getElementById('step3-video');
         const hotspot = document.getElementById('substep-hotspot-3');
@@ -716,7 +728,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const t = video.currentTime;
 
             // Debug check
-            // console.log(`Step 3 Check: t=${t}, target=${target}, currentSubstep=${currentSubstep}`);
+            // console.log(`Step 3 Check: t = ${ t }, target = ${ target }, currentSubstep = ${ currentSubstep } `);
 
             // Remove upper bound to ensure we catch it even if we skip a frame
             if (t >= target) {
@@ -815,7 +827,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
                 <div class="drag-instructions">Drag the tool onto the tool post location highlighted on the machine.</div>
             </div>
-        `;
+            `;
 
         const stage = document.getElementById('drag-stage');
         const tool = document.getElementById('draggable-tool');
@@ -1057,20 +1069,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase 1: Key -->
+                <!--Drag Phase 1: Key-->
                 <div class="drag-stage" id="step2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                     <img src="${chunkBgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
                     <img src="${keyPath}?t=${timestamp}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
                     <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -356%; --arrow-left: 415%;"></div>
                 </div>
 
-                <!-- Video Phase -->
+                <!--Video Phase-->
                 <div class="play-stage" id="step2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                     <video id="step2-video" src="${video1Src}?t=${timestamp}" playsinline muted style="width: 99.5%"></video>
                     <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
                 </div>
 
-                <!-- Drag Phase 2: Wood -->
+                <!--Drag Phase 2: Wood-->
                  <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
                     <img src="${chunkOpenBgPath}?t=${timestamp}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
                     <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
@@ -1079,7 +1091,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 
                 <div id="substep-instruction" class="drag-instructions">Drag the chuck key to the chuck.</div>
             </div>
-        `;
+            `;
 
         // -- Elements --
         const dragStage1 = document.getElementById('step2-drag-stage');
@@ -1415,6 +1427,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 currentStepIndex++;
                 showCurrentStep();
             }
+        });
+    }
+
+    if (resetButton) {
+        resetButton.addEventListener('click', function () {
+            // Reset to wood selection screen (step 0)
+            selectedWood = null;
+            currentStepIndex = 0;
+            showCurrentStep();
         });
     }
 

@@ -40,6 +40,7 @@ document.addEventListener("DOMContentLoaded", function () {
             anchor: { x: 0.5, y: 0.5 },
             toolSize: { widthRel: 0.2 },
             tolerance: 55,
+            arrow: { top: '-374%', left: '637%' },
             instruction: 'Drag the workpiece onto the marked location on the apparatus.'
         },
         {
@@ -50,6 +51,7 @@ document.addEventListener("DOMContentLoaded", function () {
             anchor: { x: 0.25, y: 0.2 },
             toolSize: { widthRel: 0.30 },
             tolerance: 55,
+            arrow: { top: '-150%', left: '690%' },
             instruction: 'Drag the handle so its hinge (top-left) snaps into place.'
         },
         { id: 'step4', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
@@ -62,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
             toolSize: { widthRel: 0.6 },
             snapRotation: 323,
             tolerance: 120,
+            arrow: { top: '-284%', left: '912%' },
             instruction: 'Drag the protractor to measure the angle.'
         },
         { id: 'step5', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
@@ -74,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
             toolSize: { widthRel: 0.6 },
             snapRotation: 324,
             tolerance: 120,
+            arrow: { top: '-394%', left: '889%' },
             instruction: 'Drag the protractor to measure the final angle after spring back.'
         },
         { id: 'step7', mode: 'print', title: 'Observation & Result (Print)' }
@@ -131,6 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function showCurrentStep() {
         if (!gifContainer) return;
+        document.body.classList.remove('result-mode');
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
         clearCleanup();
@@ -165,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 nextButton.disabled = true; // Last step
             } else {
                 // For drag, hotspot, autoplay: disabled until explicitly completed
-                nextButton.disabled = !isHotspotDone(step);
+                // nextButton.disabled = !isHotspotDone(step);
             }
             // Final check for last step
             if (currentStepIndex === totalSteps - 1) nextButton.disabled = true;
@@ -446,7 +451,7 @@ Spring Back angle = 74° - 64° = 10°`;
             // Do not marks as done here - wait for video end
             instructionElem.textContent = '  ';
             video.play().catch(() => { });
-            if (nextButton) nextButton.disabled = true;
+            // if (nextButton) nextButton.disabled = true;
         }, { once: true });
 
         video.addEventListener('ended', () => {
@@ -495,11 +500,15 @@ Spring Back angle = 74° - 64° = 10°`;
 
     function renderDragStep(step, timestamp) {
         stepCompleted[step.id] = false;
-        if (nextButton) nextButton.disabled = true;
+        // if (nextButton) nextButton.disabled = true;
 
         const backgroundPng = getSimulationPath(step.background); // Apply branching
         const toolPng = getSimulationPath(step.tool); // Apply branching
         const tolerancePx = step.tolerance || 50;
+
+        // Get arrow position from step config or use defaults
+        const arrowTop = step.arrow?.top || '-370%';
+        const arrowLeft = step.arrow?.left || '643%';
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width:100%;height:100%;">
@@ -508,7 +517,7 @@ Spring Back angle = 74° - 64° = 10°`;
                 <div class="drag-stage" id="drag-stage">
                     <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" id="drag-bg"/>
                     <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable"/>
-                    <div id="drop-zone" class="drop-zone" aria-hidden="true"></div>
+                    <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: ${arrowTop}; --arrow-left: ${arrowLeft};"></div>
                 </div>
                 <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.instruction || 'Drag the tool to the highlighted target.'}</div>
             </div>`;
@@ -603,6 +612,9 @@ Spring Back angle = 74° - 64° = 10°`;
             dragging = true;
             toolMovedByUser = true;
             tool.classList.add('dragging');
+            if (dropZone && dropZone.parentNode) {
+                dropZone.classList.add('dragging-active');
+            }
             e.preventDefault();
         }
         function pointerMove(e) {
@@ -647,11 +659,13 @@ Spring Back angle = 74° - 64° = 10°`;
             tool.style.left = left + 'px';
             tool.style.top = top + 'px';
 
+            // Remove drop zone immediately for all drag steps
+            dropZone.remove();
+
             const rotation = getSnapRotation(step.id);
 
             // Function to run after successful placement/rotation
             const onComplete = () => {
-                dropZone.classList.add('success');
                 stepCompleted[step.id] = true;
                 setStepDone(step.id);
 
@@ -787,60 +801,68 @@ Spring Back angle = 74° - 64° = 10°`;
         springBack = bendAngle - finalAngle;
 
 
+        document.body.classList.add('result-mode');
+
         gifContainer.innerHTML = `
-            <div class="gif-wrapper print-area">
+            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
                 <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
                 <hr>
                 
-                <p><strong>Experiment:</strong> Spring Back Effect Analysis</p>
-                <p><strong>Material Used:</strong> ${matName}</p>
-                <p><strong>Thickness:</strong> ${selectedThickness}</p>
-                
-                <!-- MATERIAL IMAGE (Optional) -->
-                <div style="text-align:center; margin: 15px 0;">
-                    <img src="images/simulation/${selectedMaterial}-${selectedThickness}/1-tool.png" alt="${matName} ${selectedThickness}" style="max-width:400px">
+                <div style="text-align:center; margin:20px 0;">
+                    <img src="images/simulation/${selectedMaterial}-${selectedThickness}/1-tool.png" alt="${matName} ${selectedThickness}" style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
+                    <p style="font-size:14px; margin-top:6px;">Spring Back Effect Analysis for ${matName} (${selectedThickness})</p>
                 </div>
-                
-                <h3>Measurements & Calculations</h3>
-                <table border="1" width="100%" cellpadding="8">
-                    <tr>
-                        <th>Parameter</th>
-                        <th>Value</th>
-                    </tr>
-                    <tr>
-                        <td><strong>Loaded State</strong></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Protractor Reading</td>
-                        <td>${step3Angle}°</td>
-                    </tr>
-                    <tr>
-                        <td>Bend Angle (180° - Reading)</td>
-                        <td>${bendAngle}°</td>
-                    </tr>
-                    
-                    <tr>
-                        <td><strong>Unloaded State</strong></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td>Protractor Reading</td>
-                        <td>${step4Angle}°</td>
-                    </tr>
-                     <tr>
-                        <td>Final Bend Angle (180° - Reading)</td>
-                        <td>${finalAngle}°</td>
-                    </tr>
-                    
-                    <tr>
-                        <td><strong>Result</strong></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td><strong>Spring Back Angle</strong></td>
-                        <td><strong>${springBack}°</strong></td>
-                    </tr>
+
+                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Experiment Details</td>
+                        </tr>
+                         <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Experiment</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">Spring Back Effect Analysis</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Material Used</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">${matName}</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Thickness</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">${selectedThickness}</td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Loaded State Measurements</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Protractor Reading</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">${step3Angle}°</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Bend Angle (180° - Reading)</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">${bendAngle}°</td>
+                        </tr>
+                        
+                        <tr>
+                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Unloaded State Measurements</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Protractor Reading</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">${step4Angle}°</td>
+                        </tr>
+                         <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;">Final Bend Angle (180° - Reading)</td>
+                            <td style="border:1px solid #000; padding:10px 15px;">${finalAngle}°</td>
+                        </tr>
+                        
+                        <tr>
+                             <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Result</td>
+                        </tr>
+                        <tr>
+                            <td style="border:1px solid #000; padding:10px 15px;"><strong>Spring Back Angle</strong></td>
+                            <td style="border:1px solid #000; padding:10px 15px;"><strong>${springBack}°</strong></td>
+                        </tr>
+                    </tbody>
                 </table>
                 
                 <h3 style="margin-top:20px;">Conclusion</h3>
@@ -849,13 +871,13 @@ Spring Back angle = 74° - 64° = 10°`;
                     The difference between the loaded bend angle and the final unloaded angle indicates the elastic recovery of the material.
                 </p>
                 
-                <div class="no-print" style="text-align:center; margin-top:30px;">
+                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
                     <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Observation Sheet</button>
                 </div>
             </div>
         `;
 
-        if (nextButton) nextButton.disabled = true;
+        // if (nextButton) nextButton.disabled = true;
     }
 
     if (prevButton) {

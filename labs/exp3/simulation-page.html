@@ -263,14 +263,29 @@
             object-fit: contain;
         }
 
-        .gif-wrapper video#step-generic-video {
-            max-height: 480px;
-            object-fit: contain;
+        .gif-wrapper video#generic-video {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            background-color: white;
+            transform: scale(1.02);
+            /* Slight zoom to remove edges */
         }
 
         .play-stage video {
-            max-height: 480px;
-            object-fit: contain;
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            background-color: white;
+            transform: scale(1.02);
+            /* Slight zoom to remove edges */
+        }
+
+        .stage-bg {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            display: block;
         }
 
         .button-container {
@@ -284,13 +299,15 @@
         /* Ensure generic media wrapper boxes auto-size and avoid clipping */
         .gif-wrapper>div[style*="height: 400px"] {
             height: auto !important;
+            min-height: 300px;
+            /* Ensure some height */
         }
 
         .gif-wrapper video {
             display: block;
-            width: 99.8%;
+            width: 100%;
             height: auto;
-            background-color: transparent;
+            background-color: white;
             object-fit: cover;
         }
 
@@ -369,7 +386,6 @@
                     style="margin-bottom: 20px; padding: 10px 24px; font-size: 16px; border: none; border-radius: 5px; background-color: #2196F3; color: white; cursor: pointer;">
                     ← Back to Lab
                 </button>
-                <h1>Simulation</h1>
                 <div class="row" style="display: flex; align-items: flex-start;">
                     <div class="container" id="simulation-container">
                         <div id="gif-container" class="gif-container">
@@ -383,6 +399,8 @@
                                     Previous</span></button>
                             <button id="next-btn"><span style="color: inherit; visibility: visible;">Next
                                     →</span></button>
+                            <button id="reset-btn" style="background-color: #ff9800;"><span
+                                    style="color: inherit; visibility: visible;">Reset</span></button>
                         </div>
                     </div>
                 </div>
