@@ -87,12 +87,12 @@ document.addEventListener("DOMContentLoaded", function() {
             <!-- Workpiece Section -->
             <div style="text-align:center; margin-bottom:20px;">
             <div class="row" style="display:flex; gap:20px; justify-content:center; align-items:stretch;">
-                <img src="images/result1.png" 
+                <img src="images/c.png" 
                      alt="Workpiece" 
-                     style="height:250px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
-                     <img src="images/result2.png" 
+                     style="height:190px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
+                     <img src="images/b.png" 
                      alt="Workpiece" 
-                     style="height:250px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
+                     style="height:190px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
                      </div>
                 <p style="font-size:14px; margin-top:6px;">Workpiece</p>
             </div>
