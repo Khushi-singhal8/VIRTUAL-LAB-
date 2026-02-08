@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             <!-- Workpiece Section -->
             <div style="text-align:center; margin-bottom:20px;">
-                <img src="images/wood.png" 
+                <img src="images/A.png" 
                      alt="Workpiece" 
                      style="width:500px; border:1px solid #ccc; border-radius:6px;">
                 <p style="font-size:14px; margin-top:6px;">Workpiece</p>
