@@ -62,115 +62,116 @@
         }
 
         /* ============================= */
-/* HOTSPOT CIRCLE */
-/* ============================= */
+        /* HOTSPOT CIRCLE */
+        /* ============================= */
 
-.play-hotspot {
-    position: absolute;
+        .play-hotspot {
+            position: absolute;
 
-    width: 70px;
-    height: 70px;
+            width: 70px;
+            height: 70px;
 
-    background: radial-gradient(circle, #ffd54f, #ff9800);
-    border: 3px dashed #ff6f00;
-    border-radius: 50%;
+            background: radial-gradient(circle, #ffd54f, #ff9800);
+            border: 3px dashed #ff6f00;
+            border-radius: 50%;
 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
-    font-size: 12px;
-    font-weight: bold;
-    color: #faf8f8;
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
 
-    cursor: grab;
-    z-index: 10;
+            cursor: pointer;
+            z-index: 10;
 
-    box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
 
-    transition: all 0.3s ease;
+            transition: all 0.3s ease;
 
-    animation: pulseHotspot 1.5s infinite;
-}
-
-
-/* ============================= */
-/* CENTER TEXT */
-/* ============================= */
+            animation: pulseHotspot 1.5s infinite;
+        }
 
 
-/* ============================= */
-/* SIDE ARROW (FIXED) */
-/* ============================= */
+        /* ============================= */
+        /* CENTER TEXT */
+        /* ============================= */
 
-.play-hotspot::before {
-    content: "➜";
 
-    position: absolute;
+        /* ============================= */
+        /* SIDE ARROW (FIXED) */
+        /* ============================= */
 
-    top: 50%;
-    left: -48px;            /* close to circle (perfect gap) */
-
-    transform: translateY(-50%);
-
-    font-size: 42px;
-    color: #0a0a0a;
-
-    animation: bounceSide 1s infinite;
-}
+        .play-hotspot::before {
+            content: "⬇";
+            position: absolute;
+            top: -80px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
 
 
 
-/* ============================= */
-/* HOVER EFFECT */
-/* ============================= */
+        /* ============================= */
+        /* HOVER EFFECT */
+        /* ============================= */
 
-.play-hotspot:hover {
-    transform: scale(1.15);
-    box-shadow: 0 0 25px rgba(255, 152, 0, 1);
-}
-
-
-/* ============================= */
-/* PULSE ANIMATION */
-/* ============================= */
-
-@keyframes pulseHotspot {
-    0% {
-        box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
-    }
-    50% {
-        box-shadow: 0 0 25px rgba(255, 152, 0, 1);
-    }
-    100% {
-        box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
-    }
-}
+        .play-hotspot:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+        }
 
 
-/* ============================= */
-/* SIDE ARROW BOUNCE */
-/* ============================= */
+        /* ============================= */
+        /* PULSE ANIMATION */
+        /* ============================= */
 
-@keyframes bounceSide {
-    0%, 100% {
-        transform: translateY(-50%) translateX(0);
-    }
-    50% {
-        transform: translateY(-50%) translateX(8px);
-    }
-}
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
 
 
-/* ============================= */
-/* DEBUG MODE */
-/* ============================= */
+        /* ============================= */
+        /* SIDE ARROW BOUNCE */
+        /* ============================= */
 
-.play-hotspot.debug-highlight {
-    background: rgba(255, 100, 100, 0.4);
-    border: 3px solid red;
-    animation: none;
-}
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+
+        /* ============================= */
+        /* DEBUG MODE */
+        /* ============================= */
+
+        .play-hotspot.debug-highlight {
+            background: rgba(255, 100, 100, 0.4);
+            border: 3px solid red;
+            animation: none;
+        }
 
 
         .drag-instructions {
@@ -253,6 +254,30 @@
         .step-item-title h3 {
             margin: 0;
             font-size: 16px;
+        }
+
+        /* Fixed-height container for simulation media */
+        .sim-media-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            background: #f9f9f9;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        /* Wrapper for scaling content */
+        .scaling-wrapper {
+            position: relative;
+            width: 100%;
+            transform-origin: top center;
+            transition: transform 0.2s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
     </style>
     <style>

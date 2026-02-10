@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     style.innerHTML = `
 .apparatus-img-box {
     width: 100%;
-    height: 160px;              
+    height: 150px;              
     border: 1px solid #ccc;
     border-radius: 6px;
     display: flex;
@@ -320,6 +320,28 @@ document.addEventListener("DOMContentLoaded", function () {
             try { cleanupCurrent(); } catch (_) { }
             cleanupCurrent = null;
         }
+        window.removeEventListener('resize', updateScaling);
+    }
+
+    function updateScaling() {
+        const container = document.querySelector('.sim-media-container');
+        const wrapper = document.querySelector('.scaling-wrapper');
+        const stage = document.getElementById('play-stage') || document.getElementById('drag-stage');
+
+        if (!container || !wrapper || !stage) return;
+
+        // Reset scale for measurement
+        wrapper.style.transform = 'scale(1)';
+
+        const containerHeight = container.offsetHeight;
+        const stageHeight = stage.offsetHeight;
+
+        if (stageHeight > 0) {
+            const scale = containerHeight / stageHeight;
+            if (scale < 1) {
+                wrapper.style.transform = `scale(${scale})`;
+            }
+        }
     }
 
     function isInteractiveStep(stepId) {
@@ -416,12 +438,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div style="height: 400px; display: flex; align-items: center; justify-content: center;">
-                    <img src="${formatSrc(step.src, timestamp)}" class="step-gif" alt="${step.title}">
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div id="play-stage" style="display: flex; align-items: center; justify-content: center;">
+                            <img id="step-gif" src="${formatSrc(step.src, timestamp)}" class="step-gif" alt="${step.title}" style="width: 100%; height: auto;">
+                        </div>
+                    </div>
                 </div>
                 <div class="drag-instructions">${step.initialInstruction}</div>
             </div>
         `;
+        const gif = document.getElementById('step-gif');
+        gif.addEventListener('load', () => {
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        });
     }
 
     function renderApparatusStep() {
@@ -455,17 +486,24 @@ document.addEventListener("DOMContentLoaded", function () {
             <h3>Apparatus Used</h3>
             <div class="step-indicator">Step 1 of ${totalSteps}</div>
 
-            <div style="
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 20px;
-                margin-top: 20px;
-            ">
-                ${apparatusHTML}
+            <div class="sim-media-container">
+                <div class="scaling-wrapper">
+                    <div id="play-stage" style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 20px;
+                        margin-top: 20px;
+                        padding: 20px;
+                    ">
+                        ${apparatusHTML}
+                    </div>
+                </div>
             </div>
         </div>
     `;
+        updateScaling();
+        window.addEventListener('resize', updateScaling);
     }
 
 
@@ -474,13 +512,17 @@ document.addEventListener("DOMContentLoaded", function () {
         if (nextButton) nextButton.disabled = true;
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width:100%;height:100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="drag-stage" id="drag-stage">
-                    <img src="${formatSrc(step.src, timestamp)}" alt="Background" class="stage-bg" id="drag-bg"/>
-                    <img src="${formatSrc(step.tool, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="width: 20%; cursor:grab;"/>
-                    <div id="drop-zone" class="drop-zone" aria-hidden="true"></div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="drag-stage" id="drag-stage">
+                            <img src="${formatSrc(step.src, timestamp)}" alt="Background" class="stage-bg" id="drag-bg"/>
+                            <img src="${formatSrc(step.tool, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="width: 20%; cursor:grab;"/>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -210%; --arrow-left: -140%;"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.initialInstruction}</div>
             </div>`;
@@ -493,11 +535,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Layout Drop Zone
         function layoutDropZone() {
+            if (!stage) return;
             const r = stage.getBoundingClientRect();
-            const tx = r.width * step.interaction.target.x;
-            const ty = r.height * step.interaction.target.y;
-            const w = r.width * step.interaction.target.w;
-            const h = r.height * step.interaction.target.h; // Use estimates
+            const tx = stage.offsetWidth * step.interaction.target.x;
+            const ty = stage.offsetHeight * step.interaction.target.y;
             // Actually let's use a fixed size dropzone
             const dzSize = 80;
             dropZone.style.width = dzSize + 'px';
@@ -506,8 +547,17 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - dzSize / 2) + 'px';
         }
 
-        setTimeout(layoutDropZone, 100); // Wait for layout
-        window.addEventListener('resize', layoutDropZone);
+        const dragBg = document.getElementById('drag-bg');
+        dragBg.addEventListener('load', () => {
+            layoutDropZone();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        });
+        if (dragBg.complete) {
+            layoutDropZone();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        }
 
         let dragging = false;
         let startX, startY, initialLeft, initialTop;
@@ -536,6 +586,8 @@ document.addEventListener("DOMContentLoaded", function () {
             document.onmouseup = dragEnd;
             document.ontouchend = dragEnd;
             tool.style.cursor = 'grabbing';
+            // Hide only the arrow as soon as dragging starts
+            dropZone.classList.add('dragging-active');
         }
 
         function dragMove(e) {
@@ -555,6 +607,10 @@ document.addEventListener("DOMContentLoaded", function () {
             document.onmouseup = null;
             document.ontouchend = null;
             tool.style.cursor = 'grab';
+
+            // Re-show arrow (REMOVED: it should stay hidden)
+            // dropZone.classList.remove('arrow-hidden');
+
             checkDrop();
         }
 
@@ -592,7 +648,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 tool.onmousedown = null;
                 tool.ontouchstart = null;
                 tool.style.cursor = 'pointer';
-                dropZone.style.display = 'none';
+                dropZone.style.display = 'none'; // Hide the whole hotspot when placed correctly
 
                 instructionElem.textContent = 'Click the lighter to ignite.';
 
@@ -611,7 +667,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         cleanupCurrent = function () {
-            window.removeEventListener('resize', layoutDropZone);
+            // Drop zone resize handled by updateScaling if needed
         };
     }
 
@@ -622,12 +678,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const cfg = step.interaction || { pauseAt: 2.0, hotspot: { x: 0.45, y: 0.45, w: 0.30, h: 0.30 } };
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:100%;" playsinline muted></video>
-                    <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;">${step.initialInstruction}</div>
             </div>
@@ -647,11 +707,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function layoutHotspot() {
-            const rect = stage.getBoundingClientRect();
-            hotspot.style.left = (rect.width * cfg.hotspot.x) + 'px';
-            hotspot.style.top = (rect.height * cfg.hotspot.y) + 'px';
-            hotspot.style.width = (rect.width * cfg.hotspot.w) + 'px';
-            hotspot.style.height = (rect.height * cfg.hotspot.h) + 'px';
+            if (!stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
+            hotspot.style.left = (w * cfg.hotspot.x) + 'px';
+            hotspot.style.top = (h * cfg.hotspot.y) + 'px';
+            hotspot.style.width = (w * cfg.hotspot.w) + 'px';
+            hotspot.style.height = (h * cfg.hotspot.h) + 'px';
         }
 
         let rafId = null;
@@ -730,7 +792,7 @@ document.addEventListener("DOMContentLoaded", function () {
             video.play();
         }, { once: true });
 
-        window.addEventListener('resize', layoutHotspot);
+        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
 
@@ -745,7 +807,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cleanupCurrent = function () {
             try {
-                window.removeEventListener('resize', layoutHotspot);
                 video.removeEventListener('play', onPlay);
                 video.removeEventListener('pause', onPause);
             } catch (_) { }

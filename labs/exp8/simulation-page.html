@@ -64,74 +64,93 @@
             background-color: transparent;
             object-fit: cover;
         }
-.play-hotspot {
-    position: absolute;
-    width: 70px;
-    height: 70px;
 
-   
-    background: radial-gradient(circle, #ffd54f, #ff9800);
-    border: 3px dashed #ff6f00;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 12px;
-    font-weight: bold;
-    color: #faf8f8;
-
-    cursor: grab;
-    z-index: 10;
-
-    box-shadow: 0 0 15px rgba(255,152,0,0.9);
-
-    
-    transition: all 0.3s ease;
-
-    
-    animation: pulseHotspot 1.5s infinite;
-}
-
-        
+        .play-hotspot {
+            position: absolute;
+            width: 70px;
+            height: 70px;
 
 
+            background: radial-gradient(circle, #ffd54f, #ff9800);
+            border: 3px dashed #ff6f00;
+            border-radius: 50%;
 
-.play-hotspot::before {
-    content: "⬇";
-    position: absolute;
-    top: -80px;
-    font-size: 58px;
-    color: #0a0a0a;
-    animation: bounceArrow 1s infinite;
-}
+            display: flex;
+            align-items: center;
+            justify-content: center;
 
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
 
-.play-hotspot:hover {
-    transform: scale(1.15);
-    box-shadow: 0 0 25px rgba(255,152,0,1);
-}
+            cursor: pointer;
+            z-index: 10;
 
-
-@keyframes pulseHotspot {
-    0% { box-shadow: 0 0 10px rgba(255,152,0,0.6); }
-    50% { box-shadow: 0 0 25px rgba(255,152,0,1); }
-    100% { box-shadow: 0 0 10px rgba(255,152,0,0.6); }
-}
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
 
 
-@keyframes bounceArrow {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(8px); }
-}
+            transition: all 0.3s ease;
 
 
-.play-hotspot.debug-highlight {
-    background: rgba(255,0,0,0.4);
-    border: 3px solid red;
-    animation: none;
-}
+            animation: pulseHotspot 1.5s infinite;
+        }
+
+
+
+
+
+        .play-hotspot::before {
+            content: "⬇";
+            position: absolute;
+            top: -80px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
+
+        .play-hotspot:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+        }
+
+
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+
+        .play-hotspot.debug-highlight {
+            background: rgba(255, 0, 0, 0.4);
+            border: 3px solid red;
+            animation: none;
+        }
 
         .drag-instructions {
             margin-top: 15px;
@@ -194,7 +213,6 @@
             padding-left: 20px;
             box-shadow: -1px 0 0 #ddd;
         }
-
     </style>
     <style>
         /* Overrides: larger media like exp1/exp2 and keep controls visible */
@@ -255,77 +273,123 @@
         }
 
         .drop-zone {
-    position: absolute;
-    width: 70px;
-    height: 70px;
-
-   
-    background: radial-gradient(circle,  rgba(255, 230, 0, 0.558));
-    border: 3px solid #fdb409;
-    border-radius: 50%;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 12px;
-    font-weight: bold;
-    color: #faf8f8;
-
-    cursor: grab;
-    z-index: 10;
-
-    box-shadow: 0 0 15px rgba(255,152,0,0.9);
-
-    
-    transition: all 0.3s ease;
-
-    
-    animation: pulseHotspot 1.5s infinite;
-}
+            position: absolute;
+            width: 70px;
+            height: 70px;
 
 
-.drop-zone::after {
-    content: "DROP HERE";
-    font-size: 15PX;
-    font-weight: bold;
-    text-align: center;
-    color: #0f0f0e;
-}
+            background: radial-gradient(circle, rgba(255, 230, 0, 0.558));
+            border: 3px solid #fdb409;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
+
+            cursor: grab;
+            z-index: 10;
+
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
 
 
-.drop-zone::before {
-    content: "⬇";
-    position: absolute;
-    top: -80px;
-    font-size: 58px;
-    color: #0a0a0a;
-    animation: bounceArrow 1s infinite;
-}
+            transition: all 0.3s ease;
 
 
-.drop-zone:hover {
-    transform: scale(1.15);
-    box-shadow: 0 0 25px rgb(74, 74, 74);
-}
-
-@keyframes pulseHotspot {
-    0% { box-shadow: 0 0 10px rgba(255,152,0,0.6); }
-    50% { box-shadow: 0 0 25px rgba(255,152,0,1); }
-    100% { box-shadow: 0 0 10px rgba(255,152,0,0.6); }
-}
+            animation: pulseHotspot 1.5s infinite;
+        }
 
 
-@keyframes bounceArrow {
-    0%,100% { transform: translateY(0); }
-    50% { transform: translateY(8px); }
-}
+        .drop-zone::after {
+            content: "DROP HERE";
+            font-size: 15PX;
+            font-weight: bold;
+            text-align: center;
+            color: #0f0f0e;
+        }
 
-.drop-zone.debug-highlight {
-    background: rgba(255, 0, 0, 0.281);
-    border: 3px solid red;
-    animation: none;
-}
+
+        .drop-zone::before {
+            content: "⬇";
+            position: absolute;
+            top: var(--arrow-top, -100%);
+            left: var(--arrow-left, 50%);
+            transform: translateX(-50%);
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
+        .drop-zone.dragging-active::before {
+            display: none !important;
+        }
+
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+        .drop-zone.debug-highlight {
+            background: rgba(255, 0, 0, 0.281);
+            border: 3px solid red;
+            animation: none;
+        }
+
+        /* Fixed-height simulation container */
+        .sim-media-container {
+            width: 100%;
+            height: 600px;
+            /* Fixed height for the simulation area */
+            overflow: hidden;
+            position: relative;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scaling-wrapper {
+            width: 100%;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .play-stage {
+            border-radius: 0 !important;
+            /* Managed by parent container */
+        }
     </style>
 
     <!-- Print Styles -->

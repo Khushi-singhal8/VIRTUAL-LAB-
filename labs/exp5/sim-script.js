@@ -83,6 +83,41 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step7', mode: 'print', title: 'Observation & Result (Print)' }
     ];
 
+    const stepGuidance = {
+        step0_5: {
+            now: "Review the schematic diagram.",
+            next: "Start marking process."
+        },
+        step1: {
+            now: "Follow the marking process.",
+            next: "Place workpiece on apparatus."
+        },
+        step2: {
+            now: "Drag the workpiece onto the marked location on the apparatus.",
+            next: "Attach handle to the tool."
+        },
+        step3: {
+            now: "Drag the handle so its hinge (top-left) snaps into place.",
+            next: "Start operation and measure angle."
+        },
+        step4: {
+            now: "Click on the handle to start the bending operation.",
+            next: "Measure angle."
+        },
+        step4_5: {
+            now: "Drag the protractor to measure the angle.",
+            next: "Remove punch."
+        },
+        step5: {
+            now: "Click on the handle to remove the punch.",
+            next: "Measure final angle."
+        },
+        step5_5: {
+            now: "Drag the protractor to measure the final angle after spring back.",
+            next: "View results."
+        }
+    };
+
     const angleTextByStep = {
         step4: 'Angle: 106°',
         step5: 'Angle: 112°'
@@ -117,6 +152,32 @@ document.addEventListener("DOMContentLoaded", function () {
         if (typeof cleanupCurrent === 'function') {
             try { cleanupCurrent(); } catch (_) { }
             cleanupCurrent = null;
+        }
+        window.removeEventListener('resize', updateScaling);
+    }
+
+    function updateScaling() {
+        const container = document.querySelector('.sim-media-container');
+        const wrapper = document.querySelector('.scaling-wrapper');
+        const stage = document.getElementById('play-stage') || document.getElementById('schematic-stage') || document.getElementById('drag-stage');
+
+        if (!container || !wrapper || !stage) return;
+
+        // Reset scale for measurement
+        wrapper.style.transform = 'scale(1)';
+        wrapper.style.width = '100%';
+        wrapper.style.marginLeft = '0';
+
+        const containerHeight = container.offsetHeight;
+        const stageHeight = stage.offsetHeight;
+
+        if (stageHeight > 0) {
+            const scale = containerHeight / stageHeight;
+            if (scale < 1) {
+                wrapper.style.transform = `scale(${scale})`;
+                wrapper.style.width = `${(1 / scale) * 100}%`;
+                wrapper.style.marginLeft = `${(1 - 1 / scale) * 50}%`;
+            }
         }
     }
 
@@ -295,12 +356,25 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="schematic-stage" style="display: flex; align-items: center; justify-content: center;">
-                    <img src="${imagePath}" alt="Schematic Diagram" style="max-width: 100%; max-height: 100%; object-fit: contain;" />
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="schematic-stage" style="display: flex; align-items: center; justify-content: center;">
+                            <img id="schematic-img" src="${imagePath}" alt="Schematic Diagram" style="width: 100%; height: auto; object-fit: contain;" />
+                        </div>
+                    </div>
                 </div>
-                <div class="drag-instructions">${step.instruction}</div>
+                <div class="drag-instructions">
+                    ${step.instruction}<br>
+                    Click next to: ${stepGuidance.step0_5.next}
+                </div>
             </div>
         `;
+
+        const img = document.getElementById('schematic-img');
+        img.addEventListener('load', () => {
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        });
 
         if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
     }
@@ -413,9 +487,13 @@ Spring Back angle = 74° - 64° = 10°`;
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:100%;" preload="auto" playsinline muted></video>
-                    <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:auto;" preload="auto" playsinline muted></video>
+                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
             </div>`;
@@ -426,11 +504,13 @@ Spring Back angle = 74° - 64° = 10°`;
         const instructionElem = document.getElementById('play-instruction');
 
         function layoutHotspot() {
-            const rect = stage.getBoundingClientRect();
-            hotspot.style.left = (rect.width * cfg.x) + 'px';
-            hotspot.style.top = (rect.height * cfg.y) + 'px';
-            hotspot.style.width = (rect.width * cfg.w) + 'px';
-            hotspot.style.height = (rect.height * cfg.h) + 'px';
+            if (!stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
+            hotspot.style.left = (w * cfg.x) + 'px';
+            hotspot.style.top = (h * cfg.y) + 'px';
+            hotspot.style.width = (w * cfg.w) + 'px';
+            hotspot.style.height = (h * cfg.h) + 'px';
         }
 
         function showHotspot() {
@@ -444,6 +524,8 @@ Spring Back angle = 74° - 64° = 10°`;
             video.currentTime = 0.01;
             video.pause();
             showHotspot();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
         }, { once: true });
 
         hotspot.addEventListener('click', () => {
@@ -456,15 +538,15 @@ Spring Back angle = 74° - 64° = 10°`;
 
         video.addEventListener('ended', () => {
             // Show "Step complete!"
-            instructionElem.textContent = 'Step complete!';
+            instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
             if (nextButton) nextButton.disabled = false;
             setStepDone(step.id);
         }, { once: true });
 
-        window.addEventListener('resize', layoutHotspot);
+        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
 
         cleanupCurrent = function () {
-            try { window.removeEventListener('resize', layoutHotspot); } catch (_) { }
+            // Hotspot resize removed as managed by updateScaling
         };
     }
 
@@ -474,8 +556,12 @@ Spring Back angle = 74° - 64° = 10°`;
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:auto;" playsinline muted></video>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
             </div>`;
@@ -483,11 +569,13 @@ Spring Back angle = 74° - 64° = 10°`;
         const video = document.getElementById('step-video');
         video.addEventListener('loadedmetadata', () => {
             video.play().catch(() => { });
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
         }, { once: true });
 
         video.addEventListener('ended', () => {
             if (document.getElementById('play-instruction')) {
-                document.getElementById('play-instruction').textContent = 'Step complete!';
+                document.getElementById('play-instruction').innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
             }
             if (nextButton) nextButton.disabled = false;
             setStepDone(step.id);
@@ -511,13 +599,17 @@ Spring Back angle = 74° - 64° = 10°`;
         const arrowLeft = step.arrow?.left || '643%';
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width:100%;height:100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="drag-stage" id="drag-stage">
-                    <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" id="drag-bg"/>
-                    <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable"/>
-                    <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: ${arrowTop}; --arrow-left: ${arrowLeft};"></div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="drag-stage" id="drag-stage">
+                            <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" id="drag-bg"/>
+                            <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable"/>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: ${arrowTop}; --arrow-left: ${arrowLeft};"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.instruction || 'Drag the tool to the highlighted target.'}</div>
             </div>`;
@@ -568,6 +660,8 @@ Spring Back angle = 74° - 64° = 10°`;
             layoutDropZone();
             applyToolSize();
             if (!toolMovedByUser && !toolPlacedInitially) placeToolInitial();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
         }
 
         function applyToolSize() {
@@ -679,9 +773,9 @@ Spring Back angle = 74° - 64° = 10°`;
 
                 const dynInst = getDynamicInstruction(step.id);
                 if (step.id !== 'step4_5' && step.id !== 'step5_5') {
-                    document.getElementById('drag-instruction').textContent = 'Step complete!';
+                    document.getElementById('drag-instruction').innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
                 } else if (dynInst && dynInst !== 'Click to continue.') {
-                    document.getElementById('drag-instruction').textContent = dynInst;
+                    document.getElementById('drag-instruction').textContent = dynInst + '\n\nClick next to: ' + stepGuidance[step.id].next;
                 }
 
                 if (nextButton) nextButton.disabled = false;
@@ -731,7 +825,6 @@ Spring Back angle = 74° - 64° = 10°`;
 
         cleanupCurrent = function () {
             try {
-                window.removeEventListener('resize', resizeStageToImage);
                 window.removeEventListener('mousemove', pointerMove);
                 window.removeEventListener('touchmove', pointerMove);
                 window.removeEventListener('mouseup', pointerUp);

@@ -22,6 +22,31 @@ document.addEventListener("DOMContentLoaded", function () {
     let step6Completed = false;
     let step8Completed = false;
 
+    function updateScaling() {
+        const container = document.querySelector('.sim-media-container');
+        const wrapper = document.querySelector('.scaling-wrapper');
+        const stage = document.getElementById('play-stage') || document.querySelector('.drag-stage') || document.querySelector('.gif-wrapper');
+
+        if (!container || !wrapper || !stage) return;
+
+        const containerHeight = container.offsetHeight;
+        const stageHeight = stage.offsetHeight;
+
+        if (stageHeight > 0) {
+            const scale = containerHeight / stageHeight;
+            const finalScale = Math.min(scale, 1);
+            wrapper.style.transform = `scale(${finalScale})`;
+
+            // Center if scaled down
+            if (finalScale < 1) {
+                const margin = (containerHeight - (stageHeight * finalScale)) / 2;
+                wrapper.style.marginTop = `${margin}px`;
+            } else {
+                wrapper.style.marginTop = '0px';
+            }
+        }
+    }
+
     // Wood selection data
     const woodTypes = [
         { name: 'Teak', id: 'teak', hotspot: { x: 0.0025, y: 0.03974230857537948, w: 0.16875, h: 0.8585458443321057 } },
@@ -30,68 +55,68 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
     const baseSteps = [
-    {
-        id: 'step1',
-        title: 'Step 1: Select the wood for pattern making.',
-        instruction: 'Observe the types of wood available. Click on the wood you want to use to select it.',
-        src: 'images/simulation/1.png',
-        isWoodSelection: true
-    },
-    {
-        id: 'step1.5',
-        title: 'Step 2: Mark the wood before starting.',
-        instruction: 'Use the marking tool to make guides for your cutting. Watch the video carefully.',
-        src: 'images/simulation/1.5.mp4'
-    },
-    {
-        id: 'step2',
-        title: 'Step 3: Place the workpiece in the chuck.',
-        instruction: 'Make sure it is tightly secured. Drag it into the chuck position as shown.',
-        src: 'images/simulation/2.gif'
-    },
-    {
-        id: 'step3',
-        title: 'Step 4: Prepare the machine.',
-        instruction: 'Move the tool post and tailstock to their starting positions before operation.',
-        src: 'images/simulation/3.mp4'
-    },
-    {
-        id: 'step5',
-        title: 'Step 5: Move the tool to the tool post.',
-        instruction: 'Drag and drop the cutting tool into the tool post as shown in the image.',
-        src: 'images/simulation/5.png'
-    },
-    {
-        id: 'step6',
-        title: 'Step 6: Start the operation.',
-        instruction: 'Press the green button to start the machining process. Observe carefully.',
-        src: 'images/simulation/6.mp4'
-    },
-    {
-        id: 'step7',
-        title: 'Step 7: Finish with sandpaper.',
-        instruction: 'Use sandpaper to smooth the surface as shown in the video.',
-        src: 'images/simulation/7.mp4'
-    },
-    {
-        id: 'step8',
-        title: 'Step 8: Measure diameter with vernier caliper.',
-        instruction: 'Carefully check the diameter of the workpiece and note it.',
-        src: 'images/simulation/8.mp4'
-    },
-    {
-        id: 'step9',
-        title: 'Step 9: Measure length of segments with ruler.',
-        instruction: 'Check each segment carefully using a ruler and record your measurements.',
-        src: 'images/simulation/9.mp4'
-    },
-    {
-        id: 'step10',
-        title: 'Step 10: Observation & Result',
-        instruction: 'Print your results and observations for submission.',
-        isPrintStep: true
-    }
-];
+        {
+            id: 'step1',
+            title: 'Step 1: Select the wood for pattern making.',
+            instruction: 'Observe the types of wood available. Click on the wood you want to use to select it.',
+            src: 'images/simulation/1.png',
+            isWoodSelection: true
+        },
+        {
+            id: 'step1.5',
+            title: 'Step 2: Mark the wood before starting.',
+            instruction: 'Use the marking tool to make guides for your cutting. Watch the video carefully.',
+            src: 'images/simulation/1.5.mp4'
+        },
+        {
+            id: 'step2',
+            title: 'Step 3: Place the workpiece in the chuck.',
+            instruction: 'Make sure it is tightly secured. Drag it into the chuck position as shown.',
+            src: 'images/simulation/2.gif'
+        },
+        {
+            id: 'step3',
+            title: 'Step 4: Prepare the machine.',
+            instruction: 'Move the tool post and tailstock to their starting positions before operation.',
+            src: 'images/simulation/3.mp4'
+        },
+        {
+            id: 'step5',
+            title: 'Step 5: Move the tool to the tool post.',
+            instruction: 'Drag and drop the cutting tool into the tool post as shown in the image.',
+            src: 'images/simulation/5.png'
+        },
+        {
+            id: 'step6',
+            title: 'Step 6: Start the operation.',
+            instruction: 'Press the green button to start the machining process. Observe carefully.',
+            src: 'images/simulation/6.mp4'
+        },
+        {
+            id: 'step7',
+            title: 'Step 7: Finish with sandpaper.',
+            instruction: 'Use sandpaper to smooth the surface as shown in the video.',
+            src: 'images/simulation/7.mp4'
+        },
+        {
+            id: 'step8',
+            title: 'Step 8: Measure diameter with vernier caliper.',
+            instruction: 'Carefully check the diameter of the workpiece and note it.',
+            src: 'images/simulation/8.mp4'
+        },
+        {
+            id: 'step9',
+            title: 'Step 9: Measure length of segments with ruler.',
+            instruction: 'Check each segment carefully using a ruler and record your measurements.',
+            src: 'images/simulation/9.mp4'
+        },
+        {
+            id: 'step10',
+            title: 'Step 10: Observation & Result',
+            instruction: 'Print your results and observations for submission.',
+            isPrintStep: true
+        }
+    ];
 
 
     let steps = baseSteps;
@@ -186,16 +211,19 @@ document.addEventListener("DOMContentLoaded", function () {
             // }
 
             gifContainer.innerHTML = `
-            <div class="gif-wrapper">
+            <div class="gif-wrapper" style="width:100%;height:100%;">
                 <h3>${step.title}</h3>
-                <div class="step-indicator">
-                    Step ${currentStepIndex + 1} of ${totalSteps}
-                </div>
-                <div style="min-height:300px;display:flex;align-items:center;justify-content:center;background:#fff">
-                    ${isVideo
-                    ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline></video>`
-                    : `<img src="${currentSrc}?t=${timestamp}" class="step-gif">`
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage" style="width:100%; position: relative; min-height:300px; display:flex; align-items:center; justify-content:center; background:#fff">
+                            ${isVideo
+                    ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline style="width:100%; display:block;"></video>`
+                    : `<img src="${currentSrc}?t=${timestamp}" class="step-gif" style="width:100%; display:block;">`
                 }
+                        </div>
+                    </div>
                 </div>
             </div>
         `;
@@ -212,14 +240,29 @@ document.addEventListener("DOMContentLoaded", function () {
                             // We replace the video with the image
                             const container = v.parentElement;
                             container.innerHTML = `<img src="${imgPath}?t=${timestamp}" class="step-gif" style="width:100%;height:100%;object-fit:cover;">`;
+
+                            // Add instruction after step 1.5 finishes
+                            const instructionDiv = document.createElement('div');
+                            instructionDiv.className = 'drag-instructions';
+                            instructionDiv.textContent = 'Step complete! Click next to place workpiece in the chuck.';
+                            container.parentElement.appendChild(instructionDiv);
                         }
 
                         if (step.id === 'step8') step8Completed = true;
 
                         if (nextButton) nextButton.disabled = false;
+                        updateScaling();
                     };
+                    v.addEventListener('loadedmetadata', updateScaling, { once: true });
+                }
+            } else {
+                const img = gifContainer.querySelector('.step-gif');
+                if (img) {
+                    if (img.complete) updateScaling();
+                    else img.onload = updateScaling;
                 }
             }
+            window.addEventListener('resize', updateScaling);
         }
 
         // Call updateButton to set initial state based on logic (except for generic video which handled above)
@@ -360,8 +403,13 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="gif-wrapper" style="width: 100%; height: 100%;">
             <h3>Choose the wood to use for pattern making</h3>
             <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-            <div class="play-stage" id="play-stage">
-                <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%;height:100%;object-fit:contain;"/>
+            
+            <div class="sim-media-container">
+                <div class="scaling-wrapper">
+                    <div class="play-stage" id="play-stage" style="width: 100%; position: relative;">
+                        <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%; display: block; object-fit:contain;"/>
+                    </div>
+                </div>
             </div>
             <div class="drag-instructions">Click on a wood type to select it</div>
         </div>
@@ -403,13 +451,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (img.complete && img.naturalWidth) {
             createWoodHotspots();
+            updateScaling();
         } else {
             img.addEventListener('load', () => {
                 createWoodHotspots();
+                updateScaling();
             }, { once: true });
         }
 
-        window.addEventListener('resize', layoutWoodHotspots);
+        window.addEventListener('resize', () => {
+            layoutWoodHotspots();
+            updateScaling();
+        });
     }
 
     function selectWood(woodId, woodName) {
@@ -446,16 +499,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!--Drag Phase-->
-                <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${toolPath}?t=${timestamp}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
-                    <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -170%; --arrow-left: 863%;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <!--Drag Phase-->
+                        <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${toolPath}?t=${timestamp}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
+                            <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -170%; --arrow-left: 863%;"></div>
+                        </div>
 
-                <!--Video Phase-->
-                <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step7-video" src="${videoSrc}?t=${timestamp}" playsinline muted></video>
+                        <!--Video Phase-->
+                        <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                            <video id="step7-video" src="${videoSrc}?t=${timestamp}" playsinline muted style="width:100%"></video>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="step7-instruction" class="drag-instructions">Drag the sandpaper to the workpiece.</div>
@@ -489,9 +546,19 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - h / 2) + 'px';
         }
 
-        if (dragBg.complete && dragBg.naturalWidth) setDropZoneLayout();
-        else dragBg.onload = setDropZoneLayout;
-        window.addEventListener('resize', setDropZoneLayout);
+        if (dragBg.complete && dragBg.naturalWidth) {
+            setDropZoneLayout();
+            updateScaling();
+        } else {
+            dragBg.onload = () => {
+                setDropZoneLayout();
+                updateScaling();
+            };
+        }
+        window.addEventListener('resize', () => {
+            setDropZoneLayout();
+            updateScaling();
+        });
 
         // Drag Logic
         let dragging = false;
@@ -601,10 +668,15 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>Press green button to start operation.</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img id="step6-poster" alt="Operation" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <video id="step6-video" class="stage-bg" style="display:none" playsinline muted></video>
-                    <button id="play-hotspot" class="play-hotspot debug-highlight" aria-label="Start"></button>
+                
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <img id="step6-poster" alt="Operation" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <video id="step6-video" class="stage-bg" style="display:none; width: 100%;" playsinline muted></video>
+                            <button id="play-hotspot" class="play-hotspot debug-highlight" aria-label="Start"></button>
+                        </div>
+                    </div>
                 </div>
                 <div class="drag-instructions">Click the green button to start.</div>
             </div>
@@ -647,14 +719,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 step6Completed = true;
                 if (nextButton) nextButton.disabled = false;
                 const instructions = gifContainer.querySelector('.drag-instructions');
-                if (instructions) instructions.textContent = 'Step complete! Now we will finsh the process by sanding the workpeice.';
+                if (instructions) instructions.textContent = 'Step complete! Click next to finsh the process by sanding the workpeice.';
             });
         }
 
         poster.src = `${posterPath}?t = ${timestamp} `;
         // Layout hotspot based on poster size initially
-        poster.onload = layoutHotspot;
-        window.addEventListener('resize', layoutHotspot);
+        poster.onload = () => {
+            layoutHotspot();
+            updateScaling();
+        };
+        window.addEventListener('resize', () => {
+            layoutHotspot();
+            updateScaling();
+        });
 
         hotspot.addEventListener('click', startVideo, { once: true });
 
@@ -677,7 +755,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { time: 7, hotspot: { x: 0.71625, y: 0.31777777777777777, w: 0.23375, h: 0.3 }, instruction: 'Move tail stock to its position' },
             { time: 7.97, hotspot: { x: 0.53625, y: 0.32222222222222224, w: 0.0875, h: 0.16 }, instruction: 'Adjust the tail stock quill' },
             { time: 8.95, hotspot: { x: 0.29875, y: 0.49333333333333335, w: 0.0875, h: 0.16 }, instruction: 'Engage the tool rest lock' },
-            { time: 8.95, instruction: 'Step complete! Now we will place the tool.' }
+            { time: 8.95, instruction: 'Step complete! Click next to place the tool.' }
         ];
         let currentSubstep = 0;
 
@@ -687,9 +765,14 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step3-video" src="${videoSrc}?t=${timestamp}" playsinline muted></video>
-                    <button id="substep-hotspot-3" class="play-hotspot" style="display:none;"></button>
+                
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <video id="step3-video" src="${videoSrc}?t=${timestamp}" playsinline muted style="width: 100%;"></video>
+                            <button id="substep-hotspot-3" class="play-hotspot" style="display:none;"></button>
+                        </div>
+                    </div>
                 </div>
                 <div id="substep-instruction-3" class="drag-instructions"></div>
             </div>
@@ -747,7 +830,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentSubstep++;
                     setupSubstep();
                 } else {
-                    instructionElem.textContent = 'Step complete! Now we are ready to begin the process.';
+                    instructionElem.textContent = 'Step complete! Click next to begin the process.';
 
                     // Final step actions
                     step3Completed = true;
@@ -766,7 +849,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 nextButton.disabled = false;
                 nextButton.removeAttribute('disabled');
             }
-            instructionElem.innerHTML = 'Step complete! Now we are ready to begin the process. <br><small style="color:blue">(Video Ended - Button Enabled)</small>';
+            instructionElem.innerHTML = 'Step complete! Click next to begin the process.';
         });
 
         function frameCallback() {
@@ -778,6 +861,19 @@ document.addEventListener("DOMContentLoaded", function () {
 
         video.addEventListener('loadedmetadata', () => {
             setupSubstep();
+            updateScaling();
+        });
+
+        window.addEventListener('resize', () => {
+            if (currentSubstep < substeps.length && substeps[currentSubstep].hotspot) {
+                const substep = substeps[currentSubstep];
+                const rect = stage.getBoundingClientRect();
+                hotspot.style.left = (rect.width * substep.hotspot.x) + 'px';
+                hotspot.style.top = (rect.height * substep.hotspot.y) + 'px';
+                hotspot.style.width = (rect.width * substep.hotspot.w) + 'px';
+                hotspot.style.height = (rect.height * substep.hotspot.h) + 'px';
+            }
+            updateScaling();
         });
 
         const onPlay = () => {
@@ -828,10 +924,15 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>Move the tool to the tool post (drag and drop).</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="drag-stage" id="drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%;"/>
-                    <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -70%; --arrow-left: 801%;"></div>
+                
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="drag-stage" id="drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%;"/>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -70%; --arrow-left: 801%;"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="drag-instructions">Drag the tool onto the tool post location highlighted on the machine.</div>
             </div>
@@ -908,6 +1009,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!toolMovedByUser && !toolInitialPlaced && TOOL_INIT_MODE === 'rel') {
                 placeToolAtInit();
             }
+            updateScaling();
         }
 
         if (stageBg.complete && stageBg.naturalWidth) {
@@ -921,7 +1023,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         layoutDropZone();
-        window.addEventListener('resize', resizeStageToImage, { passive: true });
+        window.addEventListener('resize', () => {
+            resizeStageToImage();
+            updateScaling();
+        }, { passive: true });
+        updateScaling();
 
         let dragging = false;
         let offsetX = 0, offsetY = 0;
@@ -1007,7 +1113,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Update instruction text
             const instructions = gifContainer.querySelector('.drag-instructions');
             if (instructions) {
-                instructions.textContent = 'Step complete! Now we are ready to begin the process.';
+                instructions.textContent = 'Step complete! Click next to begin the process.';
             }
 
             const ok = document.createElement('div');
@@ -1065,7 +1171,7 @@ document.addEventListener("DOMContentLoaded", function () {
             { time: 1.3, hotspot: { x: 0.5615, y: 0.4937436108689752, w: 0.061, h: 0.1002 }, instruction: 'Click on the chuck key to tighten.' },
             { time: 2.9, hotspot: { x: 0.4503, y: 0.7004, w: 0.047, h: 0.1042 }, instruction: 'Click on the chuck key to tighten.' },
             { time: 4.5, hotspot: { x: 0.3335, y: 0.4788, w: 0.061, h: 0.1002 }, instruction: 'Click on the chuck key to tighten.' },
-            { time: 5.9, instruction: 'Step complete! Now we can proceed with the setup.' }
+            { time: 5.9, instruction: 'Step complete! Click next to proceed with the setup.' }
         ];
 
         let substeps = substeps1;
@@ -1077,24 +1183,28 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!--Drag Phase 1: Key-->
-                <div class="drag-stage" id="step2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                    <img src="${chunkBgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${keyPath}?t=${timestamp}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
-                    <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -356%; --arrow-left: 415%;"></div>
-                </div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <!--Drag Phase 1: Key-->
+                        <div class="drag-stage" id="step2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <img src="${chunkBgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${keyPath}?t=${timestamp}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
+                            <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -356%; --arrow-left: 415%;"></div>
+                        </div>
 
-                <!--Video Phase-->
-                <div class="play-stage" id="step2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step2-video" src="${video1Src}?t=${timestamp}" playsinline muted style="width: 99.5%"></video>
-                    <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
-                </div>
+                        <!--Video Phase-->
+                        <div class="play-stage" id="step2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                            <video id="step2-video" src="${video1Src}?t=${timestamp}" playsinline muted style="width: 100%; display: block;"></video>
+                            <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
+                        </div>
 
-                <!--Drag Phase 2: Wood-->
-                 <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
-                    <img src="${chunkOpenBgPath}?t=${timestamp}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
-                    <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
-                    <div id="step2-wood-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -88%; --arrow-left: 275%;"></div>
+                        <!--Drag Phase 2: Wood-->
+                        <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
+                            <img src="${chunkOpenBgPath}?t=${timestamp}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
+                            <div id="step2-wood-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -88%; --arrow-left: 275%;"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="substep-instruction" class="drag-instructions">Drag the chuck key to the chuck.</div>
@@ -1249,9 +1359,18 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('mouseup', onPointerUp);
         window.addEventListener('touchend', onPointerUp);
         window.addEventListener('resize', () => {
-            if (dragStage1.style.display !== 'none') layout1();
-            if (dragStage2.style.display !== 'none') layout2();
+            if (dragStage1.style.display !== 'none') {
+                layout1();
+            }
+            if (dragStage2.style.display !== 'none') {
+                layout2();
+            }
+            if (playStage.style.display !== 'none' && substeps[currentSubstep] && substeps[currentSubstep].hotspot) {
+                showHotspot();
+            }
+            updateScaling();
         });
+        updateScaling();
 
 
         // --- Video Logic ---
@@ -1289,7 +1408,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // Define handler
             const onVideoEnded = () => {
                 console.log('Step 2 Final Video Ended');
-                instructionElem.textContent = 'Step complete! Now lets start with the setup.';
+                instructionElem.textContent = 'Step complete! Click next to start with the setup.';
                 step2Completed = true;
                 if (nextButton) nextButton.disabled = false;
                 // Remove listener to prevent duplicates if function called multiple times

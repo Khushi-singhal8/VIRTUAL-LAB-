@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
     style.innerHTML = `
     .apparatus-img-box {
         width: 100%;
-        height: 190px;
+        height: 150px;
         border: 2px solid #ccc;
         border-radius: 8px;
         display: flex;
@@ -260,7 +260,10 @@ document.addEventListener("DOMContentLoaded", function () {
             <h3>Apparatus Used</h3>
             <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
 
-            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:auto;">
+            <div class="sim-media-container">
+                <div class="scaling-wrapper">
+                    <div id="play-stage" style="width: 100%; padding: 20px;">
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;max-width:900px;margin:auto;">
         `;
 
         for (let i = 0; i < 3; i++) {
@@ -287,7 +290,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         html += `
-        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         <div class="drag-instructions" style="margin-top:20px">
             ${stepGuidance.apparatus.now}<br>
@@ -296,13 +302,41 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>`;
 
         gifContainer.innerHTML = html;
+        updateScaling();
+        window.addEventListener('resize', updateScaling);
+    }
+
+    function updateScaling() {
+        const container = document.querySelector('.sim-media-container');
+        const wrapper = document.querySelector('.scaling-wrapper');
+        const stage = document.getElementById('play-stage') ||
+            document.getElementById('step1-drag-stage') ||
+            document.getElementById('step1_5-drag-stage') ||
+            document.getElementById('step4-drag-stage') ||
+            document.getElementById('drag-stage');
+
+        if (!container || !wrapper || !stage) return;
+
+        // Reset scale for measurement
+        wrapper.style.transform = 'scale(1)';
+
+        const containerHeight = container.offsetHeight;
+        const stageHeight = stage.offsetHeight;
+
+        if (stageHeight > 0) {
+            const scale = containerHeight / stageHeight;
+            if (scale < 1) {
+                wrapper.style.transform = `scale(${scale})`;
+            }
+        }
     }
 
     function clearCleanup() {
         if (typeof cleanupCurrent === 'function') {
-            cleanupCurrent();
+            try { cleanupCurrent(); } catch (_) { }
             cleanupCurrent = null;
         }
+        window.removeEventListener('resize', updateScaling);
     }
 
     function isHotspotStep(step) {
@@ -393,9 +427,13 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" preload="auto" playsinline muted></video>
-                    <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" preload="auto" playsinline muted></video>
+                            <button id="play-hotspot" class="play-hotspot ${step.id === 'step3' ? 'step3-arrow' : ''}" style="display:none; ${step.id === 'step3' ? '--arrow-top: 10%; --arrow-left: -20%; --arrow-width: auto; --arrow-transform: translateX(-50%); --arrow-content: \'➡\';' : ''}"></button>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
@@ -407,7 +445,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function layoutHotspot(cfg) {
             if (!cfg) return;
-            const rect = stage.getBoundingClientRect();
+            const rect = { width: stage.offsetWidth, height: stage.offsetHeight };
             hotspot.style.left = (rect.width * cfg.x) + 'px';
             hotspot.style.top = (rect.height * cfg.y) + 'px';
             hotspot.style.width = (rect.width * cfg.w) + 'px';
@@ -435,6 +473,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         video.addEventListener('loadedmetadata', () => {
+            layoutHotspot(substeps[currentSubIndex]);
+            updateScaling();
             // Handle start-of-video hotspot
             if (currentSubIndex < substeps.length && substeps[currentSubIndex].time <= 0.1) {
                 video.currentTime = 0.01;
@@ -474,6 +514,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         window.addEventListener('resize', () => {
             if (currentSubIndex < substeps.length) layoutHotspot(substeps[currentSubIndex]);
+            updateScaling();
         });
 
         cleanupCurrent = function () {
@@ -489,8 +530,12 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="play-stage" id="play-stage">
-                    <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
@@ -502,8 +547,10 @@ document.addEventListener("DOMContentLoaded", function () {
         instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : '';
 
         video.addEventListener('loadedmetadata', () => {
+            updateScaling();
             video.play().catch(() => { });
         }, { once: true });
+        window.addEventListener('resize', updateScaling);
 
         video.addEventListener('ended', () => {
             if (stepGuidance[step.id]) {
@@ -529,16 +576,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
-                    <div id="step1-drop-zone" class="drop-zone"></div>
-                </div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <!-- Drag Phase -->
+                        <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
+                            <div id="step1-drop-zone" class="drop-zone" style="--arrow-top: -150%; --arrow-left: 225%;"></div>
+                        </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
+                        <!-- Video Phase -->
+                        <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                            <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="step1-instruction" class="drag-instructions"></div>
@@ -575,8 +626,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Delay slightly to ensure layout
-        setTimeout(setDropZoneLayout, 50);
-        window.addEventListener('resize', setDropZoneLayout);
+        setTimeout(() => {
+            setDropZoneLayout();
+            updateScaling();
+        }, 50);
+        window.addEventListener('resize', () => {
+            setDropZoneLayout();
+            updateScaling();
+        });
 
         // Drag Logic
         let dragging = false;
@@ -585,6 +642,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             tool.style.cursor = 'grabbing';
+            dropZone.classList.add('dragging-active');
             const rect = tool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -631,8 +689,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dist < tolerancePx) {
                 // Success
-                dropZone.style.borderColor = 'green';
-                dropZone.style.backgroundColor = 'rgba(0,255,0,0.2)';
+                dropZone.style.display = 'none';
                 setTimeout(startVideoPhase, 200);
             }
         }
@@ -695,10 +752,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" id="step1_5-bg" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-1_5" class="draggable" style="position: absolute; width: 12%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
-                    <div id="step1_5-drop-zone" class="drop-zone"></div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" id="step1_5-bg" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-1_5" class="draggable" style="position: absolute; width: 12%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
+                            <div id="step1_5-drop-zone" class="drop-zone" style="--arrow-top: -430%; --arrow-left: 385%;"></div>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="step1_5-instruction" class="drag-instructions"></div>
@@ -732,8 +793,8 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - h / 2) + 'px';
         }
 
-        setTimeout(setDropZoneLayout, 50);
-        window.addEventListener('resize', setDropZoneLayout);
+        setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
+        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
         // Drag Logic
         let dragging = false;
@@ -742,6 +803,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             tool.style.cursor = 'grabbing';
+            dropZone.classList.add('dragging-active');
             const rect = tool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -788,7 +850,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (dist < tolerancePx) {
                 // Success
                 tool.style.display = 'none';
-                dropZone.style.display = 'none';
+                dropZone.style.display = 'none'; // Hide drop zone on success
                 bgImg.src = formatSrc(finalPath, timestamp);
 
                 if (stepGuidance[step.id]) {
@@ -839,16 +901,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-4" class="draggable" style="position: absolute; width: 25%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
-                    <div id="step4-drop-zone" class="drop-zone"></div>
-                </div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <!-- Drag Phase -->
+                        <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-4" class="draggable" style="position: absolute; width: 25%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
+                            <div id="step4-drop-zone" class="drop-zone" style="--arrow-top: -10%; --arrow-left: 345%;"></div>
+                        </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                        <!-- Video Phase -->
+                        <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                            <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="step4-instruction" class="drag-instructions"></div>
@@ -883,8 +949,8 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - h / 2) + 'px';
         }
 
-        setTimeout(setDropZoneLayout, 50);
-        window.addEventListener('resize', setDropZoneLayout);
+        setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
+        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
         // Drag Logic
         let dragging = false;
@@ -893,6 +959,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             tool.style.cursor = 'grabbing';
+            dropZone.classList.add('dragging-active');
             const rect = tool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -937,8 +1004,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                dropZone.style.borderColor = 'green';
-                dropZone.style.backgroundColor = 'rgba(0,255,0,0.2)';
+                dropZone.style.display = 'none';
                 setTimeout(startVideoPhase, 200);
             }
         }
@@ -999,16 +1065,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
-                <!-- Drag Phase -->
-                <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                    <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
-                    <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-5" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 10;"/>
-                    <div id="step5-drop-zone" class="drop-zone"></div>
-                </div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <!-- Drag Phase -->
+                        <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-5" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
+                            <div id="step5-drop-zone" class="drop-zone" style="--arrow-top: -140%; --arrow-left: 255%;"></div>
+                        </div>
 
-                <!-- Video Phase -->
-                <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                    <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
+                        <!-- Video Phase -->
+                        <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                            <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
+                        </div>
+                    </div>
                 </div>
                 
                 <div id="step5-instruction" class="drag-instructions"></div>
@@ -1043,8 +1113,8 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - h / 2) + 'px';
         }
 
-        setTimeout(setDropZoneLayout, 50);
-        window.addEventListener('resize', setDropZoneLayout);
+        setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
+        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
         // Drag Logic
         let dragging = false;
@@ -1053,6 +1123,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function onPointerDown(e) {
             dragging = true;
             tool.style.cursor = 'grabbing';
+            dropZone.classList.add('dragging-active');
             const rect = tool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -1097,8 +1168,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                dropZone.style.borderColor = 'green';
-                dropZone.style.backgroundColor = 'rgba(0,255,0,0.2)';
+                dropZone.style.display = 'none';
                 setTimeout(startVideoPhase, 200);
             }
         }
@@ -1148,16 +1218,18 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderResultStep() {
-    gifContainer.innerHTML = `
+        gifContainer.innerHTML = `
         <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
             <h2 style="text-align:center;">Experiment Result</h2>
             <hr>
 
-            <div style="text-align:center; margin:20px 0;">
-                <img src="${getAssetSrc('images/simulation/result.png')}" 
-                     alt="Final Welded Joint" 
-                     style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
-                <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
+            <div class="sim-media-container" style="height: auto; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="text-align:center; margin:20px 0; width: 100%;">
+                    <img src="${getAssetSrc('images/simulation/result.png')}" 
+                         alt="Final Welded Joint" 
+                         style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
+                    <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
+                </div>
             </div>
 
             <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family:sans-serif;">
@@ -1248,8 +1320,8 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>
     `;
 
-    if (nextButton) nextButton.disabled = true;
-}
+        if (nextButton) nextButton.disabled = true;
+    }
 
 
 

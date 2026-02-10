@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation E10 script (multi-substeps) loaded');
 
     const prevButton = document.getElementById('prev-btn');
@@ -17,11 +17,11 @@ document.addEventListener("DOMContentLoaded", function() {
             src: 'images/simulation/1.mp4',
             type: 'video',
             substeps: [
-                { time: 3.7, hotspot: {x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778}, instruction: 'Click here to rotate the thimble and open micrometer' },
-                { time: 7.83, hotspot: {x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333}, instruction: 'Click here to place sheet between anvil and spindle' },
-                { time: 10.6, hotspot: {x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874}, instruction: 'Click here to rotate thimble until slip click' },
-                { time: 11.7, hotspot: {x: 0.7797125, y: 0.5840888888888889, w: 0.077300625, h: 0.19304088888888887}, instruction: 'Click here to rotate ratchet for fine tuning' },
-                { time: 13.5, hotspot: {x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Click here to lock the spindle using the lock lever' }
+                { time: 3.7, hotspot: { x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778 }, instruction: 'Click here to rotate the thimble and open micrometer' },
+                { time: 7.83, hotspot: { x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333 }, instruction: 'Click here to place sheet between anvil and spindle' },
+                { time: 10.6, hotspot: { x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874 }, instruction: 'Click here to rotate thimble until slip click' },
+                { time: 11.7, hotspot: { x: 0.7797125, y: 0.5840888888888889, w: 0.077300625, h: 0.19304088888888887 }, instruction: 'Click here to rotate ratchet for fine tuning' },
+                { time: 13.5, hotspot: { x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888 }, instruction: 'Click here to lock the spindle using the lock lever' }
             ]
         },
         {
@@ -48,11 +48,11 @@ document.addEventListener("DOMContentLoaded", function() {
             src: 'images/simulation/2.mp4',
             type: 'video',
             substeps: [
-                { time: 4.1, hotspot: {x: 0.69735125, y: 0.6095799721835883, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Click here to rotate the thimble and open micrometer' },
-                { time: 8.2, hotspot: {x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886}, instruction: 'Click here to place wire between anvil and spindle' },
-                { time: 11, hotspot: {x: 0.71860125, y: 0.6162559109874827, w: 0.10389874704408286, h: 0.18020588627950723}, instruction: 'Click here to rotate thimble until slip click' },
-                { time: 12, hotspot: {x: 0.80485125, y: 0.6318331015299027, w: 0.06639875, h: 0.1802058414464534}, instruction: 'Click here to rotate ratchet for fine tuning' },
-                { time: 13.83, hotspot: {x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888}, instruction: 'Click here to lock the spindle using the lock lever' }
+                { time: 4.1, hotspot: { x: 0.69735125, y: 0.6095799721835883, w: 0.10389874704408286, h: 0.18020588627950723 }, instruction: 'Click here to rotate the thimble and open micrometer' },
+                { time: 8.2, hotspot: { x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886 }, instruction: 'Click here to place wire between anvil and spindle' },
+                { time: 11, hotspot: { x: 0.71860125, y: 0.6162559109874827, w: 0.10389874704408286, h: 0.18020588627950723 }, instruction: 'Click here to rotate thimble until slip click' },
+                { time: 12, hotspot: { x: 0.80485125, y: 0.6318331015299027, w: 0.06639875, h: 0.1802058414464534 }, instruction: 'Click here to rotate ratchet for fine tuning' },
+                { time: 13.83, hotspot: { x: 0.56433875, y: 0.646568888888889, w: 0.053811625, h: 0.10618488888888888 }, instruction: 'Click here to lock the spindle using the lock lever' }
             ]
         },
         {
@@ -74,12 +74,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 'Final reading = 0.75 + 0.1 + 0.014 = 0.864 mm '
         },
         {
-    id: 'step7',
-    title: '7. Final Result',
-    type: 'final',
-    instruction: 'Click the button below to print the results.',
-    action: 'print',
-    content: `
+            id: 'step7',
+            title: '7. Final Result',
+            type: 'final',
+            instruction: 'Click the button below to print the results.',
+            action: 'print',
+            content: `
         <div style="padding:20px; font-family:Arial, sans-serif;">
             <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
             <hr style="margin-bottom:30px;">
@@ -108,7 +108,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         <td style="border:1px solid #000; padding:10px;">2.086 mm</td>
                     </tr>
                     <tr>
-                        <td style="border:1px solid #000; padding:10px;">Diameter</td>
+                        <td style="border:1px solid #000; padding:10px;">Diameter of wire</td>
                         <td style="border:1px solid #000; padding:10px;">0.8517 mm</td>
                     </tr>
                 </tbody>
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", function() {
             </div>
         </div>
     `
-}
+        }
     ];
 
     let currentStepIndex = 0;
@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
             titleDiv.className = 'step-item-title';
             titleDiv.innerHTML = `<h4 style="margin:0">${index + 1}. ${step.title}</h4>`;
             item.appendChild(titleDiv);
-            item.setAttribute('aria-disabled','true');
+            item.setAttribute('aria-disabled', 'true');
             item.style.cursor = 'default';
             item.title = 'Use Previous/Next to navigate';
             stepsList.appendChild(item);
@@ -150,56 +150,88 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function clearCleanup() {
         if (typeof cleanupCurrent === 'function') {
-            try { cleanupCurrent(); } catch (_) {}
+            try { cleanupCurrent(); } catch (_) { }
             cleanupCurrent = null;
+        }
+        window.removeEventListener('resize', updateScaling);
+    }
+
+    function updateScaling() {
+        const container = document.querySelector('.sim-media-container');
+        const wrapper = document.querySelector('.scaling-wrapper');
+        const stage = document.getElementById('play-stage');
+
+        if (!container || !wrapper || !stage) return;
+
+        // Reset scale for measurement
+        wrapper.style.transform = 'scale(1)';
+        wrapper.style.width = '100%';
+
+        const containerHeight = container.offsetHeight;
+        const stageHeight = stage.offsetHeight;
+
+        if (stageHeight > 0) {
+            const scale = containerHeight / stageHeight;
+            // Only scale down if it exceeds the height
+            if (scale < 1) {
+                wrapper.style.transform = `scale(${scale})`;
+                // Adjust width to compensate for scale since we want 100% width visually
+                wrapper.style.width = `${(1 / scale) * 100}%`;
+                // Center horizontally if needed
+                wrapper.style.marginLeft = `${(1 - 1 / scale) * 50}%`;
+            } else {
+                wrapper.style.transform = 'scale(1)';
+                wrapper.style.width = '100%';
+                wrapper.style.marginLeft = '0';
+            }
         }
     }
 
     function showCurrentStep() {
-    if (!gifContainer) return;
+        if (!gifContainer) return;
 
-    const step = steps[currentStepIndex];
-    const timestamp = Date.now();
-    clearCleanup();
+        const step = steps[currentStepIndex];
+        const timestamp = Date.now();
+        clearCleanup();
 
-    /* ✅ FINAL STEP (VERY IMPORTANT) */
-    if (step.type === 'final') {
-        gifContainer.innerHTML = step.content;   // render HTML table + images
+        /* ✅ FINAL STEP (VERY IMPORTANT) */
+        if (step.type === 'final') {
+            gifContainer.innerHTML = step.content;   // render HTML table + images
+
+            if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
+            if (prevButton) prevButton.disabled = false;
+            if (nextButton) nextButton.disabled = false;
+
+            return; // stop here (don't run video logic)
+        }
+
+        /* normal steps */
+        if (step.type === 'image') {
+            renderImage(step);
+        }
+        else if (Array.isArray(step.substeps) && step.substeps.length) {
+            renderSubstepVideo(step, timestamp);
+        }
+        else {
+            renderSimpleVideo(step, timestamp);
+        }
 
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
-        if (prevButton) prevButton.disabled = false;
-        if (nextButton) nextButton.disabled = false;
+        if (prevButton) prevButton.disabled = currentStepIndex === 0;
 
-        return; // stop here (don't run video logic)
+        if (nextButton) {
+            const hasSubsteps = Array.isArray(step.substeps) && step.substeps.length > 0;
+            // nextButton.disabled = hasSubsteps ? true : (currentStepIndex === totalSteps - 1);
+        }
+
+        if (stepsList) {
+            const items = stepsList.querySelectorAll('.step-item');
+            items.forEach((itm, idx) => {
+                if (idx === currentStepIndex) itm.classList.add('active');
+                else itm.classList.remove('active');
+            });
+        }
     }
-
-    /* normal steps */
-    if (step.type === 'image') {
-        renderImage(step);
-    } 
-    else if (Array.isArray(step.substeps) && step.substeps.length) {
-        renderSubstepVideo(step, timestamp);
-    } 
-    else {
-        renderSimpleVideo(step, timestamp);
-    }
-
-    if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
-    if (prevButton) prevButton.disabled = currentStepIndex === 0;
-
-    if (nextButton) {
-        const hasSubsteps = Array.isArray(step.substeps) && step.substeps.length > 0;
-        // nextButton.disabled = hasSubsteps ? true : (currentStepIndex === totalSteps - 1);
-    }
-
-    if (stepsList) {
-        const items = stepsList.querySelectorAll('.step-item');
-        items.forEach((itm, idx) => {
-            if (idx === currentStepIndex) itm.classList.add('active');
-            else itm.classList.remove('active');
-        });
-    }
-}
 
 
     function renderSubstepVideo(step, timestamp) {
@@ -210,12 +242,15 @@ document.addEventListener("DOMContentLoaded", function() {
         let finalHandled = false;
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width:100%;height:100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
-<!--                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>-->
-                <div class="play-stage" id="play-stage">
-                    <video id="substep-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
-                    <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="substep-video" src="${step.src}?t=${timestamp}" style="width:100%;height:auto;" playsinline muted></video>
+                            <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
+                        </div>
+                    </div>
                 </div>
                 <div id="substep-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
             </div>`;
@@ -227,12 +262,13 @@ document.addEventListener("DOMContentLoaded", function() {
         if (hotspotDebug) hotspot.classList.add('debug-highlight');
 
         function layoutHotspot(rel) {
-            if (!rel) return;
-            const rect = stage.getBoundingClientRect();
-            hotspot.style.left = (rect.width * rel.x) + 'px';
-            hotspot.style.top = (rect.height * rel.y) + 'px';
-            hotspot.style.width = (rect.width * rel.w) + 'px';
-            hotspot.style.height = (rect.height * rel.h) + 'px';
+            if (!rel || !stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
+            hotspot.style.left = (w * rel.x) + 'px';
+            hotspot.style.top = (h * rel.y) + 'px';
+            hotspot.style.width = (w * rel.w) + 'px';
+            hotspot.style.height = (h * rel.h) + 'px';
         }
 
         function setupSubstep() {
@@ -247,13 +283,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     video.play();
                 };
             } else {
-                    const isLast = currentSubstep === substeps.length - 1;
-                    if (isLast) {
-                        if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
-                    try { video.play(); } catch(_) {}
-                    } else {
-                        try { video.play(); } catch(_) {}
-                    }
+                const isLast = currentSubstep === substeps.length - 1;
+                if (isLast) {
+                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    try { video.play(); } catch (_) { }
+                } else {
+                    try { video.play(); } catch (_) { }
+                }
             }
         }
 
@@ -295,6 +331,8 @@ document.addEventListener("DOMContentLoaded", function() {
         video.addEventListener('loadedmetadata', () => {
             video.pause();
             setupSubstep();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
         }, { once: true });
 
         function onPlay() {
@@ -305,23 +343,23 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
         function onPause() {
-            if (rafId && typeof video.cancelVideoFrameCallback === 'function') { video.cancelVideoFrameCallback(rafId); rafId=null; }
-            if (intervalId) { clearInterval(intervalId); intervalId=null; }
+            if (rafId && typeof video.cancelVideoFrameCallback === 'function') { video.cancelVideoFrameCallback(rafId); rafId = null; }
+            if (intervalId) { clearInterval(intervalId); intervalId = null; }
         }
         video.addEventListener('play', onPlay);
         video.addEventListener('pause', onPause);
 
-        window.addEventListener('resize', () => { if (substeps[currentSubstep] && substeps[currentSubstep].hotspot) layoutHotspot(substeps[currentSubstep].hotspot); });
+        // window.addEventListener('resize', () => { if (substeps[currentSubstep] && substeps[currentSubstep].hotspot) layoutHotspot(substeps[currentSubstep].hotspot); });
 
         cleanupCurrent = () => {
             try {
                 video.removeEventListener('play', onPlay);
                 video.removeEventListener('pause', onPause);
-            } catch(_) {}
+            } catch (_) { }
             if (rafId && typeof video.cancelVideoFrameCallback === 'function') {
-                video.cancelVideoFrameCallback(rafId); rafId=null;
+                video.cancelVideoFrameCallback(rafId); rafId = null;
             }
-            if (intervalId) { clearInterval(intervalId); intervalId=null; }
+            if (intervalId) { clearInterval(intervalId); intervalId = null; }
         };
     }
 
@@ -329,28 +367,45 @@ document.addEventListener("DOMContentLoaded", function() {
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
-                <div class="play-stage" id="play-stage">
-                    <video id="simple-video" src="${step.src}?t=${timestamp}" style="width:100%;height:100%;" playsinline muted></video>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="simple-video" src="${step.src}?t=${timestamp}" style="width:100%;height:auto;" playsinline muted></video>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
         const video = document.getElementById('simple-video');
-        video.addEventListener('loadedmetadata', () => { video.play().catch(()=>{}); }, { once:true });
-        video.addEventListener('ended', () => { if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1); }, { once:true });
-        cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch(_){} };
+        video.addEventListener('loadedmetadata', () => {
+            video.play().catch(() => { });
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        }, { once: true });
+        video.addEventListener('ended', () => { if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1); }, { once: true });
+        cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch (_) { } };
     }
 
     function renderImage(step) {
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
-                <div class="play-stage" id="play-stage">
-                    <img id="step-image" src="${step.src}" style="width:100%;height:100%;object-fit:contain;" alt="${step.title}"/>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <img id="step-image" src="${step.src}" style="width:100%;height:auto;object-fit:contain;" alt="${step.title}"/>
+                        </div>
+                    </div>
                 </div>
                 <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;">${step.instruction || ''}</div>
             </div>`;
+        const img = document.getElementById('step-image');
+        img.addEventListener('load', () => {
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        });
         if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
-        cleanupCurrent = () => {};
+        cleanupCurrent = () => { };
     }
 
     if (prevButton) {
