@@ -3,7 +3,107 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E10 script (multi-substeps) loaded');
+    console.log('Simulation E1 script loaded');
+
+    // --- ASSET PRELOADING ---
+    const assetList = [
+        // Simulation videos
+        "images/simulation/1.mp4",
+        "images/simulation/2.mp4",
+        "images/simulation/3.mp4",
+        "images/simulation/4.mp4",
+
+        // Result images
+        "images/workpiece.png",
+        "images/vernier.png",
+        "images/vernier calliper.png",
+        "images/scale.png",
+
+        // Reading images (all frames)
+        "images/p1.1.png", "images/p1.2.png", "images/p1.3.png", "images/p1.4.png", "images/p1.5.png", "images/p1.6.png",
+        "images/p2.1.png", "images/p2.2.png", "images/p2.3.png", "images/p2.4.png", "images/p2.5.png", "images/p2.6.png",
+        "images/p3.1.png", "images/p3.2.png", "images/p3.3.png", "images/p3.4.png", "images/p3.5.png", "images/p3.6.png",
+        "images/p4.1.png", "images/p4.2.png", "images/p4.3.png", "images/p4.4.png", "images/p4.5.png",
+
+        // Step images
+        "images/step1.png",
+        "images/step2.png",
+        "images/step3.png",
+        "images/step4.png",
+
+        // Finals
+        "images/final read.png",
+        "images/final read 2.png",
+        "images/A.png"
+    ];
+
+    const assetCache = {};
+
+    function getAssetSrc(originalUrl) {
+        return assetCache[originalUrl] || originalUrl;
+    }
+
+    function formatSrc(url, timestamp) {
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
+    }
+
+    async function preloadAssets() {
+        const overlay = document.createElement('div');
+        overlay.id = 'preload-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = '#fff';
+        overlay.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
+            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
+            </div>
+            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressBar = document.getElementById('preload-progress');
+        const progressText = document.getElementById('preload-text');
+        let loadedCount = 0;
+
+        const promises = assetList.map(async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                assetCache[url] = objectUrl;
+            } catch (err) {
+                console.error(`Error preloading ${url}:`, err);
+            } finally {
+                loadedCount++;
+                const percent = Math.round((loadedCount / assetList.length) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+            }
+        });
+
+        await Promise.all(promises);
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showCurrentStep();
+            }, 500);
+        }, 500);
+    }
 
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
@@ -173,7 +273,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-
     ];
 
     let currentStepIndex = 0;
@@ -256,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="width: 100%; position: relative;">
-                            <video id="substep-video" src="${step.src}?t=${timestamp}" style="width:100%; display: block;" playsinline muted></video>
+                            <video id="substep-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; display: block;" playsinline muted></video>
                             <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
                         </div>
                     </div>
@@ -394,7 +493,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="sim-media-container">
                 <div class="scaling-wrapper">
                     <div class="play-stage" id="play-stage" style="width:100%; position: relative;">
-                        <video id="simple-video" src="${step.src}?t=${timestamp}" style="width:100%; display: block;" playsinline muted></video>
+                        <video id="simple-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; display: block;" playsinline muted></video>
                     </div>
                 </div>
             </div>
@@ -470,5 +569,5 @@ document.addEventListener("DOMContentLoaded", function () {
        Initial Load
        ========================= */
 
-    showCurrentStep();
+    preloadAssets();
 });

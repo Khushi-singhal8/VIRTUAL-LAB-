@@ -54,6 +54,139 @@ document.addEventListener("DOMContentLoaded", function () {
         { name: 'Mahogany', id: 'mahogany', hotspot: { x: 0.83, y: 0.03974230857537948, w: 0.16875, h: 0.8585458443321057 } }
     ];
 
+    // --- ASSET PRELOADING ---
+    const assetList = [
+        // Common assets (used regardless of wood selection)
+        "images/simulation/1.png",
+        "images/simulation/2.mp4",
+        "images/simulation/8.mp4",
+        "images/simulation/9.mp4",
+        "images/lathe machine.png",
+        "images/scriber.png",
+
+        // Procedure images
+        "images/procedure/a.png", "images/procedure/b.png", "images/procedure/c.png", "images/procedure/d.png",
+        "images/procedure/e.png", "images/procedure/f - Copy.png", "images/procedure/g (2).png",
+        "images/procedure/h (4).png", "images/procedure/i (2).png", "images/procedure/j (2).png",
+        "images/procedure/k (2).png", "images/procedure/l.png", "images/procedure/m.png",
+        "images/procedure/n (2).png", "images/procedure/o.png", "images/procedure/p.png",
+        "images/procedure/q.png", "images/procedure/r.png", "images/procedure/s.png",
+
+        // Teak wood assets
+        "images/simulation/teak/1.5.mp4", "images/simulation/teak/1.5.png",
+        "images/simulation/teak/2.1.mp4", "images/simulation/teak/2.1.png",
+        "images/simulation/teak/2.2.mp4", "images/simulation/teak/2.png",
+        "images/simulation/teak/3.mp4", "images/simulation/teak/5.png",
+        "images/simulation/teak/6.mp4", "images/simulation/teak/6.png",
+        "images/simulation/teak/7.mp4", "images/simulation/teak/7.png",
+        "images/simulation/teak/8.mp4", "images/simulation/teak/9.mp4",
+        "images/simulation/teak/key.png", "images/simulation/teak/key2.png",
+        "images/simulation/teak/teak.png", "images/simulation/teak/sand.png",
+        "images/simulation/teak/tool.png", "images/simulation/teak/wood.png",
+
+        // Pine wood assets
+        "images/simulation/pine/1.5.mp4", "images/simulation/pine/1.5.png",
+        "images/simulation/pine/2.1.mp4", "images/simulation/pine/2.1.png",
+        "images/simulation/pine/2.2.mp4", "images/simulation/pine/2.mp4",
+        "images/simulation/pine/2.png", "images/simulation/pine/3.mp4",
+        "images/simulation/pine/5.png", "images/simulation/pine/6.mp4",
+        "images/simulation/pine/6.png", "images/simulation/pine/7.mp4",
+        "images/simulation/pine/7.png", "images/simulation/pine/8.mp4",
+        "images/simulation/pine/9.mp4", "images/simulation/pine/key.png",
+        "images/simulation/pine/key2.png", "images/simulation/pine/pine.png",
+        "images/simulation/pine/sand.png", "images/simulation/pine/tool.png",
+        "images/simulation/pine/wood.png",
+
+        // Mahogany wood assets
+        "images/simulation/mahogany/1.5.mp4", "images/simulation/mahogany/1.5.png",
+        "images/simulation/mahogany/2.1.mp4", "images/simulation/mahogany/2.1.png",
+        "images/simulation/mahogany/2.2.mp4", "images/simulation/mahogany/2.png",
+        "images/simulation/mahogany/3.mp4", "images/simulation/mahogany/5.png",
+        "images/simulation/mahogany/6.mp4", "images/simulation/mahogany/6.png",
+        "images/simulation/mahogany/7.mp4", "images/simulation/mahogany/7.png",
+        "images/simulation/mahogany/8.mp4", "images/simulation/mahogany/9.mp4",
+        "images/simulation/mahogany/key.png", "images/simulation/mahogany/key2.png",
+        "images/simulation/mahogany/mahogany.png", "images/simulation/mahogany/sand.png",
+        "images/simulation/mahogany/tool.png", "images/simulation/mahogany/wood.png"
+    ];
+
+    const assetCache = {};
+
+    function getAssetSrc(originalUrl) {
+        return assetCache[originalUrl] || originalUrl;
+    }
+
+    function formatSrc(url, timestamp) {
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
+    }
+
+    async function preloadAssets() {
+        const overlay = document.createElement('div');
+        overlay.id = 'preload-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = '#fff';
+        overlay.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
+            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
+            </div>
+            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressBar = document.getElementById('preload-progress');
+        const progressText = document.getElementById('preload-text');
+        let loadedCount = 0;
+
+        const promises = assetList.map(async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                assetCache[url] = objectUrl;
+            } catch (err) {
+                console.error(`Error preloading ${url}:`, err);
+            } finally {
+                loadedCount++;
+                const percent = Math.round((loadedCount / assetList.length) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+            }
+        });
+
+        await Promise.all(promises);
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showCurrentStep();
+            }, 500);
+        }, 500);
+    }
+
+    // Update getSimulationPath to use cached assets
+    function getSimulationPath(src) {
+        if (!selectedWood) {
+            return getAssetSrc(src);
+        }
+        const path = src.replace('images/simulation/', `images/simulation/${selectedWood}/`);
+        return getAssetSrc(path);
+    }
+
     const baseSteps = [
         {
             id: 'step1',
@@ -158,11 +291,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (totalStepsElement) {
         totalStepsElement.textContent = totalSteps;
-    }
-
-    function getSimulationPath(src) {
-        if (!selectedWood) return src;
-        return src.replace('images/simulation/', `images/simulation/${selectedWood}/`);
     }
 
     function showCurrentStep() {
@@ -1566,5 +1694,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    showCurrentStep();
+    preloadAssets();
 });

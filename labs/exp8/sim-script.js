@@ -87,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Apparatus
         "images/apparatus/d].png",
         "images/apparatus/c].png",
+        "images/apparatus/g].png",
         "images/apparatus/e].png",
         "images/apparatus/b].png",
         "images/apparatus/f].png",
