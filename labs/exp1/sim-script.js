@@ -128,14 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const scale = containerHeight / stageHeight;
             const finalScale = Math.min(scale, 1);
             wrapper.style.transform = `scale(${finalScale})`;
-
-            // Center if scaled down
-            if (finalScale < 1) {
-                const margin = (containerHeight - (stageHeight * finalScale)) / 2;
-                wrapper.style.marginTop = `${margin}px`;
-            } else {
-                wrapper.style.marginTop = '0px';
-            }
+            wrapper.style.transformOrigin = 'center center';
         }
     }
 
@@ -151,8 +144,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 { time: 7.4, hotspot: { x: 0.1990924805531547, y: 0.0006798951703481843, w: 0.20717372515125324, h: 0.42057656308498687 }, instruction: 'Click here to move workpiece to the correct position.' },
                 { time: 9.5, hotspot: { x: 0.4445548833189283, y: 0.5368086858854362, w: 0.16222990492653414, h: 0.16 }, instruction: 'Click here to move jaws using finger hook.' },
                 { time: 11.5, hotspot: { x: 0.4860414866032844, y: 0.37806664170722576, w: 0.0567847882454624, h: 0.09410707600149758 }, instruction: 'Click here to tighten the lock screw.' },
-                { time: 23.3, instruction: 'Top view' },
-                { time: 25, instruction: 'Take reading:\nMSR = 25 mm, VSR = 45 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 25 + (45 × 0.02) = 25 + 0.9 = 25.9 mm' }
+                { time: 23.3, instruction: 'Let\'s have a look at this from the top' },
+                { time: 25, instruction: 'Take reading:\nMSR = 25 mm, VSR = 45 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 25 + (45 × 0.02) = 25 + 0.9 = 25.9 mm\n\nClick next to start measuring outer diameter.' }
             ]
         },
         {
@@ -166,8 +159,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 { time: 5.68, hotspot: { x: 0.14347450302506481, y: 0.6306252339947586, w: 0.22717372515125323, h: 0.3387420441782104 }, instruction: 'Click here to move workpiece to correct position.' },
                 { time: 7.65, hotspot: { x: 0.7254451166810718, y: 0.5767128416323475, w: 0.1597579948141746, h: 0.18 }, instruction: 'Click here to move jaws using finger hook.' },
                 { time: 9.75, hotspot: { x: 0.6226015557476232, y: 0.2313051291651067, w: 0.0567847882454624, h: 0.09410707600149758 }, instruction: 'Click here to tighten the lock screw.' },
-                { time: 19.30, instruction: 'Top view' },
-                { time: 25, instruction: 'Take reading:\nMSR = 30 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm\nFinal Reading = 30 + (5 × 0.02) = 30 + 0.1 = 30.1 mm' }
+                { time: 19.30, instruction: 'Let\'s have a look at this from the top' },
+                { time: 25, instruction: 'Take reading:\nMSR = 30 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm\nFinal Reading = 30 + (5 × 0.02) = 30 + 0.1 = 30.1 mm\n\nClick next to start measuring thickness.' }
             ]
         },
         {
@@ -181,8 +174,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 { time: 7.85, hotspot: { x: 0.4893690579083838, y: 0.20628378884312992, w: 0.25903197925669835, h: 0.42154249344814676 }, instruction: 'Click here to move workpiece to correct position.' },
                 { time: 10.84, hotspot: { x: 0.3476231633535004, y: 0.6705293897416698, w: 0.11901469317199653, h: 0.11004867090977162 }, instruction: 'Click here to move jaws using finger hook.' },
                 { time: 12.9, hotspot: { x: 0.6716437500000001, y: 0.7564222222222222, w: 0.061970625, h: 0.11004866666666667 }, instruction: 'Click here to tighten the lock screw.' },
-                { time: 26.45, instruction: 'Top view' },
-                { time: 30, instruction: 'Take reading:\nMSR = 2 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 2 + (5 × 0.02) = 2 + 0.1 = 2.1 mm.' }
+                { time: 26.45, instruction: 'Let\'s have a look at this from the top' },
+                { time: 30, instruction: 'Take reading:\nMSR = 2 mm, VSR = 5 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 2 + (5 × 0.02) = 2 + 0.1 = 2.1 mm\n\nClick next to start measuring outer depth of the workpiece.' }
             ]
         },
         {
@@ -195,8 +188,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 { time: 3, hotspot: { x: 0.11408815903197926, y: 0.3958427555222763, w: 0.06468452895419188, h: 0.1021265443654062 }, instruction: 'Click here to unscrew the lock screw.' },
                 { time: 4.98, hotspot: { x: 0.21607605877268798, y: 0.623472856608012, w: 0.13555747623163353, h: 0.12608760763758892 }, instruction: 'Click here to move jaws using finger hook.' },
                 { time: 7.1, hotspot: { x: 0.20933448573898011, y: 0.35005016847622616, w: 0.06542783059636992, h: 0.11004867090977162 }, instruction: 'Click here to tighten the lock screw.' },
-                { time: 13.5, instruction: 'Top view' },
-                { time: 14, instruction: 'Take reading:\nMSR = 30 mm, VSR = 3 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 30 + (3 × 0.02) = 30 + 0.06 = 30.06 mm' }
+                { time: 13.5, instruction: 'Let\'s have a look at this from the top' },
+                { time: 14, instruction: 'Take reading:\nMSR = 30 mm, VSR = 3 divisions (say, aligned), LC = 0.02 mm \nFinal Reading = 30 + (3 × 0.02) = 30 + 0.06 = 30.06 mm\n\nClick next to see final result.' }
             ]
         },
         {

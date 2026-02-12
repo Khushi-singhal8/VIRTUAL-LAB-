@@ -36,14 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const scale = containerHeight / stageHeight;
             const finalScale = Math.min(scale, 1);
             wrapper.style.transform = `scale(${finalScale})`;
-
-            // Center if scaled down
-            if (finalScale < 1) {
-                const margin = (containerHeight - (stageHeight * finalScale)) / 2;
-                wrapper.style.marginTop = `${margin}px`;
-            } else {
-                wrapper.style.marginTop = '0px';
-            }
+            wrapper.style.transformOrigin = 'center center';
         }
     }
 

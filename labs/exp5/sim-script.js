@@ -176,7 +176,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (scale < 1) {
                 wrapper.style.transform = `scale(${scale})`;
                 wrapper.style.width = `${(1 / scale) * 100}%`;
-                wrapper.style.marginLeft = `${(1 - 1 / scale) * 50}%`;
+                wrapper.style.transformOrigin = 'center center';
+                wrapper.style.marginLeft = '0';
+            } else {
+                wrapper.style.transformOrigin = 'center center';
             }
         }
     }

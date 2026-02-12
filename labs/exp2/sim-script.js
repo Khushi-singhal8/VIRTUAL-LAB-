@@ -283,12 +283,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 wrapper.style.transform = `scale(${scale})`;
                 // Adjust width to compensate for scale since we want 100% width visually
                 wrapper.style.width = `${(1 / scale) * 100}%`;
-                // Center horizontally if needed
-                wrapper.style.marginLeft = `${(1 - 1 / scale) * 50}%`;
+                wrapper.style.transformOrigin = 'center center';
+                wrapper.style.marginLeft = '0';
             } else {
                 wrapper.style.transform = 'scale(1)';
                 wrapper.style.width = '100%';
                 wrapper.style.marginLeft = '0';
+                wrapper.style.transformOrigin = 'center center';
             }
         }
     }

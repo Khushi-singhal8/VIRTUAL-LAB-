@@ -341,7 +341,10 @@ document.addEventListener("DOMContentLoaded", function () {
             if (scale < 1) {
                 wrapper.style.transform = `scale(${scale})`;
                 wrapper.style.width = `${(1 / scale) * 100}%`;
-                wrapper.style.marginLeft = `${(1 - 1 / scale) * 50}%`;
+                wrapper.style.transformOrigin = 'center center';
+                wrapper.style.marginLeft = '0';
+            } else {
+                wrapper.style.transformOrigin = 'center center';
             }
         }
     }
@@ -425,8 +428,8 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <!-- BLUE INSTRUCTION BOX -->
-            <div class="drag-instructions" style="margin-top:20px;">
-                ${stepGuidance.apparatus.now}<br>
+            <div class="drag-instructions" style="margin-top:20px; line-height: 15px">
+                ${stepGuidance.apparatus.now}\n
                 Click next to: ${stepGuidance.apparatus.next}
             </div>
         </div>

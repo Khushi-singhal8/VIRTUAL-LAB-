@@ -332,16 +332,19 @@ document.addEventListener("DOMContentLoaded", function () {
         wrapper.style.transform = 'scale(1)';
         wrapper.style.width = '100%';
         wrapper.style.marginLeft = '0';
+        wrapper.style.marginTop = '0';
 
         const containerHeight = container.offsetHeight;
         const stageHeight = stage.offsetHeight;
 
         if (stageHeight > 0) {
             const scale = containerHeight / stageHeight;
+            // Always set transform origin to center
+            wrapper.style.transformOrigin = 'center center';
+
             if (scale < 1) {
+                // Just scale, flexbox handles centering
                 wrapper.style.transform = `scale(${scale})`;
-                wrapper.style.width = `${(1 / scale) * 100}%`;
-                wrapper.style.marginLeft = `${(1 - 1 / scale) * 50}%`;
             }
         }
     }

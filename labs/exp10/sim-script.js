@@ -47,20 +47,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!container || !wrapper || !stage) return;
 
+        // Reset scale for measurement
+        wrapper.style.transform = 'scale(1)';
+        wrapper.style.marginTop = '0px';
+
         const containerHeight = container.offsetHeight;
         const stageHeight = stage.offsetHeight;
 
         if (stageHeight > 0) {
             const scale = containerHeight / stageHeight;
-            const finalScale = Math.min(scale, 1);
-            wrapper.style.transform = `scale(${finalScale})`;
+            // Always set transform origin to center
+            wrapper.style.transformOrigin = 'center center';
 
-            // Center if scaled down
-            if (finalScale < 1) {
-                const margin = (containerHeight - (stageHeight * finalScale)) / 2;
-                wrapper.style.marginTop = `${margin}px`;
+            if (scale < 1) {
+                // Just scale, flexbox handles centering
+                wrapper.style.transform = `scale(${scale})`;
             } else {
-                wrapper.style.marginTop = '0px';
+                wrapper.style.transform = 'scale(1)';
             }
         }
     }
