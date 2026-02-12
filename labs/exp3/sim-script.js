@@ -244,6 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             // Add instruction after step 1.5 finishes
                             const instructionDiv = document.createElement('div');
                             instructionDiv.className = 'drag-instructions';
+                            instructionDiv.style.width = '96%';
                             instructionDiv.textContent = 'Step complete! Click next to place workpiece in the chuck.';
                             container.parentElement.appendChild(instructionDiv);
                         }

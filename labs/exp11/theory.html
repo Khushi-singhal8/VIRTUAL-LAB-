@@ -1,0 +1,302 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+        <script>
+            window.onload = function () {
+                document.getElementById("theory").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
+            background-color: #1261A0;
+          }
+          #aim{
+            background-color: #009dff;
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
+            background-color: #009dff;
+          }
+          .figure {
+              text-align: center;
+              margin: 25px 0;
+          }
+          .figure img {
+              width: 450px; 
+              height: auto;
+              display: block;
+              margin: 0 auto;
+          }
+          .caption {
+              font-weight: bold;
+              margin-top: 8px;
+              font-size: 16px;
+          }
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
+<div class="navbar navbar-default">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse" >
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
+    </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+      
+    </div>
+  </div>
+</div>
+        
+        <div class="wrapper">
+        	<header class="main-header">
+        <!-- Logo -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Manufacturing Process Lab</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" style="background-color:#009dff;">
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header" >
+            <ol class="breadcrumb" >
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
+              </li>
+              <li>
+                <a href="#">Butt joint Welding</a>
+              </li>
+              <li class="active">Theory</li>
+            </ol>
+          </section>
+        </nav>
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
+        <section class="sidebar">
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
+            <ul class="sidebar-menu" style="background-color:#1261A0;">
+                <li class="treeview" id="aim">
+                    <a href="index.html" id="aim">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
+                    </a>
+                </li>
+                <li class="treeview" id="theory">
+                    <a href="theory.html" id="theory" onclick="theory()">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">Theory</span>
+                    </a>
+                </li>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
+                <li class="treeview" id="procedure">
+                    <a href="procedure.html" id="procedure">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
+                    </a>
+                </li>
+                <li class="treeview" id="simulation">
+                    <a href="simulation.html" id="simulation">
+                        <i class="fa fa-laptop" style="color:white;"></i>
+                        <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+
+             
+                
+                <li class="treeview" id="posttest">
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
+                    </a>
+                </li>
+                <li class="treeview" id="ref">
+                    <a href="references.html" id="references">
+                        <i class="fa fa-files-o" style="color:white;"></i>
+                        <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li>
+            </ul>
+        </section>
+        <!-- /.sidebar -->
+      </aside>
+
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                    To study butt joint welding using gas oxy-acetylene method
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Theory </h3>
+                    <p style="font-size:130%; margin-top:2%">
+                
+                
+            <p>Oxy-acetylene welding is a fusion welding process that burns acetylene in oxygen to produce a very high-temperature flame used to melt and join metals. The chemical combustion of acetylene in oxygen releases large heat and the reaction may be written as:</p>
+            <p><b>2C<sub>2</sub>H<sub>2</sub> + 5O<sub>2</sub> → 4CO<sub>2</sub> + 2H<sub>2</sub>O + (high Heat)</b></p>
+
+            <p>Under correct mixing the flame reaches temperatures sufficient to melt common structural metals; this makes oxy-acetylene useful for welding, brazing and flame cutting.Typical flame types are <b>neutral</b>, <b>oxidizing</b>, and <b>carburizing (reducing)</b> — each obtained by altering the oxygen/fuel ratio and each having different effects on base metal chemistry and weld quality.</p>
+            <p>A <b>butt joint</b> is formed when the edges of two plates lie in the same plane and are joined along their touching edges. Good joint preparation (cleaning, correct bevel/edge angle, correct root gap and tack welding) plus flame control are essential to produce full penetration, strong, defect-free welds. Microstructure and mechanical properties of gaswelded butt joints have been investigated in literature and show that joint quality depends strongly on heat input, joint geometry and post-weld handling.</p>
+
+            <div class="figure">
+          <img src="images/gas welding 2.png" alt="gas welding">
+          <div class="caption">Fig (a): Gas Welding</div>
+      </div>
+
+            <p><b>Applications:</b></p>
+            <ul>
+                <li>Joining mild steel plates in fabrication workshops.</li>
+                <li>Repair of automotive body panels and frames.</li>
+                <li>Construction of small pipelines and thin-wall tubing.</li>
+                <li>Sheet metal work in HVAC and appliance manufacturing.</li>
+                <li>Educational training for welding fundamentals.</li>
+            </ul>
+
+            <p><b>Advantages:</b></p>
+            <ul>
+                <li>Simple equipment with low initial investment cost.</li>
+                <li>Suitable for a wide range of metals and thicknesses (especially thin plates).</li>
+                <li>No electrical power source needed — portable for field work.</li>
+                <li>Allows both welding and cutting with the same torch (by changing tips).</li>
+                <li>Smooth, clean welds possible with skilled operator control.</li>
+            </ul>
+
+            <p><b>Disadvantages:</b></p>
+            <ul>
+                <li>Slower process compared to electric arc welding for thick sections.</li>
+                <li>Greater heat-affected zone (HAZ) — can lead to distortion.</li>
+                <li>Not economical for high-volume or large-thickness welding.</li>
+                <li>Requires continuous gas supply (oxygen and acetylene cylinders).</li>
+                <li>Safety hazards from open flame, high-pressure gases, and fumes.</li>
+            </ul>
+
+            <p><b>Apparatus</b></p>
+
+            <ol>
+                <p><b>Protective equipment</b></p>
+            <ul>
+                <li><b>Exhaust/ventilation fan</b> — keeps fumes away from breathing zone. (OSHA:ventilation & safe storage guidance.)</li>
+                <li><b>Eye shield / goggles</b> — protect from intense UV/IR and sparks</li>
+                <li><b>Leather gloves and apron</b> — protect hands and body from heat and sparks.</li>
+            </ul>
+
+            <p><b>Operating equipment</b></p>
+            <ul>
+                <li><b>Oxygen Cylinder</b>— high-pressure steel cylinder with regulator (black coding in many standards). Use only oil-free fittings.</li>
+                <li><b>Acetylene cylinders</b> — fuel gas cylinder (acetylene normally dissolved in acetone in cylinder).</li>
+                <li><b>Pressure regulators</b> — mounted on each cylinder to control delivery pressure.</li>
+                <li><b>Hoses</b> — flexible, color-coded (commonly black for oxygen, red for acetylene).Never interchange.</li>
+                <li><b>Torch (Welding handle + tips/nozzles)</b> — mixes gases and directs the flame.Different tip sizes for different thicknesses.</li>
+                <li><b>Striker</b> — flint striker for safe ignition (do not use matches/lighters).</li>
+                <li><b>Filler roads</b> matching filler metal (if required) for butt joint (e.g., ER70S-6 for mild steel).</li>
+                <li><b>Clamps / workbench </b> — rigid fixing to prevent movement and ensure the joint gap stays constant.</li>
+                <li><b>Chipping hammer & wire brush</b> — for slag removal/cleaning after welding.</li>
+
+            </ul>
+            </ol>
+
+            <p><b>Miscellaneous:</b>file, beveling tool (grinder), measuring scale, soap solution for leak checks.</p><br>
+
+            <div class="figure">
+          <img src="images/oxygen .png" alt="oxygen">
+          <div class="caption">Fig (b): Oxygen</div>
+      </div>
+
+
+            <p><b>Precautions:</b></p>
+
+            <ul>
+                <li>Keep work area clean and free from flammable materials.</li>
+                <li>Use flashback arrestors and check valves.</li>
+                <li>Keep cylinder valves closed when not in use.</li>
+                <li>Purge hoses before lighting to clear trapped gases. </li>
+            </ul>
+
+                </section>
+            <!-- /.content -->
+            </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by Galgotia University </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
+<script>
+ function theory(){
+   document.getElementById("theory").style.backgroundColor = "#009dff";
+ 
+ }
+
+
+</script>
+<!-- ./wrapper -->
+<!-- jQuery 2.2.3 -->
+<script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
+<!-- Bootstrap 3.3.6 -->
+<script src="../../bootstrap/js/bootstrap.min.js"></script>
+<!-- Slimscroll -->
+<script src="../../plugins/slimScroll/jquery.slimscroll.min.js"></script>
+<!-- FastClick -->
+<script src="../../plugins/fastclick/fastclick.js"></script>
+<!-- AdminLTE App -->
+<script src="../../dist/js/app.min.js"></script>

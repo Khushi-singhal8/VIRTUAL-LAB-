@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Virtual Labs</title>
+    <style>
+        /* Simulation Styles */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .experiment-panel-content {
+            width: 100%;
+        }
+
+        .experiment-panel {
+            width: 100%;
+        }
+
+        .gif-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            border: 2px solid #000000;
+            padding: 20px;
+            border-radius: 10px;
+            background: #ffffff;
+            /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); */
+            box-sizing: border-box;
+        }
+
+        .gif-wrapper {
+            width: 100%;
+            position: relative;
+            background: white;
+        }
+
+        .gif-wrapper h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .step-indicator {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .play-stage {
+            position: relative;
+            width: 100%;
+            /*border-radius: 8px;*/
+            overflow: hidden;
+        }
+
+        .play-stage video {
+            display: block;
+            width: 99.9%;
+            height: auto;
+            background-color: transparent;
+            object-fit: cover;
+        }
+
+        .play-hotspot {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+
+
+            background: radial-gradient(circle, #ffd54f, #ff9800);
+            border: 3px dashed #ff6f00;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
+
+            cursor: pointer;
+            z-index: 10;
+
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
+
+
+            transition: all 0.3s ease;
+
+
+            animation: pulseHotspot 1.5s infinite;
+        }
+
+
+
+
+
+        .play-hotspot::before {
+            content: "⬇";
+            position: absolute;
+            top: -80px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
+
+        .play-hotspot:hover {
+            transform: scale(1.15);
+            box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+        }
+
+
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
+        }
+
+
+        .play-hotspot.debug-highlight {
+            background: rgba(255, 100, 100, 0.4);
+            border: 3px solid red;
+            animation: none;
+        }
+
+        .drag-instructions {
+            margin-top: 15px;
+            padding: 12px;
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            border-radius: 4px;
+            font-size: 20px;
+            color: #1976D2;
+            min-height: 50px;
+            white-space: pre-line;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .button-container button {
+            padding: 10px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            min-width: 130px;
+        }
+
+        .button-container button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+
+        .button-container button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .gif-placeholder {
+            padding: 60px 20px;
+            text-align: center;
+            background-color: #f5f5f5;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        #simulation-container {
+            flex: 3;
+        }
+
+        #steps-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-left: 20px;
+            box-shadow: -1px 0 0 #ddd;
+        }
+
+        .sim-media-container {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scaling-wrapper {
+            width: 100%;
+            transform-origin: top center;
+            transition: transform 0.2s ease-out;
+            position: relative;
+        }
+    </style>
+    <style>
+        /* Overrides: larger media like exp1/exp2 and keep controls visible */
+        .gif-container {
+            max-width: 900px;
+        }
+
+        .gif-wrapper img.step-gif {
+            max-width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .gif-wrapper video#step-generic-video {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .button-container {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        /* Ensure generic media wrapper boxes auto-size and avoid clipping */
+        .gif-wrapper>div[style*="height: 400px"] {
+            height: auto !important;
+        }
+
+        /* Ensure drag stage also scales properly */
+        #drag-stage {
+            position: relative;
+            width: 100%;
+            height: auto;
+        }
+
+        #drag-stage img.stage-bg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Draggable tool styling */
+        /* Draggable item */
+        .draggable {
+            position: absolute;
+            cursor: grab;
+            z-index: 20;
+            max-width: 50%;
+            height: auto;
+        }
+
+        .draggable.dragging {
+            cursor: grabbing;
+            opacity: 0.8;
+        }
+
+        .drop-zone {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+
+
+            background: radial-gradient(circle, rgba(255, 230, 0, 0.558));
+            border: 3px solid #fdb409;
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            box-sizing: border-box;
+
+            font-size: 12px;
+            font-weight: bold;
+            color: #faf8f8;
+
+            cursor: grab;
+            z-index: 10;
+
+            box-shadow: 0 0 15px rgba(255, 152, 0, 0.9);
+
+
+            transition: all 0.3s ease;
+
+
+            animation: pulseHotspot 1.5s infinite;
+        }
+
+
+        .drop-zone::after {
+            content: "DROP HERE";
+            font-size: 15PX;
+            font-weight: bold;
+            text-align: center;
+            color: black;
+        }
+
+
+        .drop-zone::before {
+            content: "⬇";
+            position: absolute;
+            top: var(--arrow-top, -100%);
+            left: var(--arrow-left, 50%);
+            transform: translateX(-50%);
+            font-size: 58px;
+            color: #0a0a0a;
+            animation: bounceArrow 1s infinite;
+        }
+
+        .drop-zone.dragging-active::before {
+            display: none !important;
+            content: "";
+            animation: none;
+        }
+
+        .drop-zone.debug-highlight {
+            background: rgba(255, 0, 0, 0.281);
+            border: 3px solid red;
+            animation: none;
+        }
+    </style>
+
+    <!-- Print Styles -->
+    <link rel="stylesheet" href="print.css">
+
+
+</head>
+
+<body>
+
+    <div class="container" id="experiment-view" style="display:flex;">
+        <div class="experiment-panel-content" id="experiment-panel-content">
+            <div class="experiment-panel active" id="panel-simulation">
+
+                <button onclick="window.location.href='simulation.html'"
+                    style="margin-bottom: 20px; padding: 10px 24px; font-size: 16px; border: none; border-radius: 5px; background-color: #2196F3; color: white; cursor: pointer;">
+                    ← Back to Lab
+                </button>
+                <div class="row" style="display: flex; align-items: flex-start;">
+                    <div class="container" id="simulation-container">
+                        <div id="gif-container" class="gif-container">
+                            <div class="gif-placeholder">
+                                Use the navigation buttons below to view the steps
+                            </div>
+                        </div>
+
+                        <div class="button-container" style="margin-top: 20px;">
+                            <button id="prev-btn" disabled><span style="color: inherit; visibility: visible;">←
+                                    Previous</span></button>
+                            <button id="next-btn"><span style="color: inherit; visibility: visible;">Next
+                                    →</span></button>
+                            <button id="reset-btn" style="background-color: #ff9800;"><span
+                                    style="color: inherit; visibility: visible;">Reset</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="sim-script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,41 @@
+@media print {
+
+    /* keep page same */
+    @page {
+        size: A4 portrait;
+        margin: 0;
+    }
+
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #fff;
+    }
+
+    /* ⭐ ONLY CONTAINER FIX */
+    .print-area,
+    .gif-wrapper {
+        height: auto !important;          /* allow full height */
+        overflow: visible !important;    /* remove scroll clipping */
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important; /* include padding inside width */
+
+        margin: 0 !important;
+        padding: 10px !important;
+    }
+
+    h2 {
+        margin-top: 0 !important;
+    }
+
+    /* hide non-print UI */
+    .no-print,
+    .button-container,
+    .step-indicator,
+    .drag-instructions,
+    .simulation-title,
+    button {
+        display: none !important;
+    }
+}
