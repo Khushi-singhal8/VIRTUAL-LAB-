@@ -185,137 +185,13 @@ document.addEventListener("DOMContentLoaded", function () {
     function isHotspotDone(step) { return stepCompleted[step.id]; }
     function setStepDone(stepId) { if (stepCompleted.hasOwnProperty(stepId)) stepCompleted[stepId] = true; }
 
-    // --- ASSET PRELOADING ---
-    const assetList = [
-        // Common procedure images
-        "images/procedure/1.png", "images/procedure/2.png", "images/procedure/3.png",
-        "images/procedure/4.png", "images/procedure/5.png", "images/procedure/6.png",
-        "images/procedure/7.png", "images/procedure/8.png", "images/procedure/9.png",
-        "images/procedure/10.png", "images/procedure/marker.png", "images/procedure/top view.png",
-
-        // Common simulation assets
-        "images/simulation/protractor.png", "images/simulation/protractor - Copy.png",
-        "images/a.png", "images/c.png", "images/d.png",
-
-        // Aluminium-1mm assets
-        "images/simulation/aluminium-1mm/0.5.mp4", "images/simulation/aluminium-1mm/1-tool.png",
-        "images/simulation/aluminium-1mm/1.png", "images/simulation/aluminium-1mm/1mm.png",
-        "images/simulation/aluminium-1mm/2-tool.png", "images/simulation/aluminium-1mm/2.png",
-        "images/simulation/aluminium-1mm/3.5.png", "images/simulation/aluminium-1mm/3.mp4",
-        "images/simulation/aluminium-1mm/4.5.png", "images/simulation/aluminium-1mm/4.mp4",
-
-        // Aluminium-5mm assets
-        "images/simulation/aluminium-5mm/0.5.mp4", "images/simulation/aluminium-5mm/1-tool.png",
-        "images/simulation/aluminium-5mm/1.png", "images/simulation/aluminium-5mm/2-tool.png",
-        "images/simulation/aluminium-5mm/2.png", "images/simulation/aluminium-5mm/3.5.png",
-        "images/simulation/aluminium-5mm/3.mp4", "images/simulation/aluminium-5mm/4.5.png",
-        "images/simulation/aluminium-5mm/4.mp4", "images/simulation/aluminium-5mm/5mm.png",
-
-        // Brass-1mm assets
-        "images/simulation/brass-1mm/0.5.mp4", "images/simulation/brass-1mm/1-tool.png",
-        "images/simulation/brass-1mm/1.png", "images/simulation/brass-1mm/1mm.png",
-        "images/simulation/brass-1mm/2-tool.png", "images/simulation/brass-1mm/2.png",
-        "images/simulation/brass-1mm/3.5.png", "images/simulation/brass-1mm/3.mp4",
-        "images/simulation/brass-1mm/4.5.png", "images/simulation/brass-1mm/4.mp4",
-
-        // Brass-5mm assets
-        "images/simulation/brass-5mm/0.5.mp4", "images/simulation/brass-5mm/1-tool.png",
-        "images/simulation/brass-5mm/1.png", "images/simulation/brass-5mm/2-tool.png",
-        "images/simulation/brass-5mm/2.png", "images/simulation/brass-5mm/3.5.png",
-        "images/simulation/brass-5mm/3.mp4", "images/simulation/brass-5mm/4.5.png",
-        "images/simulation/brass-5mm/4.mp4", "images/simulation/brass-5mm/5mm.png",
-
-        // Steel-1mm assets (note: "steel" might be "stainless" in folder names, adjust if needed)
-        "images/simulation/steel-1mm/0.5.mp4", "images/simulation/steel-1mm/1-tool.png",
-        "images/simulation/steel-1mm/1.png", "images/simulation/steel-1mm/1mm.png",
-        "images/simulation/steel-1mm/2-tool.png", "images/simulation/steel-1mm/2.png",
-        "images/simulation/steel-1mm/3.5.png", "images/simulation/steel-1mm/3.mp4",
-        "images/simulation/steel-1mm/4.5.png", "images/simulation/steel-1mm/4.mp4",
-
-        // Steel-5mm assets
-        "images/simulation/steel-5mm/0.5.mp4", "images/simulation/steel-5mm/1-tool.png",
-        "images/simulation/steel-5mm/1.png", "images/simulation/steel-5mm/2-tool.png",
-        "images/simulation/steel-5mm/2.png", "images/simulation/steel-5mm/3.5.png",
-        "images/simulation/steel-5mm/3.mp4", "images/simulation/steel-5mm/4.5.png",
-        "images/simulation/steel-5mm/4.mp4", "images/simulation/steel-5mm/5mm.png"
-    ];
-
-    const assetCache = {};
-
-    function getAssetSrc(originalUrl) {
-        return assetCache[originalUrl] || originalUrl;
-    }
-
-    function formatSrc(url, timestamp) {
-        const src = getAssetSrc(url);
-        if (src.startsWith('blob:')) return src;
-        return `${src}?t=${timestamp}`;
-    }
-
-    async function preloadAssets() {
-        const overlay = document.createElement('div');
-        overlay.id = 'preload-overlay';
-        overlay.style.position = 'fixed';
-        overlay.style.top = '0';
-        overlay.style.left = '0';
-        overlay.style.width = '100%';
-        overlay.style.height = '100%';
-        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
-        overlay.style.zIndex = '9999';
-        overlay.style.display = 'flex';
-        overlay.style.flexDirection = 'column';
-        overlay.style.justifyContent = 'center';
-        overlay.style.alignItems = 'center';
-        overlay.style.color = '#fff';
-        overlay.innerHTML = `
-            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
-            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
-                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
-            </div>
-            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
-        `;
-        document.body.appendChild(overlay);
-
-        const progressBar = document.getElementById('preload-progress');
-        const progressText = document.getElementById('preload-text');
-        let loadedCount = 0;
-
-        const promises = assetList.map(async (url) => {
-            try {
-                const response = await fetch(url);
-                if (!response.ok) throw new Error(`Failed to load ${url}`);
-                const blob = await response.blob();
-                const objectUrl = URL.createObjectURL(blob);
-                assetCache[url] = objectUrl;
-            } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
-            } finally {
-                loadedCount++;
-                const percent = Math.round((loadedCount / assetList.length) * 100);
-                progressBar.style.width = percent + '%';
-                progressText.textContent = percent + '%';
-            }
-        });
-
-        await Promise.all(promises);
-
-        setTimeout(() => {
-            overlay.style.opacity = '0';
-            setTimeout(() => {
-                document.body.removeChild(overlay);
-                showCurrentStep();
-            }, 500);
-        }, 500);
-    }
-
-    // Get simulation path based on material and thickness selection (updated for cache)
+    // Get simulation path based on material and thickness selection
     function getSimulationPath(src) {
-        if (!selectedMaterial || !selectedThickness || !src) return getAssetSrc(src);
-        if (src === 'protractor.png') return getAssetSrc('images/simulation/' + src);
+        if (!selectedMaterial || !selectedThickness || !src) return src;
+        if (src === 'protractor.png') return 'images/simulation/' + src;
         // Map selection to folder name
         const folderName = `${selectedMaterial}-${selectedThickness}`;
-        const path = src.replace('images/simulation/', `images/simulation/${folderName}/`);
-        return getAssetSrc(path);
+        return src.replace('images/simulation/', `images/simulation/${folderName}/`);
     }
 
     function showCurrentStep() {
@@ -1119,5 +995,5 @@ Spring Back angle = 74° - 64° = 10°`;
         });
     }
 
-    preloadAssets();
+    showCurrentStep();
 });
