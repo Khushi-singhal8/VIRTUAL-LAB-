@@ -183,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             id: 'step1',
             title: 'Setup',
-            src: 'images/simulation/1.mp4',
+            src: 'images/simulation/1 (1).mp4',
             type: 'video',
             initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure',
             finalInstruction: 'Click on next to set the pressure',
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             id: 'step2',
             title: 'Setup',
-            src: 'images/simulation/2.mp4',
+            src: 'images/simulation/2 (2).mp4',
             type: 'video',
             initialInstruction: 'Set the pressure of oxygen cylinder to 15 PSI',
             finalInstruction: 'Click on next to close the oxygen valve',
@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             id: 'step3',
             title: 'Setup',
-            src: 'images/simulation/3.mp4',
+            src: 'images/simulation/3 (1).mp4',
             type: 'video',
             initialInstruction: 'Close the oxygen valve to continue.',
             finalInstruction: 'Click next to turn on the acetylene valve',
@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             id: 'step4',
             title: 'Setup',
-            src: 'images/simulation/4.mp4',
+            src: 'images/simulation/4 (1).mp4',
             type: 'video',
             initialInstruction: 'Turn on the acetylene valve before setting the acetylene cylinder’s pressure',
             finalInstruction: 'Click on next to set the pressure of acetylene',
