@@ -696,15 +696,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (dragBg.complete && dragBg.naturalWidth) {
             setDropZoneLayout();
+            dropZone.style.visibility = 'visible';
             updateScaling();
         } else {
             dragBg.onload = () => {
                 setDropZoneLayout();
+                dropZone.style.visibility = 'visible';
                 updateScaling();
             };
         }
         window.addEventListener('resize', () => {
             setDropZoneLayout();
+            dropZone.style.visibility = 'visible';
             updateScaling();
         });
 
@@ -1078,7 +1081,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="drag-stage" id="drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(backgroundPng, timestamp)}" alt="Background" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(toolPng, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%;"/>
-                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -70%; --arrow-left: 801%;"></div>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="visibility:hidden; --arrow-top: -70%; --arrow-left: 801%;"></div>
                         </div>
                     </div>
                 </div>
@@ -1144,6 +1147,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const newH = Math.round(stageW * (naturalH / naturalW));
             stage.style.height = newH + 'px';
             layoutDropZone();
+            dropZone.style.visibility = 'visible';
             const rect = stage.getBoundingClientRect();
             const toolRect = tool.getBoundingClientRect();
             const currentLeft = parseFloat(tool.style.left || '0');

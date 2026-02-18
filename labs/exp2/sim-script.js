@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
                             <video id="substep-video" src="${formatSrc(step.src, timestamp)}" style="width:100%;height:auto;" playsinline muted></video>
-                            <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <button id="substep-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -384,9 +384,9 @@ document.addEventListener("DOMContentLoaded", function () {
             instructionElem.textContent = s.instruction || '';
             if (s.hotspot) {
                 layoutHotspot(s.hotspot);
-                hotspot.style.display = 'block';
+                hotspot.style.visibility = 'visible';
                 hotspot.onclick = () => {
-                    hotspot.style.display = 'none';
+                    hotspot.style.visibility = 'hidden';
                     video.play();
                 };
             } else {
@@ -528,3 +528,4 @@ document.addEventListener("DOMContentLoaded", function () {
 
     preloadAssets();
 });
+

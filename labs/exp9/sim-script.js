@@ -431,7 +431,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
                             <video id="step-video" src="${formatSrc(step.src, timestamp)}" preload="auto" playsinline muted></video>
-                            <button id="play-hotspot" class="play-hotspot ${step.id === 'step3' ? 'step3-arrow' : ''}" style="display:none; ${step.id === 'step3' ? '--arrow-top: 10%; --arrow-left: -20%; --arrow-width: auto; --arrow-transform: translateX(-50%); --arrow-content: \'➡\';' : ''}"></button>
+                            <button id="play-hotspot" class="play-hotspot ${step.id === 'step3' ? 'step3-arrow' : ''}" style="visibility:hidden; ${step.id === 'step3' ? '--arrow-top: 10%; --arrow-left: -20%; --arrow-width: auto; --arrow-transform: translateX(-50%); --arrow-content: \'➡\';' : ''}"></button>
                         </div>
                     </div>
                 </div>
@@ -455,7 +455,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function showHotspot(substep) {
             instructionElem.textContent = substep.instruction;
             layoutHotspot(substep);
-            hotspot.style.display = 'block';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -488,7 +488,7 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('timeupdate', checkPause);
 
         hotspot.addEventListener('click', () => {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             substeps[currentSubIndex].done = true;
             currentSubIndex++;
 

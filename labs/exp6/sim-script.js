@@ -520,7 +520,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="drag-stage" id="drag-stage">
                             <img src="${formatSrc(step.src, timestamp)}" alt="Background" class="stage-bg" id="drag-bg"/>
                             <img src="${formatSrc(step.tool, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="width: 20%; cursor:grab;"/>
-                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -210%; --arrow-left: -140%;"></div>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="visibility:hidden; --arrow-top: -210%; --arrow-left: -140%;"></div>
                         </div>
                     </div>
                 </div>
@@ -550,11 +550,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const dragBg = document.getElementById('drag-bg');
         dragBg.addEventListener('load', () => {
             layoutDropZone();
+            dropZone.style.visibility = 'visible';
             updateScaling();
             window.addEventListener('resize', updateScaling);
         });
         if (dragBg.complete) {
             layoutDropZone();
+            dropZone.style.visibility = 'visible';
             updateScaling();
             window.addEventListener('resize', updateScaling);
         }
@@ -685,7 +687,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
                             <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
-                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -728,7 +730,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 video.pause();
                 instructionElem.textContent = cfg.instruction;
                 layoutHotspot();
-                hotspot.style.display = 'block';
+                hotspot.style.visibility = 'visible';
                 hotspot.classList.add('debug-highlight');
             }
         }
@@ -788,7 +790,7 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('pause', onPause);
         video.addEventListener('ended', onEnded, { once: true });
         hotspot.addEventListener('click', () => {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             video.play();
         }, { once: true });
 

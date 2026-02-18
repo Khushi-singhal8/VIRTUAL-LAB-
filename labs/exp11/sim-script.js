@@ -791,7 +791,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
                             <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
-                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -863,7 +863,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1002,7 +1002,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1310,7 +1310,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();

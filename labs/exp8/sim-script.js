@@ -825,7 +825,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
                             <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
-                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -861,7 +861,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const cfg = cfgSeq[segmentIndex];
             instructionElem.textContent = `${cfg.instruction}`;
             layoutHotspot();
-            hotspot.style.display = 'block';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -901,7 +901,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1327,7 +1327,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const cfg = phase1Cfg[segmentIndex];
             instructionElem.textContent = cfg.instruction;
             layoutHotspot();
-            hotspot.style.display = 'block';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -1367,7 +1367,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1623,7 +1623,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const cfg = phase3Cfg[segmentIndex];
             instructionElem.textContent = cfg.instruction;
             layoutHotspot();
-            hotspot.style.display = 'block';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -1663,7 +1663,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
