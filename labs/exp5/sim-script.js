@@ -1,5 +1,164 @@
+/* jshint esversion: 11 */
+/* global console */
+'use strict';
+
 document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation E9 script loaded');
+
+    // --- ASSET PRELOADING ---
+    const assetList = [
+        // Base simulation assets
+        "images/simulation/0.5.mp4",
+        "images/simulation/1.png",
+        "images/simulation/1-tool.png",
+        "images/simulation/2.png",
+        "images/simulation/2-tool.png",
+        "images/simulation/3.mp4",
+        "images/simulation/4.mp4",
+        "images/simulation/1mm.png",
+        "images/simulation/5mm.png",
+        "images/simulation/protractor.png",
+
+        // Aluminium 1mm assets
+        "images/simulation/aluminium-1mm/0.5.mp4",
+        "images/simulation/aluminium-1mm/1.png",
+        "images/simulation/aluminium-1mm/1-tool.png",
+        "images/simulation/aluminium-1mm/2.png",
+        "images/simulation/aluminium-1mm/2-tool.png",
+        "images/simulation/aluminium-1mm/3.mp4",
+        "images/simulation/aluminium-1mm/3.5.png",
+        "images/simulation/aluminium-1mm/4.mp4",
+        "images/simulation/aluminium-1mm/4.5.png",
+        "images/simulation/aluminium-1mm/1mm.png",
+
+        // Aluminium 5mm assets
+        "images/simulation/aluminium-5mm/0.5.mp4",
+        "images/simulation/aluminium-5mm/1.png",
+        "images/simulation/aluminium-5mm/1-tool.png",
+        "images/simulation/aluminium-5mm/2.png",
+        "images/simulation/aluminium-5mm/2-tool.png",
+        "images/simulation/aluminium-5mm/3.mp4",
+        "images/simulation/aluminium-5mm/3.5.png",
+        "images/simulation/aluminium-5mm/4.mp4",
+        "images/simulation/aluminium-5mm/4.5.png",
+        "images/simulation/aluminium-5mm/5mm.png",
+
+        // Brass 1mm assets
+        "images/simulation/brass-1mm/0.5.mp4",
+        "images/simulation/brass-1mm/1.png",
+        "images/simulation/brass-1mm/1-tool.png",
+        "images/simulation/brass-1mm/2.png",
+        "images/simulation/brass-1mm/2-tool.png",
+        "images/simulation/brass-1mm/3.mp4",
+        "images/simulation/brass-1mm/3.5.png",
+        "images/simulation/brass-1mm/4.mp4",
+        "images/simulation/brass-1mm/4.5.png",
+        "images/simulation/brass-1mm/1mm.png",
+
+        // Brass 5mm assets
+        "images/simulation/brass-5mm/0.5.mp4",
+        "images/simulation/brass-5mm/1.png",
+        "images/simulation/brass-5mm/1-tool.png",
+        "images/simulation/brass-5mm/2.png",
+        "images/simulation/brass-5mm/2-tool.png",
+        "images/simulation/brass-5mm/3.mp4",
+        "images/simulation/brass-5mm/3.5.png",
+        "images/simulation/brass-5mm/4.mp4",
+        "images/simulation/brass-5mm/4.5.png",
+        "images/simulation/brass-5mm/5mm.png",
+
+        // Steel 1mm assets
+        "images/simulation/steel-1mm/0.5.mp4",
+        "images/simulation/steel-1mm/1.png",
+        "images/simulation/steel-1mm/1-tool.png",
+        "images/simulation/steel-1mm/2.png",
+        "images/simulation/steel-1mm/2-tool.png",
+        "images/simulation/steel-1mm/3.mp4",
+        "images/simulation/steel-1mm/3.5.png",
+        "images/simulation/steel-1mm/4.mp4",
+        "images/simulation/steel-1mm/4.5.png",
+        "images/simulation/steel-1mm/1mm.png",
+
+        // Steel 5mm assets
+        "images/simulation/steel-5mm/0.5.mp4",
+        "images/simulation/steel-5mm/1.png",
+        "images/simulation/steel-5mm/1-tool.png",
+        "images/simulation/steel-5mm/2.png",
+        "images/simulation/steel-5mm/2-tool.png",
+        "images/simulation/steel-5mm/3.mp4",
+        "images/simulation/steel-5mm/3.5.png",
+        "images/simulation/steel-5mm/4.mp4",
+        "images/simulation/steel-5mm/4.5.png",
+        "images/simulation/steel-5mm/5mm.png"
+    ];
+
+    const assetCache = {};
+
+    function getAssetSrc(originalUrl) {
+        return assetCache[originalUrl] || originalUrl;
+    }
+
+    function formatSrc(url, timestamp) {
+        // url might already be a blob URL from getSimulationPath/getAssetSrc
+        if (url.startsWith('blob:')) return url;
+        return `${url}?t=${timestamp}`;
+    }
+
+    async function preloadAssets() {
+        const overlay = document.createElement('div');
+        overlay.id = 'preload-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = '#fff';
+        overlay.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
+            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
+            </div>
+            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressBar = document.getElementById('preload-progress');
+        const progressText = document.getElementById('preload-text');
+        let loadedCount = 0;
+
+        const promises = assetList.map(async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                assetCache[url] = objectUrl;
+            } catch (err) {
+                console.error(`Error preloading ${url}:`, err);
+            } finally {
+                loadedCount++;
+                const percent = Math.round((loadedCount / assetList.length) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+            }
+        });
+
+        await Promise.all(promises);
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showCurrentStep();
+            }, 500);
+        }, 500);
+    }
 
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
@@ -190,11 +349,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Get simulation path based on material and thickness selection
     function getSimulationPath(src) {
-        if (!selectedMaterial || !selectedThickness || !src) return src;
-        if (src === 'protractor.png') return 'images/simulation/' + src;
-        // Map selection to folder name
-        const folderName = `${selectedMaterial}-${selectedThickness}`;
-        return src.replace('images/simulation/', `images/simulation/${folderName}/`);
+        if (!src) return src;
+
+        // Handle protractor special case
+        if (src === 'protractor.png') {
+            const protractorPath = 'images/simulation/' + src;
+            return getAssetSrc(protractorPath);
+        }
+
+        // If material/thickness selected, get from folder
+        if (selectedMaterial && selectedThickness) {
+            const folderName = `${selectedMaterial}-${selectedThickness}`;
+            const folderPath = src.replace('images/simulation/', `images/simulation/${folderName}/`);
+            return getAssetSrc(folderPath);
+        }
+
+        // Otherwise return base asset
+        return getAssetSrc(src);
     }
 
     function showCurrentStep() {
@@ -353,7 +524,8 @@ document.addEventListener("DOMContentLoaded", function () {
         // Determine which schematic image to show based on thickness
         const schematicImage = selectedThickness === '5mm' ? '5mm.png' : '1mm.png';
         // Use getSimulationPath to load from material-specific folders
-        const imagePath = getSimulationPath(`images/simulation/${schematicImage}`) + `?t=${timestamp}`;
+        const imagePath = getSimulationPath(`images/simulation/${schematicImage}`);
+        const formattedPath = formatSrc(imagePath, timestamp);
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
@@ -362,7 +534,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="schematic-stage" style="display: flex; align-items: center; justify-content: center;">
-                            <img id="schematic-img" src="${imagePath}" alt="Schematic Diagram" style="width: 100%; height: auto; object-fit: contain;" />
+                            <img id="schematic-img" src="${formattedPath}" alt="Schematic Diagram" style="width: 100%; height: auto; object-fit: contain;" />
                         </div>
                     </div>
                 </div>
@@ -485,6 +657,7 @@ Spring Back angle = 74° - 64° = 10°`;
         const initialInstruction = getInitialInstruction(step.id);
         const dynamicInstruction = getDynamicInstruction(step.id);
         const videoSrc = getSimulationPath(step.src); // Apply branching
+        const formattedVideoSrc = formatSrc(videoSrc, timestamp);
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
@@ -493,8 +666,8 @@ Spring Back angle = 74° - 64° = 10°`;
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
-                            <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:auto;" preload="auto" playsinline muted></video>
-                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <video id="step-video" src="${formattedVideoSrc}" style="width:100%;height:auto;" preload="auto" playsinline muted></video>
+                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -519,7 +692,7 @@ Spring Back angle = 74° - 64° = 10°`;
         function showHotspot() {
             instructionElem.textContent = initialInstruction;
             layoutHotspot();
-            hotspot.style.display = 'block';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -532,7 +705,7 @@ Spring Back angle = 74° - 64° = 10°`;
         }, { once: true });
 
         hotspot.addEventListener('click', () => {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             // Do not marks as done here - wait for video end
             instructionElem.textContent = '  ';
             video.play().catch(() => { });
@@ -555,6 +728,7 @@ Spring Back angle = 74° - 64° = 10°`;
 
     function renderAutoplayStep(step, timestamp) {
         const videoSrc = getSimulationPath(step.src); // Apply branching
+        const formattedVideoSrc = formatSrc(videoSrc, timestamp);
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
@@ -562,7 +736,7 @@ Spring Back angle = 74° - 64° = 10°`;
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
-                            <video id="step-video" src="${videoSrc}?t=${timestamp}" style="width:100%;height:auto;" playsinline muted></video>
+                            <video id="step-video" src="${formattedVideoSrc}" style="width:100%;height:auto;" playsinline muted></video>
                         </div>
                     </div>
                 </div>
@@ -595,6 +769,8 @@ Spring Back angle = 74° - 64° = 10°`;
 
         const backgroundPng = getSimulationPath(step.background); // Apply branching
         const toolPng = getSimulationPath(step.tool); // Apply branching
+        const formattedBgSrc = formatSrc(backgroundPng, timestamp);
+        const formattedToolSrc = formatSrc(toolPng, timestamp);
         const tolerancePx = step.tolerance || 50;
 
         // Get arrow position from step config or use defaults
@@ -608,9 +784,9 @@ Spring Back angle = 74° - 64° = 10°`;
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="drag-stage">
-                            <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" id="drag-bg"/>
-                            <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable"/>
-                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: ${arrowTop}; --arrow-left: ${arrowLeft};"></div>
+                            <img src="${formattedBgSrc}" alt="Background" class="stage-bg" id="drag-bg"/>
+                            <img src="${formattedToolSrc}" alt="Tool" id="draggable-tool" class="draggable"/>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="visibility:hidden; --arrow-top: ${arrowTop}; --arrow-left: ${arrowLeft};"></div>
                         </div>
                     </div>
                 </div>
@@ -661,6 +837,7 @@ Spring Back angle = 74° - 64° = 10°`;
             const newH = Math.round(stageW * (naturalH / naturalW));
             stage.style.height = newH + 'px';
             layoutDropZone();
+            dropZone.style.visibility = 'visible';
             applyToolSize();
             if (!toolMovedByUser && !toolPlacedInitially) placeToolInitial();
             updateScaling();
@@ -694,7 +871,6 @@ Spring Back angle = 74° - 64° = 10°`;
         applyToolSize();
 
         window.addEventListener('resize', resizeStageToImage, { passive: true });
-        layoutDropZone();
 
         let dragging = false; let offsetX = 0; let offsetY = 0;
         function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -899,13 +1075,17 @@ Spring Back angle = 74° - 64° = 10°`;
 
         document.body.classList.add('result-mode');
 
+        // Get result image path - pass base path to getSimulationPath so it adds the folder correctly
+        const resultImagePath = getSimulationPath('images/simulation/1-tool.png');
+        const formattedResultImageSrc = formatSrc(resultImagePath, Date.now());
+
         gifContainer.innerHTML = `
             <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
                 <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
                 <hr>
                 
                 <div style="text-align:center; margin:20px 0;">
-                    <img src="images/simulation/${selectedMaterial}-${selectedThickness}/1-tool.png" alt="${matName} ${selectedThickness}" style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
+                    <img src="${formattedResultImageSrc}" alt="${matName} ${selectedThickness}" style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
                     <p style="font-size:14px; margin-top:6px;">Spring Back Effect Analysis for ${matName} (${selectedThickness})</p>
                 </div>
 
@@ -998,5 +1178,5 @@ Spring Back angle = 74° - 64° = 10°`;
         });
     }
 
-    showCurrentStep();
+    preloadAssets();
 });

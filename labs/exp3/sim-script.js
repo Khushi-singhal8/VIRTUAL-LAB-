@@ -1,5 +1,157 @@
+'use strict';
+
 document.addEventListener("DOMContentLoaded", function () {
     console.log('Simulation script loaded');
+
+    // --- ASSET PRELOADING ---
+    const assetList = [
+        // Base simulation images
+        "images/simulation/1.png",
+        "images/simulation/2.gif",
+        "images/simulation/5.png",
+        "images/simulation/6.png",
+        "images/simulation/tool.png",
+
+        // Base simulation videos
+        "images/simulation/8.mp4",
+        "images/simulation/9.mp4",
+
+        // Teak wood assets
+        "images/simulation/teak/1.5.mp4",
+        "images/simulation/teak/1.5.png",
+        "images/simulation/teak/2.1.mp4",
+        "images/simulation/teak/2.1.png",
+        "images/simulation/teak/2.2.mp4",
+        "images/simulation/teak/2.mp4",
+        "images/simulation/teak/2.png",
+        "images/simulation/teak/3.mp4",
+        "images/simulation/teak/5.png",
+        "images/simulation/teak/6.mp4",
+        "images/simulation/teak/6.png",
+        "images/simulation/teak/7.mp4",
+        "images/simulation/teak/7.png",
+        "images/simulation/teak/8.mp4",
+        "images/simulation/teak/9.mp4",
+        "images/simulation/teak/key.png",
+        "images/simulation/teak/key2.png",
+        "images/simulation/teak/sand.png",
+        "images/simulation/teak/teak.png",
+        "images/simulation/teak/tool.png",
+        "images/simulation/teak/wood.png",
+
+        // Pine wood assets
+        "images/simulation/pine/1.5.mp4",
+        "images/simulation/pine/1.5.png",
+        "images/simulation/pine/2.1.mp4",
+        "images/simulation/pine/2.1.png",
+        "images/simulation/pine/2.2.mp4",
+        "images/simulation/pine/2.mp4",
+        "images/simulation/pine/2.png",
+        "images/simulation/pine/3.mp4",
+        "images/simulation/pine/5.png",
+        "images/simulation/pine/6.mp4",
+        "images/simulation/pine/6.png",
+        "images/simulation/pine/7.mp4",
+        "images/simulation/pine/7.png",
+        "images/simulation/pine/8.mp4",
+        "images/simulation/pine/9.mp4",
+        "images/simulation/pine/key.png",
+        "images/simulation/pine/key2.png",
+        "images/simulation/pine/sand.png",
+        "images/simulation/pine/pine.png",
+        "images/simulation/pine/tool.png",
+        "images/simulation/pine/wood.png",
+
+        // Mahogany wood assets
+        "images/simulation/mahogany/1.5.mp4",
+        "images/simulation/mahogany/1.5.png",
+        "images/simulation/mahogany/2.1.mp4",
+        "images/simulation/mahogany/2.1.png",
+        "images/simulation/mahogany/2.2.mp4",
+        "images/simulation/mahogany/2.png",
+        "images/simulation/mahogany/3.mp4",
+        "images/simulation/mahogany/5.png",
+        "images/simulation/mahogany/6.mp4",
+        "images/simulation/mahogany/6.png",
+        "images/simulation/mahogany/7.mp4",
+        "images/simulation/mahogany/7.png",
+        "images/simulation/mahogany/8.mp4",
+        "images/simulation/mahogany/9.mp4",
+        "images/simulation/mahogany/key.png",
+        "images/simulation/mahogany/key2.png",
+        "images/simulation/mahogany/sand.png",
+        "images/simulation/mahogany/mahogany.png",
+        "images/simulation/mahogany/tool.png",
+        "images/simulation/mahogany/wood.png"
+    ];
+
+    const assetCache = {};
+
+    function getAssetSrc(originalUrl) {
+        return assetCache[originalUrl] || originalUrl;
+    }
+
+    function formatSrc(url, timestamp) {
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
+    }
+
+    async function preloadAssets() {
+        const overlay = document.createElement('div');
+        overlay.id = 'preload-overlay';
+        overlay.style.position = 'fixed';
+        overlay.style.top = '0';
+        overlay.style.left = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.9)';
+        overlay.style.zIndex = '9999';
+        overlay.style.display = 'flex';
+        overlay.style.flexDirection = 'column';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        overlay.style.color = '#fff';
+        overlay.innerHTML = `
+            <div style="font-size: 24px; margin-bottom: 20px;">Loading simulation resources...</div>
+            <div style="width: 300px; height: 10px; background: #333; border-radius: 5px; overflow: hidden;">
+                <div id="preload-progress" style="width: 0%; height: 100%; background: #4CAF50; transition: width 0.3s;"></div>
+            </div>
+            <div id="preload-text" style="margin-top: 10px; font-size: 14px;">0%</div>
+        `;
+        document.body.appendChild(overlay);
+
+        const progressBar = document.getElementById('preload-progress');
+        const progressText = document.getElementById('preload-text');
+        let loadedCount = 0;
+
+        const promises = assetList.map(async (url) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`Failed to load ${url}`);
+                const blob = await response.blob();
+                const objectUrl = URL.createObjectURL(blob);
+                assetCache[url] = objectUrl;
+            } catch (err) {
+                console.error(`Error preloading ${url}:`, err);
+            } finally {
+                loadedCount++;
+                const percent = Math.round((loadedCount / assetList.length) * 100);
+                progressBar.style.width = percent + '%';
+                progressText.textContent = percent + '%';
+            }
+        });
+
+        await Promise.all(promises);
+
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                document.body.removeChild(overlay);
+                showCurrentStep();
+            }, 500);
+        }, 500);
+    }
 
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
@@ -154,8 +306,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function getSimulationPath(src) {
-        if (!selectedWood) return src;
-        return src.replace('images/simulation/', `images/simulation/${selectedWood}/`);
+        if (!selectedWood) return getAssetSrc(src);
+        const woodPath = src.replace('images/simulation/', `images/simulation/${selectedWood}/`);
+        return getAssetSrc(woodPath);
     }
 
     function showCurrentStep() {
@@ -194,7 +347,8 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (step.id === 'step7') {
             renderStep7(timestamp);
         } else {
-            const isVideo = currentSrc.endsWith('.mp4');
+            // Determine media type from the configured step source (not from any cached blob URL)
+            const isVideo = step.src && step.src.endsWith('.mp4');
 
             // Initial button state for generic steps
             // if (nextButton) {
@@ -212,8 +366,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="width:100%; position: relative; min-height:300px; display:flex; align-items:center; justify-content:center; background:#fff">
                             ${isVideo
-                    ? `<video id="generic-video" src="${currentSrc}?t=${timestamp}" autoplay muted playsinline style="width:100%; display:block;"></video>`
-                    : `<img src="${currentSrc}?t=${timestamp}" class="step-gif" style="width:100%; display:block;">`
+                    ? `<video id="generic-video" src="${formatSrc(currentSrc, timestamp)}" autoplay muted playsinline style="width:100%; display:block;"></video>`
+                    : `<img src="${formatSrc(currentSrc, timestamp)}" class="step-gif" style="width:100%; display:block;">`
                 }
                         </div>
                     </div>
@@ -232,7 +386,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             const imgPath = getSimulationPath('images/simulation/1.5.png');
                             // We replace the video with the image
                             const container = v.parentElement;
-                            container.innerHTML = `<img src="${imgPath}?t=${timestamp}" class="step-gif" style="width:100%;height:100%;object-fit:cover;">`;
+                            container.innerHTML = `<img src="${formatSrc(imgPath, timestamp)}" class="step-gif" style="width:100%;height:100%;object-fit:cover;">`;
 
                             // Add instruction after step 1.5 finishes
                             const instructionDiv = document.createElement('div');
@@ -313,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
              <!-- Use the selected wood image as the result image for now, as there isn't a specific 'result' image logic defined other than the wood choice -->
              ${selectedWood
                 ? `<img 
-                       src="images/simulation/${selectedWood}/${selectedWood}.png"
+                       src="${getAssetSrc(`images/simulation/${selectedWood}/${selectedWood}.png`)}"
                        alt="${selectedWood}"
                        style="max-width:90%; border:1px solid #ccc; border-radius:6px;"
                    >`
@@ -391,7 +545,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderWoodSelection(timestamp) {
-        const imgSrc = 'images/simulation/1.png';
+        const imgSrc = getAssetSrc('images/simulation/1.png');
 
         gifContainer.innerHTML = `
         <div class="gif-wrapper" style="width: 100%; height: 100%;">
@@ -401,7 +555,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="sim-media-container">
                 <div class="scaling-wrapper">
                     <div class="play-stage" id="play-stage" style="width: 100%; position: relative;">
-                        <img id="wood-selection-img" src="${imgSrc}?t=${timestamp}" alt="Wood types" style="width:100%; display: block; object-fit:contain;"/>
+                        <img id="wood-selection-img" src="${formatSrc(imgSrc, timestamp)}" alt="Wood types" style="width:100%; display: block; object-fit:contain;"/>
                     </div>
                 </div>
             </div>
@@ -497,14 +651,14 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <!--Drag Phase-->
                         <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                            <img src="${bgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${toolPath}?t=${timestamp}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
                             <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -170%; --arrow-left: 863%;"></div>
                         </div>
 
                         <!--Video Phase-->
                         <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step7-video" src="${videoSrc}?t=${timestamp}" playsinline muted style="width:100%"></video>
+                            <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted style="width:100%"></video>
                         </div>
                     </div>
                 </div>
@@ -682,7 +836,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const hotspot = document.getElementById('play-hotspot');
 
         const HOTSPOT_MODE = 'rel';
-        const hotspotRel = { x: 0.8864, y: 0.5598, w: 0.0306, h: 0.0809 };
+        const hotspotRel = { x: 0.882664, y: 0.572911, w: 0.044926, h: 0.080160 };
         const hotspotPx = { x: 556, y: 142, w: 22, h: 25 };
 
         function layoutHotspot() {
@@ -705,7 +859,7 @@ document.addEventListener("DOMContentLoaded", function () {
         function startVideo() {
             poster.style.display = 'none';
             hotspot.style.display = 'none';
-            video.src = `${gifPath}?t = ${timestamp} `;
+            video.src = formatSrc(gifPath, timestamp);
             video.style.display = 'block';
             video.play();
 
@@ -717,7 +871,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        poster.src = `${posterPath}?t = ${timestamp} `;
+        poster.src = formatSrc(posterPath, timestamp);
         // Layout hotspot based on poster size initially
         poster.onload = () => {
             layoutHotspot();
@@ -763,7 +917,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
-                            <video id="step3-video" src="${videoSrc}?t=${timestamp}" playsinline muted style="width: 100%;"></video>
+                            <video id="step3-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted style="width: 100%;"></video>
                             <button id="substep-hotspot-3" class="play-hotspot" style="display:none;"></button>
                         </div>
                     </div>
@@ -922,8 +1076,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                            <img src="${backgroundPng}?t=${timestamp}" alt="Background" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${toolPng}?t=${timestamp}" alt="Tool" id="draggable-tool" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%;"/>
+                            <img src="${formatSrc(backgroundPng, timestamp)}" alt="Background" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${formatSrc(toolPng, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 15%;"/>
                             <div id="drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -70%; --arrow-left: 801%;"></div>
                         </div>
                     </div>
@@ -1181,21 +1335,21 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <!--Drag Phase 1: Key-->
                         <div class="drag-stage" id="step2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                            <img src="${chunkBgPath}?t=${timestamp}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${keyPath}?t=${timestamp}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
+                            <img src="${formatSrc(chunkBgPath, timestamp)}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${formatSrc(keyPath, timestamp)}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
                             <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -356%; --arrow-left: 415%;"></div>
                         </div>
 
                         <!--Video Phase-->
                         <div class="play-stage" id="step2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step2-video" src="${video1Src}?t=${timestamp}" playsinline muted style="width: 100%; display: block;"></video>
+                            <video id="step2-video" src="${formatSrc(video1Src, timestamp)}" playsinline muted style="width: 100%; display: block;"></video>
                             <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
                         </div>
 
                         <!--Drag Phase 2: Wood-->
                         <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
-                            <img src="${chunkOpenBgPath}?t=${timestamp}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${woodPath}?t=${timestamp}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
+                            <img src="${formatSrc(chunkOpenBgPath, timestamp)}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${formatSrc(woodPath, timestamp)}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
                             <div id="step2-wood-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -88%; --arrow-left: 275%;"></div>
                         </div>
                     </div>
@@ -1397,7 +1551,7 @@ document.addEventListener("DOMContentLoaded", function () {
             instructionElem.textContent = substeps[currentSubstep].instruction;
             isSecondVideo = true;
 
-            video.src = video2Src + '?t=' + timestamp;
+            video.src = formatSrc(video2Src, timestamp);
 
             // Define handler
             const onVideoEnded = () => {
@@ -1560,5 +1714,5 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    showCurrentStep();
+    preloadAssets();
 });
