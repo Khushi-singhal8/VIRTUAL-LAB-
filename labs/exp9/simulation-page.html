@@ -98,16 +98,14 @@
 
 
         .play-hotspot::before {
-            content: var(--arrow-content, "⬇");
+            content: "⬇";
             position: absolute;
-            top: var(--arrow-top, -80px);
-            left: var(--arrow-left, 0);
-            width: var(--arrow-width, 100%);
-            text-align: center;
+            top: -80px;
+            left: 50%;
             font-size: 58px;
             color: #0a0a0a;
-            animation: bounceArrow 1s infinite;
-            transform: var(--arrow-transform, none);
+            transform: translateX(-50%);
+            animation: bounceArrowPlayHotspot 1s infinite;
         }
 
 
