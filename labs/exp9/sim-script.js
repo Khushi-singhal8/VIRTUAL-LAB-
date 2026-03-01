@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (step.id === 'step1_5') {
             renderStep1_5DragDrop(step, timestamp);
         } else if (step.id === 'step4') {
-            renderStep4DragDrop(step, timestamp);
+            renderStep4WeldingSimulation(step, timestamp);
         } else if (step.id === 'step5') {
             renderStep5DragDrop(step, timestamp);
         } else if (isHotspotStep(step)) {
@@ -889,169 +889,342 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    function renderStep4DragDrop(step, timestamp) {
-        if (nextButton) nextButton.disabled = false;
 
-        const videoSrc = 'images/simulation/4.mp4';
-        const bgPath = 'images/simulation/4.png';
-        const toolPath = 'images/simulation/4-tool.png'; // Assuming 4-tool.png exists
+    function renderStep4WeldingSimulation(step, timestamp) {
+        if (nextButton) nextButton.disabled = true;
+        const bgPath   = 'images/simulation/4.png';
+        const toolPath = 'images/simulation/4-tool.png';
+
+        // ─── Tune these to match your 4.png joint ────────────────────────────
+        const WELD_START     = { x: 0.29, y: 0.28 };
+        const WELD_END       = { x: 0.7,  y: 0.7  };
+        const WELD_HALF_W    = 0.008;    // bead half-width as fraction of image width
+        const WELD_TOLERANCE = 0.02;     // how close the torch tip must be to the joint
+        const NUM_SEGMENTS   = 80;       // joint divided into this many independent slots
+        const HOT_DURATION   = 900;      // ms a freshly welded segment stays "hot"
+        // ─────────────────────────────────────────────────────────────────────
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
-                        <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
-                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
-                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-4" class="draggable" style="position: absolute; width: 25%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
-                            <div id="step4-drop-zone" class="drop-zone" style="--arrow-top: -10%; --arrow-left: 345%;"></div>
-                        </div>
+                        <div id="step4-weld-stage" style="position:relative; width:100%; display:inline-block; line-height:0;">
+                            <img id="step4-bg" src="${formatSrc(bgPath, timestamp)}"
+                                 style="width:100%; height:auto; display:block; pointer-events:none; user-select:none;"/>
 
-                        <!-- Video Phase -->
-                        <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                            <svg id="step4-weld-svg"
+                                 style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:visible;">
+                                <defs>
+                                    <filter id="weld-glow" x="-80%" y="-80%" width="260%" height="260%">
+                                        <feGaussianBlur stdDeviation="4" result="blur"/>
+                                        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                                    </filter>
+                                    <filter id="bead-shadow" x="-20%" y="-20%" width="140%" height="140%">
+                                        <feDropShadow dx="1" dy="1" stdDeviation="1.5" flood-color="#00000088"/>
+                                    </filter>
+                                </defs>
+                                <g id="step4-bead-group"></g>
+                                <circle id="step4-arc-glow" cx="-999" cy="-999" r="14"
+                                        fill="#ffe566" filter="url(#weld-glow)" opacity="0"/>
+                            </svg>
+
+                            <canvas id="step4-spark-canvas"
+                                    style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none;"></canvas>
+
+                            <img id="step4-torch" src="${formatSrc(toolPath, timestamp)}"
+                                 style="position:absolute; width:22%; top:8%; right:5%;
+                                        cursor:grab; z-index:30; user-select:none; touch-action:none;"
+                                 draggable="false"/>
+
+                            <div id="step4-hint"
+                                 style="position:absolute; top:16%; left:30%; font-size:1.6em; color:#ffd54f;
+                                        text-shadow:0 0 8px #ff9800; animation:bounceArrow 1s infinite;
+                                        pointer-events:none; z-index:25; white-space:nowrap;">
+                                ⬇ Drag torch here
+                            </div>
                         </div>
                     </div>
                 </div>
-                
-                <div id="step4-instruction" class="drag-instructions"></div>
+
+                <div style="margin-top:10px; padding:0 4px;">
+                    <div style="display:flex; align-items:center; gap:10px;">
+                        <span style="font-size:13px; color:#555; white-space:nowrap;">Weld Progress:</span>
+                        <div style="flex:1; height:12px; background:#ddd; border-radius:6px; overflow:hidden;">
+                            <div id="step4-progress-bar"
+                                 style="height:100%; width:0%; background:linear-gradient(90deg,#ff6600,#ffcc00);
+                                        border-radius:6px; transition:width 0.15s linear;"></div>
+                        </div>
+                        <span id="step4-progress-text"
+                              style="font-size:13px; color:#555; width:36px; text-align:right;">0%</span>
+                    </div>
+                </div>
+
+                <div id="step4-instruction" class="drag-instructions">
+                    ${stepGuidance[step.id] ? stepGuidance[step.id].now : 'Drag the welding torch over the joint to weld the plates together.'}
+                </div>
             </div>
         `;
 
-        const dragStage = document.getElementById('step4-drag-stage');
-        const tool = document.getElementById('draggable-tool-4');
-        const dropZone = document.getElementById('step4-drop-zone');
+        setTimeout(() => { updateScaling(); }, 50);
+        window.addEventListener('resize', updateScaling);
+
+        const stage       = document.getElementById('step4-weld-stage');
+        const bgImg       = document.getElementById('step4-bg');
+        const torch       = document.getElementById('step4-torch');
+        const sparkCanvas = document.getElementById('step4-spark-canvas');
+        const beadGroup   = document.getElementById('step4-bead-group');
+        const arcGlow     = document.getElementById('step4-arc-glow');
+        const progressBar = document.getElementById('step4-progress-bar');
+        const progressTxt = document.getElementById('step4-progress-text');
+        const hint        = document.getElementById('step4-hint');
         const instructionElem = document.getElementById('step4-instruction');
-        const playStage = document.getElementById('step4-play-stage');
-        const video = document.getElementById('step4-video');
+        const ctx         = sparkCanvas.getContext('2d');
 
-        // Initial Instruction
-        instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : "Start welding.";
+        // Per-segment state
+        const weldedAt = new Array(NUM_SEGMENTS).fill(null); // null = not welded, else Date.now() timestamp
+        let totalWelded = 0;
+        let sparks      = [];
+        let dragging    = false;
+        let startX = 0, startY = 0;
+        let animFrame   = null;
+        let completed   = false;
 
-        const targetRel = { x: 0.28, y: 0.27 }; // Center target for now
-        const tolerancePx = 100;
+        function syncCanvasSize() {
+            sparkCanvas.width  = stage.offsetWidth;
+            sparkCanvas.height = stage.offsetHeight;
+        }
+        bgImg.addEventListener('load', () => { syncCanvasSize(); updateScaling(); });
+        if (bgImg.complete) syncCanvasSize();
 
-        function setDropZoneLayout() {
-            const rect = dragStage.getBoundingClientRect();
-            if (rect.width === 0) return;
-
-            const w = rect.width * 0.15;
-            const h = w;
-            const tx = rect.width * targetRel.x;
-            const ty = rect.height * targetRel.y;
-
-            dropZone.style.width = w + 'px';
-            dropZone.style.height = h + 'px';
-            dropZone.style.left = (tx - w / 2) + 'px';
-            dropZone.style.top = (ty - h / 2) + 'px';
+        // Project torch tip position onto joint line → return segment index (0..NUM_SEGMENTS-1)
+        // Returns null if the tip is too far from the joint
+        function getSegmentUnderTip(tipX, tipY) {
+            const ax = WELD_START.x, ay = WELD_START.y;
+            const bx = WELD_END.x,   by = WELD_END.y;
+            const dx = bx - ax, dy = by - ay;
+            const lenSq = dx * dx + dy * dy;
+            // Parameter t: projection of tip onto line segment
+            const t = Math.max(0, Math.min(1, ((tipX - ax) * dx + (tipY - ay) * dy) / lenSq));
+            // Closest point on segment
+            const closestX = ax + t * dx;
+            const closestY = ay + t * dy;
+            // Distance from tip to closest point
+            const dist = Math.hypot(tipX - closestX, tipY - closestY);
+            if (dist > WELD_TOLERANCE) return null;
+            return Math.min(NUM_SEGMENTS - 1, Math.floor(t * NUM_SEGMENTS));
         }
 
-        setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
-        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
+        function redrawBead() {
+            const W = stage.offsetWidth, H = stage.offsetHeight;
+            const sx = WELD_START.x * W, sy = WELD_START.y * H;
+            const ex = WELD_END.x   * W, ey = WELD_END.y   * H;
+            const dx = ex - sx, dy = ey - sy;
+            const totalLen = Math.hypot(dx, dy) || 1;
+            const ux = dx / totalLen, uy = dy / totalLen;
 
-        // Drag Logic
-        let dragging = false;
-        let startX = 0, startY = 0;
+            const scR  = WELD_HALF_W * W;
+            const step = totalLen / NUM_SEGMENTS;       // pixel length of each segment
+            const scallopsPerSeg = Math.max(1, Math.floor(step / (scR * 1.4)));
+
+            const now = Date.now();
+            beadGroup.innerHTML = '';
+
+            for (let seg = 0; seg < NUM_SEGMENTS; seg++) {
+                if (weldedAt[seg] === null) continue;
+
+                const age     = now - weldedAt[seg];
+                const isHot   = age < HOT_DURATION;
+                const hotFrac = isHot ? 1 - age / HOT_DURATION : 0; // 1=just welded, 0=cool
+
+                for (let sc = 0; sc < scallopsPerSeg; sc++) {
+                    const t  = (seg + (sc + 0.5) / scallopsPerSeg) * step;
+                    const cx = sx + ux * t;
+                    const cy = sy + uy * t;
+
+                    let fill;
+                    if (hotFrac > 0.7) {
+                        fill = '#ffcc00';
+                    } else if (hotFrac > 0.3) {
+                        fill = `rgb(${Math.floor(180 + hotFrac * 75)},${Math.floor(hotFrac * 120)},0)`;
+                    } else {
+                        // Cooled — dark rippled metal; slight alternating shimmer
+                        const shade = 50 + (seg % 2) * 16;
+                        fill = `rgb(${shade},${shade - 6},${shade - 12})`;
+                    }
+
+                    const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                    circle.setAttribute('cx', cx);
+                    circle.setAttribute('cy', cy);
+                    circle.setAttribute('r',  scR);
+                    circle.setAttribute('fill', fill);
+                    circle.setAttribute('filter', 'url(#bead-shadow)');
+                    circle.setAttribute('opacity', '0.93');
+                    beadGroup.appendChild(circle);
+                }
+            }
+        }
+
+        function getClient(e) {
+            if (e.touches && e.touches.length > 0) return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            return { x: e.clientX, y: e.clientY };
+        }
 
         function onPointerDown(e) {
+            if (completed) return;
             dragging = true;
-            tool.style.cursor = 'grabbing';
-            dropZone.classList.add('dragging-active');
-            const rect = tool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-            startX = clientX - rect.left;
-            startY = clientY - rect.top;
+            torch.style.cursor = 'grabbing';
+            hint.style.display = 'none';
+            const r = torch.getBoundingClientRect();
+            const c = getClient(e);
+            startX = c.x - r.left;
+            startY = c.y - r.top;
             e.preventDefault();
         }
 
         function onPointerMove(e) {
-            if (!dragging) return;
-            const stageRect = dragStage.getBoundingClientRect();
-            const toolRect = tool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            if (!dragging || completed) return;
+            const stageRect = stage.getBoundingClientRect();
+            const torchRect = torch.getBoundingClientRect();
+            const c = getClient(e);
+            const W = stageRect.width, H = stageRect.height;
 
-            let newLeft = clientX - stageRect.left - startX;
-            let newTop = clientY - stageRect.top - startY;
+            let newLeft = c.x - stageRect.left - startX;
+            let newTop  = c.y - stageRect.top  - startY;
+            newLeft = Math.max(0, Math.min(newLeft, W - torchRect.width));
+            newTop  = Math.max(0, Math.min(newTop,  H - torchRect.height));
 
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+            torch.style.left  = newLeft + 'px';
+            torch.style.top   = newTop  + 'px';
+            torch.style.right = 'auto';
 
-            tool.style.left = newLeft + 'px';
-            tool.style.top = newTop + 'px';
+            const tipX = (newLeft + torchRect.width  * 0.15) / W;   // left tip of torch
+            const tipY = (newTop  + torchRect.height * 0.8)  / H;   // vertical centre
+
+            const seg = getSegmentUnderTip(tipX, tipY);
+
+            if (seg !== null) {
+                const isNew = weldedAt[seg] === null;
+                weldedAt[seg] = Date.now();   // always refresh timestamp (keeps it hot)
+                if (isNew) {
+                    totalWelded++;
+                    const pct = Math.round((totalWelded / NUM_SEGMENTS) * 100);
+                    progressBar.style.width = pct + '%';
+                    progressTxt.textContent = pct + '%';
+                    if (totalWelded >= NUM_SEGMENTS && !completed) finishWeld();
+                }
+
+                redrawBead();
+
+                const tipPxX = tipX * W, tipPxY = tipY * H;
+                emitSparks(tipPxX, tipPxY, stageRect);
+                arcGlow.setAttribute('cx', tipPxX + '');
+                arcGlow.setAttribute('cy', tipPxY + '');
+                arcGlow.setAttribute('opacity', '0.9');
+                instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
+            } else {
+                arcGlow.setAttribute('opacity', '0');
+                if (totalWelded < NUM_SEGMENTS) {
+                    instructionElem.textContent = 'Move the torch closer to the joint gap!';
+                }
+            }
+
+            e.preventDefault();
         }
 
-        function onPointerUp(e) {
+        function onPointerUp() {
             if (!dragging) return;
             dragging = false;
-            tool.style.cursor = 'grab';
+            torch.style.cursor = 'grab';
+            arcGlow.setAttribute('opacity', '0');
+        }
 
-            const stageRect = dragStage.getBoundingClientRect();
-            const toolRect = tool.getBoundingClientRect();
-            const toolCenter = {
-                x: toolRect.left - stageRect.left + toolRect.width / 2,
-                y: toolRect.top - stageRect.top + toolRect.height / 2
-            };
-
-            const dzRect = dropZone.getBoundingClientRect();
-            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
-            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
-
-            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
-
-            if (dist < tolerancePx) {
-                dropZone.style.display = 'none';
-                setTimeout(startVideoPhase, 200);
+        function emitSparks(px, py, stageRect) {
+            const scaleX = sparkCanvas.width  / stageRect.width;
+            const scaleY = sparkCanvas.height / stageRect.height;
+            const cx = px * scaleX, cy = py * scaleY;
+            for (let i = 0; i < 7; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = 2 + Math.random() * 6;
+                sparks.push({
+                    x: cx, y: cy,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed - 2,
+                    life: 18 + Math.random() * 14,
+                    maxLife: 32,
+                    r: 1 + Math.random() * 2,
+                    color: Math.random() < 0.6
+                        ? `rgb(255,${Math.floor(160 + Math.random() * 95)},0)`
+                        : `rgb(255,255,${Math.floor(Math.random() * 120)})`
+                });
             }
         }
 
-        tool.addEventListener('mousedown', onPointerDown);
-        tool.addEventListener('touchstart', onPointerDown);
-        window.addEventListener('mousemove', onPointerMove);
-        window.addEventListener('touchmove', onPointerMove);
-        window.addEventListener('mouseup', onPointerUp);
-        window.addEventListener('touchend', onPointerUp);
-
-        function startVideoPhase() {
-            window.removeEventListener('mousemove', onPointerMove);
-            window.removeEventListener('touchmove', onPointerMove);
-            window.removeEventListener('mouseup', onPointerUp);
-            window.removeEventListener('touchend', onPointerUp);
-            window.removeEventListener('resize', setDropZoneLayout);
-
-            dragStage.style.display = 'none';
-            playStage.style.display = 'block';
-
-            instructionElem.textContent = "Welding...";
-
-            video.play().catch(() => { });
-        }
-
-        video.addEventListener('ended', () => {
-            if (stepGuidance[step.id]) {
-                instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
-            } else {
-                instructionElem.textContent = 'Step complete.';
+        function animateLoop() {
+            // Sparks
+            ctx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
+            for (let i = sparks.length - 1; i >= 0; i--) {
+                const s = sparks[i];
+                const alpha = s.life / s.maxLife;
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle   = s.color;
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = s.color;
+                ctx.lineWidth   = s.r * 0.5;
+                ctx.globalAlpha = alpha * 0.4;
+                ctx.beginPath();
+                ctx.moveTo(s.x, s.y);
+                ctx.lineTo(s.x - s.vx * 2, s.y - s.vy * 2);
+                ctx.stroke();
+                s.x += s.vx; s.y += s.vy;
+                s.vy += 0.25; s.vx *= 0.96;
+                s.life--;
+                if (s.life <= 0) sparks.splice(i, 1);
             }
+            ctx.globalAlpha = 1;
+
+            // Continuously redraw bead so hot→cool colour transition animates smoothly
+            const hasHot = weldedAt.some(t => t !== null && Date.now() - t < HOT_DURATION);
+            if (hasHot) redrawBead();
+
+            animFrame = requestAnimationFrame(animateLoop);
+        }
+        animFrame = requestAnimationFrame(animateLoop);
+
+        function finishWeld() {
+            completed = true;
+            arcGlow.setAttribute('opacity', '0');
+            redrawBead();
+            progressBar.style.background = '#4CAF50';
+            progressBar.style.width = '100%';
+            progressTxt.textContent = '100%';
+            instructionElem.innerHTML = '<b>Weld complete! ✅</b> The joint has been successfully welded. Click next to: ' + (stepGuidance[step.id] ? stepGuidance[step.id].next : 'continue.');
             if (nextButton) nextButton.disabled = false;
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
-        }, { once: true });
+        }
+
+        torch.addEventListener('mousedown',  onPointerDown);
+        torch.addEventListener('touchstart', onPointerDown, { passive: false });
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove, { passive: false });
+        window.addEventListener('mouseup',   onPointerUp);
+        window.addEventListener('touchend',  onPointerUp);
 
         cleanupCurrent = function () {
             try {
-                window.removeEventListener('mousemove', onPointerMove);
-                window.removeEventListener('touchmove', onPointerMove);
-                window.removeEventListener('mouseup', onPointerUp);
-                window.removeEventListener('touchend', onPointerUp);
-                window.removeEventListener('resize', setDropZoneLayout);
-                video.pause();
+                window.removeEventListener('mousemove',  onPointerMove);
+                window.removeEventListener('touchmove',  onPointerMove);
+                window.removeEventListener('mouseup',    onPointerUp);
+                window.removeEventListener('touchend',   onPointerUp);
+                window.removeEventListener('resize',     updateScaling);
+                cancelAnimationFrame(animFrame);
             } catch (_) { }
         };
     }
+
 
     function renderStep5DragDrop(step, timestamp) {
         if (nextButton) nextButton.disabled = false;
