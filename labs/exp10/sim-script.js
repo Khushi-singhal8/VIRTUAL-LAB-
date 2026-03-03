@@ -211,6 +211,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step1_5', title: 'Attaching the ground clamp', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step2', title: 'Turn on shielding gas', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step4', title: 'Extrude the electrode wire', src: 'images/simulation/4.mp4', type: 'video' },
+        { id: 'step5_1', title: 'Welding simulation', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'step5', title: 'Welding process', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'step6', title: 'Clean the weld to remove slag', src: 'images/simulation/6.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
@@ -248,8 +249,12 @@ document.addEventListener("DOMContentLoaded", function () {
             now: "Click to extrude the electrode wire.",
             next: "Begin the welding process."
         },
-        step5: {
+        step5_1: {
             now: "Drag the welding torch to the joint area to start welding the plates together.",
+            next: "simulate the welding process."
+        },
+        step5: {
+            now: "This is a simulation of the welding process. Observe how the weld pool forms and solidifies.",
             next: "Clean the weld."
         },
         step6: {
@@ -457,7 +462,10 @@ document.addEventListener("DOMContentLoaded", function () {
             renderStep1DragDrop(step, timestamp);
         } else if (step.id === 'step1_5') {
             renderStep1_5DragDrop(step, timestamp);
-        } else if (step.id === 'step5') {
+        } else if (step.id === 'step5_1') {
+            renderStep5_1DragDrop(step, timestamp);
+        }
+         else if (step.id === 'step5') {
             renderStep5DragDrop(step, timestamp);
         } else if (step.id === 'step6') {
 
@@ -1139,6 +1147,170 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (_) { }
         };
     }
+    function renderStep5_1DragDrop(step, timestamp) {
+        const videoSrc = 'images/simulation/5.mp4';
+        const bgPath = 'images/simulation/5.png';
+        const toolPath = 'images/simulation/5-tool.png';
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <!-- Drag Phase -->
+                        <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: auto; display: block; pointer-events: none;" alt="Workpiece setup"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-5" class="draggable" style="position: absolute; width: 30%; top: 10%; right: 10%; cursor: grab; z-index: 20;" alt="Welding torch"/>
+                            <div id="step5-drop-zone" class="drop-zone" style="--arrow-top: -50%; --arrow-left: 345%;"></div>
+                        </div>
+
+                        <!-- Video Phase -->
+                        <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
+                            <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline style="width: 100%; display: block;"></video>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="step5-instruction" class="drag-instructions"></div>
+            </div>
+        `;
+
+        const dragStage = document.getElementById('step5-drag-stage');
+        const tool = document.getElementById('draggable-tool-5');
+        const dropZone = document.getElementById('step5-drop-zone');
+        const instructionElem = document.getElementById('step5-instruction');
+        const playStage = document.getElementById('step5-play-stage');
+        const video = document.getElementById('step5-video');
+
+        // Initial Instruction
+        instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : "Drag the tool.";
+
+        const targetRel = { x: 0.28, y: 0.27 }; // Center target
+        const tolerancePx = 100;
+
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            if (rect.width === 0) return;
+
+            const w = rect.width * 0.15;
+            const h = w;
+            const tx = rect.width * targetRel.x;
+            const ty = rect.height * targetRel.y;
+
+            dropZone.style.width = w + 'px';
+            dropZone.style.height = h + 'px';
+            dropZone.style.left = (tx - w / 2) + 'px';
+            dropZone.style.top = (ty - h / 2) + 'px';
+            updateScaling();
+        }
+
+        setTimeout(setDropZoneLayout, 50);
+        window.addEventListener('resize', () => {
+            setDropZoneLayout();
+            updateScaling();
+        });
+
+        // Drag Logic
+        let dragging = false;
+        let startX = 0, startY = 0;
+
+        function onPointerDown(e) {
+            dragging = true;
+            tool.style.cursor = 'grabbing';
+            dropZone.classList.add('dragging-active');
+            const rect = tool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging) return;
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = tool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+
+            tool.style.left = newLeft + 'px';
+            tool.style.top = newTop + 'px';
+        }
+
+        function onPointerUp(e) {
+            if (!dragging) return;
+            dragging = false;
+            tool.style.cursor = 'grab';
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = tool.getBoundingClientRect();
+            const toolCenter = {
+                x: toolRect.left - stageRect.left + toolRect.width / 2,
+                y: toolRect.top - stageRect.top + toolRect.height / 2
+            };
+
+            const dzRect = dropZone.getBoundingClientRect();
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                dropZone.style.display = 'none';
+                setTimeout(startVideoPhase, 200);
+            }
+        }
+
+        tool.addEventListener('mousedown', onPointerDown);
+        tool.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        function startVideoPhase() {
+            window.removeEventListener('mousemove', onPointerMove);
+            window.removeEventListener('touchmove', onPointerMove);
+            window.removeEventListener('mouseup', onPointerUp);
+            window.removeEventListener('touchend', onPointerUp);
+            window.removeEventListener('resize', setDropZoneLayout);
+
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+
+            instructionElem.textContent = "Welding in progress...";
+
+            video.play().catch(() => { });
+        }
+
+        video.addEventListener('ended', () => {
+            if (stepGuidance[step.id]) {
+                instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
+            } else {
+                instructionElem.textContent = 'Step complete.';
+            }
+            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+        }, { once: true });
+
+        cleanupCurrent = function () {
+            try {
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+                window.removeEventListener('resize', setDropZoneLayout);
+                video.pause();
+            } catch (_) { }
+        };
+    }
 
     function renderStep5DragDrop(step, timestamp) {
     if (nextButton) nextButton.disabled = true;
@@ -1222,7 +1394,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <div id="step5-instruction" class="drag-instructions">
-                Drag the welding torch over the joint to weld the plates together.
+                This is a simulation of the welding process. Observe how the weld pool forms and solidifies.
             </div>
         </div>
     `;
