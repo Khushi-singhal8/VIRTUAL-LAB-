@@ -1559,7 +1559,7 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
                         <div class="drag-stage" id="step3_2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc('images/simulation/3.png', timestamp)}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3_2-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
-                            <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -320%; --arrow-left: -180%;"></div>
+                            <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -340%; --arrow-left: -210%;"></div>
                         </div>
 
                         <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
