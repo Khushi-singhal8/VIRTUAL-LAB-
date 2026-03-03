@@ -97,6 +97,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/5.mp4",
         "images/simulation/5.png",
         "images/simulation/5-tool.png",
+        "images/simulation/5.mp3",
         "images/simulation/6.mp4",
         "images/simulation/6.png",
 
@@ -212,7 +213,7 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step2', title: 'Turn on shielding gas', src: 'images/simulation/2.mp4', type: 'video' },
         { id: 'step4', title: 'Extrude the electrode wire', src: 'images/simulation/4.mp4', type: 'video' },
         { id: 'step5_1', title: 'Welding simulation', src: 'images/simulation/5.mp4', type: 'video' },
-        { id: 'step5', title: 'Welding process', src: 'images/simulation/5.mp4', type: 'video' },
+        { id: 'step5', title: 'Welding', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'step6', title: 'Clean the weld to remove slag', src: 'images/simulation/6.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
     ];
@@ -251,10 +252,10 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         step5_1: {
             now: "Drag the welding torch to the joint area to start welding the plates together.",
-            next: "simulate the welding process."
+            next: "Perform the process on your own."
         },
         step5: {
-            now: "This is a simulation of the welding process. Observe how the weld pool forms and solidifies.",
+            now: "Drag the torch and carefully weld the joint.",
             next: "Clean the weld."
         },
         step6: {
@@ -1365,19 +1366,19 @@ document.addEventListener("DOMContentLoaded", function () {
                             cursor:grab; z-index:30; user-select:none; touch-action:none;"
                      draggable="false"/>
             </div>
-            <div id="step5-hint"
-     style="position:absolute;
-            top:18%;
-            left:30%;
-            font-size:1.6em;
-            color:#ffd54f;
-            text-shadow:0 0 8px #ff9800;
-            animation:bounceArrow 1s infinite;
-            pointer-events:none;
-            z-index:25;
-            white-space:nowrap;">
-    ⬇ Drag torch here
-</div>
+<!--            <div id="step5-hint"-->
+<!--     style="position:absolute;-->
+<!--            top:18%;-->
+<!--            left:30%;-->
+<!--            font-size:1.6em;-->
+<!--            color:#ffd54f;-->
+<!--            text-shadow:0 0 8px #ff9800;-->
+<!--            animation:bounceArrow 1s infinite;-->
+<!--            pointer-events:none;-->
+<!--            z-index:25;-->
+<!--            white-space:nowrap;">-->
+<!--    ⬇ Drag torch here-->
+<!--</div>-->
 
             <div style="margin-top:10px;">
                 <div style="display:flex; align-items:center; gap:10px;">
@@ -1394,7 +1395,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
 
             <div id="step5-instruction" class="drag-instructions">
-                This is a simulation of the welding process. Observe how the weld pool forms and solidifies.
+                Drag the torch and carefully weld the joint.
             </div>
         </div>
     `;
@@ -1418,6 +1419,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let startX = 0, startY = 0;
     let animFrame = null;
     let completed = false;
+
+    // Audio for welding
+    const weldingAudio = new Audio(formatSrc('images/simulation/5.mp3', timestamp));
+    weldingAudio.loop = true;
+    weldingAudio.volume = 0.6;
+    let isAudioPlaying = false;
 
     function syncCanvasSize() {
         sparkCanvas.width  = stage.offsetWidth;
@@ -1532,11 +1539,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function finishWeld() {
         completed = true;
+        // Stop welding sound
+        if (isAudioPlaying) {
+            weldingAudio.pause();
+            isAudioPlaying = false;
+        }
         arcGlow.setAttribute('opacity', '0');
         progressBar.style.background = '#4CAF50';
         progressBar.style.width = '100%';
         progressTxt.textContent = '100%';
-        instructionElem.innerHTML = '<b>Weld complete! ✅</b>';
+        instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance["step5"].next;;
         if (nextButton) nextButton.disabled = false;
     }
 
@@ -1550,7 +1562,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (completed) return;
     dragging = true;
     torch.style.cursor = 'grabbing';
-    hint.style.display = 'none';
+    // hint.style.display = 'none';
 
     const r = torch.getBoundingClientRect();
     const c = getClient(e);
@@ -1583,6 +1595,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const seg = getSegmentUnderTip(tipX, tipY);
 
         if (seg !== null) {
+            // Play welding sound when torch is over the joint
+            if (!isAudioPlaying) {
+                weldingAudio.currentTime = 0;
+                weldingAudio.play().catch(err => console.error('Audio play error:', err));
+                isAudioPlaying = true;
+            }
+
             const isNew = weldedAt[seg] === null;
             weldedAt[seg] = Date.now();
 
@@ -1591,17 +1610,36 @@ document.addEventListener("DOMContentLoaded", function () {
                 const pct = Math.round((totalWelded / NUM_SEGMENTS) * 100);
                 progressBar.style.width = pct + '%';
                 progressTxt.textContent = pct + '%';
-                if (totalWelded >= NUM_SEGMENTS && !completed) finishWeld();
             }
 
-            const tipPxX = tipX * W;
-            const tipPxY = tipY * H;
-            emitSparks(tipPxX, tipPxY);
-            arcGlow.setAttribute('cx', tipPxX);
-            arcGlow.setAttribute('cy', tipPxY);
-            arcGlow.setAttribute('opacity', '0.9');
+            if (totalWelded >= NUM_SEGMENTS && !completed) {
+                if (isAudioPlaying) {
+                    weldingAudio.pause();
+                    isAudioPlaying = false;
+                }
+                finishWeld();
+                return;
+            }
+
+            if (!completed) {
+                const tipPxX = tipX * W;
+                const tipPxY = tipY * H;
+                emitSparks(tipPxX, tipPxY);
+                arcGlow.setAttribute('cx', tipPxX);
+                arcGlow.setAttribute('cy', tipPxY);
+                arcGlow.setAttribute('opacity', '0.9');
+                instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
+            }
         } else {
+            // Stop welding sound when torch leaves the joint
+            if (isAudioPlaying) {
+                weldingAudio.pause();
+                isAudioPlaying = false;
+            }
             arcGlow.setAttribute('opacity', '0');
+            if (totalWelded < NUM_SEGMENTS) {
+                instructionElem.textContent = 'Move the torch closer to the joint gap!';
+            }
         }
 
         e.preventDefault();
@@ -1621,6 +1659,13 @@ document.addEventListener("DOMContentLoaded", function () {
     window.addEventListener('touchend', onPointerUp);
 
     cleanupCurrent = function () {
+        try {
+            // Stop welding sound
+            if (weldingAudio) {
+                weldingAudio.pause();
+                weldingAudio.currentTime = 0;
+            }
+        } catch (_) { }
         cancelAnimationFrame(animFrame);
         window.removeEventListener('mousemove', onPointerMove);
         window.removeEventListener('touchmove', onPointerMove);

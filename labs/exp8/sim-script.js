@@ -128,6 +128,9 @@ document.addEventListener("DOMContentLoaded", function () {
         // Step 4.5
         "images/simulation/4.5.mp4",
 
+        // Step 4.6
+        "images/simulation/4.6.mp3",
+
         // Step 5
         "images/simulation/5.mp4",
         "images/simulation/5.png",
@@ -219,8 +222,8 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step3_2', title: 'Ignite the torch', src: 'images/simulation/3.png', type: 'drag-drop' },
         { id: 'step3_3', title: 'Obtain neutral flame', src: 'images/simulation/3.2.mp4', type: 'video' },
         { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
-        { id: 'step4_5', title: 'Welding', src: 'images/simulation/4.5.mp4', type: 'video' },
-        { id: 'step4_6', title: 'Perform Welding Operation', type: 'drag-drop' },
+        { id: 'step4_5', title: 'Welding simulation', src: 'images/simulation/4.5.mp4', type: 'video' },
+        { id: 'step4_6', title: 'Perform welding operation', type: 'drag-drop' },
         { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
 
@@ -268,7 +271,7 @@ document.addEventListener("DOMContentLoaded", function () {
             next: "Perform welding on your own."
         },
         step4_6: {
-            now: "Drag the tools to set them up, then carefully weld the joint.",
+            now: "Drag the torch and carefully weld the joint.",
             next: "Clean the weld."
         },
         step5: {
@@ -1047,6 +1050,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let animFrame = null;
         let completed = false;
 
+        // Audio for welding
+        const weldingAudio = new Audio(formatSrc('images/simulation/4.6.mp3', timestamp));
+        weldingAudio.loop = true;
+        weldingAudio.volume = 0.6;
+        let isAudioPlaying = false;
+
         function syncCanvasSize() {
             if (!sparkCanvas || !weldStage) return;
             sparkCanvas.width = weldStage.offsetWidth;
@@ -1146,6 +1155,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const seg = getSegmentUnderTip(tipX, tipY);
 
             if (seg !== null) {
+                // Play welding sound when torch is over the joint
+                if (!isAudioPlaying) {
+                    weldingAudio.currentTime = 0;
+                    weldingAudio.play().catch(err => console.error('Audio play error:', err));
+                    isAudioPlaying = true;
+                }
+
                 const isNew = weldedAt[seg] === null;
                 weldedAt[seg] = Date.now();
                 if (isNew) {
@@ -1158,6 +1174,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 redrawBead();
 
                 if (totalWelded >= NUM_SEGMENTS && !completed) {
+                    if (isAudioPlaying) {
+                        weldingAudio.pause();
+                        isAudioPlaying = false;
+                    }
                     finishWeld();
                     return;
                 }
@@ -1171,6 +1191,11 @@ document.addEventListener("DOMContentLoaded", function () {
                     instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
                 }
             } else {
+                // Stop welding sound when torch leaves the joint
+                if (isAudioPlaying) {
+                    weldingAudio.pause();
+                    isAudioPlaying = false;
+                }
                 arcGlow.setAttribute('opacity', '0');
                 if (totalWelded < NUM_SEGMENTS) {
                     instructionElem.textContent = 'Move the torch closer to the joint gap!';
@@ -1257,6 +1282,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function finishWeld() {
             completed = true;
+            // Stop welding sound
+            if (isAudioPlaying) {
+                weldingAudio.pause();
+                isAudioPlaying = false;
+            }
             arcGlow.setAttribute('opacity', '0');
             instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance["step4_6"].next;
             step4_6Completed = true;
@@ -1271,6 +1301,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cleanupCurrent = () => {
             try {
+                // Stop welding sound
+                if (weldingAudio) {
+                    weldingAudio.pause();
+                    weldingAudio.currentTime = 0;
+                }
                 window.removeEventListener('resize', setDropZoneLayout);
                 window.removeEventListener('mousemove', onPointerMovePhase1);
                 window.removeEventListener('touchmove', onPointerMovePhase1);

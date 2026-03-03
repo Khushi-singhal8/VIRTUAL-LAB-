@@ -113,6 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/4.mp4",
         "images/simulation/4.png",
         "images/simulation/4-tool.png",
+        "images/simulation/4.mp3",
 
         // Step 5
         "images/simulation/5.mp4",
@@ -239,10 +240,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         step4_5: {
             now: "Drag the welding torch to the joint area to start welding the plates together.",
-            next: "Simulate the welding process."
+            next: "Perform the process on your own."
         },
         step4: {
-            now: "Simulating welding process... Observe the formation of the weld pool and how the materials fuse together.",
+            now: "Drag the torch and carefully weld the joint.",
             next: "Clean the welded joint."
         },
         step5: {
@@ -1032,7 +1033,7 @@ document.addEventListener("DOMContentLoaded", function () {
             dragStage.style.display = 'none';
             playStage.style.display = 'block';
 
-            instructionElem.textContent = "Welding...";
+            instructionElem.textContent = "Observe the welding process.";
 
             video.play().catch(() => { });
         }
@@ -1109,12 +1110,12 @@ document.addEventListener("DOMContentLoaded", function () {
                                         cursor:grab; z-index:30; user-select:none; touch-action:none;"
                                  draggable="false"/>
 
-                            <div id="step4-hint"
-                                 style="position:absolute; top:16%; left:30%; font-size:1.6em; color:#ffd54f;
-                                        text-shadow:0 0 8px #ff9800; animation:bounceArrow 1s infinite;
-                                        pointer-events:none; z-index:25; white-space:nowrap;">
-                                ⬇ Drag torch here
-                            </div>
+<!--                            <div id="step4-hint"-->
+<!--                                 style="position:absolute; top:16%; left:30%; font-size:1.6em; color:#ffd54f;-->
+<!--                                        text-shadow:0 0 8px #ff9800; animation:bounceArrow 1s infinite;-->
+<!--                                        pointer-events:none; z-index:25; white-space:nowrap;">-->
+<!--                                ⬇ Drag torch here-->
+<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -1161,6 +1162,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let startX = 0, startY = 0;
         let animFrame   = null;
         let completed   = false;
+
+        // Audio for welding
+        const weldingAudio = new Audio(formatSrc('images/simulation/4.mp3', timestamp));
+        weldingAudio.loop = true;
+        weldingAudio.volume = 0.6;
+        let isAudioPlaying = false;
 
         function syncCanvasSize() {
             sparkCanvas.width  = stage.offsetWidth;
@@ -1246,7 +1253,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (completed) return;
             dragging = true;
             torch.style.cursor = 'grabbing';
-            hint.style.display = 'none';
+            // hint.style.display = 'none';
             const r = torch.getBoundingClientRect();
             const c = getClient(e);
             startX = c.x - r.left;
@@ -1276,6 +1283,13 @@ document.addEventListener("DOMContentLoaded", function () {
             const seg = getSegmentUnderTip(tipX, tipY);
 
             if (seg !== null) {
+                // Play welding sound when torch is over the joint
+                if (!isAudioPlaying) {
+                    weldingAudio.currentTime = 0;
+                    weldingAudio.play().catch(err => console.error('Audio play error:', err));
+                    isAudioPlaying = true;
+                }
+
                 const isNew = weldedAt[seg] === null;
                 weldedAt[seg] = Date.now();   // always refresh timestamp (keeps it hot)
                 if (isNew) {
@@ -1283,18 +1297,33 @@ document.addEventListener("DOMContentLoaded", function () {
                     const pct = Math.round((totalWelded / NUM_SEGMENTS) * 100);
                     progressBar.style.width = pct + '%';
                     progressTxt.textContent = pct + '%';
-                    if (totalWelded >= NUM_SEGMENTS && !completed) finishWeld();
                 }
 
                 redrawBead();
 
-                const tipPxX = tipX * W, tipPxY = tipY * H;
-                emitSparks(tipPxX, tipPxY, stageRect);
-                arcGlow.setAttribute('cx', tipPxX + '');
-                arcGlow.setAttribute('cy', tipPxY + '');
-                arcGlow.setAttribute('opacity', '0.9');
-                instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
+                if (totalWelded >= NUM_SEGMENTS && !completed) {
+                    if (isAudioPlaying) {
+                        weldingAudio.pause();
+                        isAudioPlaying = false;
+                    }
+                    finishWeld();
+                    return;
+                }
+
+                if (!completed) {
+                    const tipPxX = tipX * W, tipPxY = tipY * H;
+                    emitSparks(tipPxX, tipPxY, stageRect);
+                    arcGlow.setAttribute('cx', tipPxX + '');
+                    arcGlow.setAttribute('cy', tipPxY + '');
+                    arcGlow.setAttribute('opacity', '0.9');
+                    instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
+                }
             } else {
+                // Stop welding sound when torch leaves the joint
+                if (isAudioPlaying) {
+                    weldingAudio.pause();
+                    isAudioPlaying = false;
+                }
                 arcGlow.setAttribute('opacity', '0');
                 if (totalWelded < NUM_SEGMENTS) {
                     instructionElem.textContent = 'Move the torch closer to the joint gap!';
@@ -1367,12 +1396,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function finishWeld() {
             completed = true;
+            // Stop welding sound
+            if (isAudioPlaying) {
+                weldingAudio.pause();
+                isAudioPlaying = false;
+            }
             arcGlow.setAttribute('opacity', '0');
             redrawBead();
             progressBar.style.background = '#4CAF50';
             progressBar.style.width = '100%';
             progressTxt.textContent = '100%';
-            instructionElem.innerHTML = '<b>Weld complete! ✅</b> The joint has been successfully welded. Click next to: ' + (stepGuidance[step.id] ? stepGuidance[step.id].next : 'continue.');
+            instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance["step4"].next;
             if (nextButton) nextButton.disabled = false;
         }
 
@@ -1385,6 +1419,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cleanupCurrent = function () {
             try {
+                // Stop welding sound
+                if (weldingAudio) {
+                    weldingAudio.pause();
+                    weldingAudio.currentTime = 0;
+                }
                 window.removeEventListener('mousemove',  onPointerMove);
                 window.removeEventListener('touchmove',  onPointerMove);
                 window.removeEventListener('mouseup',    onPointerUp);
