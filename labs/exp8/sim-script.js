@@ -1113,8 +1113,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         fill = `rgb(${shade},${shade - 6},${shade - 12})`;
                     }
 
-                    // newHtml += `<circle cx="${cx}" cy="${cy}" r="${scR}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93"></circle>`;
-                    newHtml += `<ellipse cx="${cx}" cy="${cy}" rx="${scR*2}" ry="${scR}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93" transform="rotate(${weldAngleDeg} ${cx} ${cy})"></ellipse>`;
+                    const rx = scR * 0.7;   // ellipse width
+                    const ry = scR * 2.1;   // ellipse height (fills the plate gap)
+
+                    newHtml += `
+                    <ellipse 
+                        cx="${cx}" 
+                        cy="${cy}" 
+                        rx="${rx}" 
+                        ry="${ry}" 
+                        fill="${fill}" 
+                        filter="url(#bead-shadow-4_6)" 
+                        opacity="0.93"
+                        transform="rotate(90 ${cx} ${cy})">
+                    </ellipse>`;
                 }
             }
             beadGroup.innerHTML = newHtml;
