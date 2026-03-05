@@ -824,11 +824,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const torchPath = 'images/simulation/4-tool3.png';
 
         // ─── Tune these to match your 4.5.png joint ────────────────────────────
-        const WELD_START = { x: 0.457, y: 0.753 };
-        const WELD_END = { x: 0.498, y: 0.63 };
-        const WELD_HALF_W = 0.01;     // bead half-width as fraction of image width
+        const WELD_START = { x: 0.46, y: 0.758 };
+        const WELD_END = { x: 0.501, y: 0.635 };
+        const WELD_HALF_W = 0.008;     // bead half-width as fraction of image width
         const WELD_TOLERANCE = 0.05;  // how close the torch tip must be to the joint
-        const NUM_SEGMENTS = 40;      // joint divided into this many independent slots
+        const NUM_SEGMENTS = 30;      // joint divided into this many independent slots
         const HOT_DURATION = 900;     // ms a freshly welded segment stays "hot"
         // ─────────────────────────────────────────────────────────────────────
 
@@ -1084,6 +1084,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const dx = ex - sx, dy = ey - sy;
             const totalLen = Math.hypot(dx, dy) || 1;
             const ux = dx / totalLen, uy = dy / totalLen;
+            const weldAngleDeg = (Math.atan2(uy, ux) * 180 / Math.PI) - 90;
 
             const scR = WELD_HALF_W * W;
             const stepSize = totalLen / NUM_SEGMENTS;
@@ -1112,7 +1113,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         fill = `rgb(${shade},${shade - 6},${shade - 12})`;
                     }
 
-                    newHtml += `<circle cx="${cx}" cy="${cy}" r="${scR}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93"></circle>`;
+                    // newHtml += `<circle cx="${cx}" cy="${cy}" r="${scR}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93"></circle>`;
+                    newHtml += `<ellipse cx="${cx}" cy="${cy}" rx="${scR}" ry="${scR*2}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93" transform="rotate(${weldAngleDeg} ${cx} ${cy})"></ellipse>`;
                 }
             }
             beadGroup.innerHTML = newHtml;
@@ -1816,7 +1818,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
                             <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
-                            <button id="step3_1-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <button id="step3_1-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -2112,7 +2114,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="step3_3-play-stage">
                             <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
-                            <button id="step3_3-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <button id="step3_3-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
