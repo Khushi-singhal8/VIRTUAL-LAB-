@@ -1114,7 +1114,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     }
 
                     // newHtml += `<circle cx="${cx}" cy="${cy}" r="${scR}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93"></circle>`;
-                    newHtml += `<ellipse cx="${cx}" cy="${cy}" rx="${scR}" ry="${scR*2}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93" transform="rotate(${weldAngleDeg} ${cx} ${cy})"></ellipse>`;
+                    newHtml += `<ellipse cx="${cx}" cy="${cy}" rx="${scR*2}" ry="${scR}" fill="${fill}" filter="url(#bead-shadow-4_6)" opacity="0.93" transform="rotate(${weldAngleDeg} ${cx} ${cy})"></ellipse>`;
                 }
             }
             beadGroup.innerHTML = newHtml;
