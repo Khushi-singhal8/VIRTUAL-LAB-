@@ -1200,11 +1200,19 @@ newHtml += `
     }
 
     function onPointerUpPhase2() {
-        if (!phase2Dragging) return;
-        phase2Dragging = false;
-        torch.style.cursor = 'grab';
-        arcGlow.setAttribute('opacity', '0');
+    if (!phase2Dragging) return;
+
+    phase2Dragging = false;
+    torch.style.cursor = 'grab';
+    arcGlow.setAttribute('opacity', '0');
+
+    // 🔊 stop welding sound when torch stops moving
+    if (isAudioPlaying) {
+        weldingAudio.pause();
+        weldingAudio.currentTime = 0;
+        isAudioPlaying = false;
     }
+}
 
     function emitSparks(px, py, stageRect) {
         if (Math.random() > 0.6) return;
