@@ -1140,7 +1140,7 @@ newHtml += `
     }
 
     function onPointerMovePhase2(e) {
-        if (!phase2Dragging || completed) return;
+        if (!phase2Dragging) return;
         const stageRect = weldStage.getBoundingClientRect();
         const torchRect = torch.getBoundingClientRect();
         const c = getClient(e);
@@ -1159,7 +1159,7 @@ newHtml += `
         const tipY = (newTop + torchRect.height * 0.9) / H;
         const seg = getSegmentUnderTip(tipX, tipY);
 
-        if (seg !== null) {
+        if (seg !== null && !completed) {
             // Play welding sound when torch is over the joint
             if (!isAudioPlaying) {
                 weldingAudio.currentTime = 0;
@@ -1290,7 +1290,7 @@ newHtml += `
     }
 
     function finishWeld() {
-        completed = true;
+        phase2Dragging = true;
         // Stop welding sound
         if (isAudioPlaying) {
             weldingAudio.pause();
