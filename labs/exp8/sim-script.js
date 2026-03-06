@@ -1093,7 +1093,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const now = Date.now();
             let newHtml = '';
 
-            for (let seg = 0; seg < NUM_SEGMENTS; seg++) {
+            for (let seg = 0; seg < NUM_SEGMENTS - 2; seg++) {
                 if (weldedAt[seg] === null) continue;
 
                 const age = now - weldedAt[seg];
@@ -1161,7 +1161,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onPointerMovePhase2(e) {
-            if (!phase2Dragging || completed) return;
+            if (!phase2Dragging) return;
             const stageRect = weldStage.getBoundingClientRect();
             const torchRect = torch.getBoundingClientRect();
             const c = getClient(e);
@@ -1180,7 +1180,7 @@ document.addEventListener("DOMContentLoaded", function () {
             const tipY = (newTop + torchRect.height * 0.9) / H;
             const seg = getSegmentUnderTip(tipX, tipY);
 
-            if (seg !== null) {
+            if (seg !== null && !completed) {
                 // Play welding sound when torch is over the joint
                 if (!isAudioPlaying) {
                     weldingAudio.currentTime = 0;
@@ -1316,7 +1316,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function finishWeld() {
-            completed = true;
+            phase2Dragging = true;
             // Stop welding sound
             if (isAudioPlaying) {
                 weldingAudio.pause();
