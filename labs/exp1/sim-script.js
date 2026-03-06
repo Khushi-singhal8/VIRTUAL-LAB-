@@ -343,7 +343,7 @@ document.addEventListener("DOMContentLoaded", function () {
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width:100%;height:100%;">
                 <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                
                 
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
@@ -481,7 +481,7 @@ document.addEventListener("DOMContentLoaded", function () {
         gifContainer.innerHTML = `
         <div class="gif-wrapper" style="width:100%;height:100%;">
             <h3>${step.title}</h3>
-            <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+            
 
             <div class="sim-media-container">
                 <div class="scaling-wrapper">
