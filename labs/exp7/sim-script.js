@@ -1084,20 +1084,33 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
                     fill = `rgb(${shade},${shade - 6},${shade - 12})`;
                 }
 
-                const rx = scR * 0.7;   // ellipse width
-                const ry = scR * 1.8;   // ellipse height (fills the plate gap)
+                // calculate weld line angle
+                   const angle = Math.atan2(dy, dx) * 180 / Math.PI;
 
-                newHtml += `
-                <ellipse 
-                    cx="${cx}" 
-                    cy="${cy}" 
-                    rx="${rx}" 
-                    ry="${ry}" 
-                    fill="${fill}" 
-                    filter="url(#bead-shadow-4_6)" 
-                    opacity="0.93"
-                    transform="rotate(90 ${cx} ${cy})">
-                </ellipse>`;
+// perpendicular vector
+const px = -uy;
+const py = ux;
+
+const rx = scR * 0.9;
+const ry = scR * 2.2;
+
+// shift bead toward groove center
+const offset = scR * -0.4;
+
+const drawX = cx + px * offset;
+const drawY = cy + py * offset;
+
+newHtml += `
+<ellipse 
+    cx="${drawX}" 
+    cy="${drawY}" 
+    rx="${rx}" 
+    ry="${ry}" 
+    fill="${fill}" 
+    filter="url(#bead-shadow-4_6)" 
+    opacity="0.95"
+    transform="rotate(${angle} ${drawX} ${drawY})">
+</ellipse>`;
             }
         }
         beadGroup.innerHTML = newHtml;
