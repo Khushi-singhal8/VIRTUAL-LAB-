@@ -1064,7 +1064,7 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
         const now = Date.now();
         let newHtml = '';
 
-        for (let seg = 0; seg < NUM_SEGMENTS; seg++) {
+        for (let seg = 0; seg < NUM_SEGMENTS - 6; seg++) {
             if (weldedAt[seg] === null) continue;
 
             const age = now - weldedAt[seg];
@@ -1072,9 +1072,15 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
             const hotFrac = isHot ? 1 - age / HOT_DURATION : 0;
 
             for (let sc = 0; sc < scallopsPerSeg; sc++) {
-                const t = (seg + (sc + 0.5) / scallopsPerSeg) * stepSize;
-                const cx = sx + ux * t;
-                const cy = sy + uy * t;
+                const t = (seg + sc / scallopsPerSeg) * stepSize + scR * 0.6;
+                let cx = sx + ux * t;
+let cy = sy + uy * t;
+
+// extend first bead backward
+if (seg === 0 && sc === 0) {
+    cx -= ux * scR * 1.2;
+    cy -= uy * scR * 1.2;
+}
 
                 let fill;
                 if (hotFrac > 0.7) fill = '#ffcc00';
