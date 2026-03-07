@@ -1419,6 +1419,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let startX = 0, startY = 0;
     let animFrame = null;
     let completed = false;
+    
 
     // Audio for welding
     const weldingAudio = new Audio(formatSrc('images/simulation/5.mp3', timestamp));
@@ -1572,7 +1573,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
     function onPointerMove(e) {
-        if (!dragging || completed) return;
+        if (!dragging) return;
 
         const stageRect = stage.getBoundingClientRect();
         const torchRect = torch.getBoundingClientRect();
@@ -1594,13 +1595,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const seg = getSegmentUnderTip(tipX, tipY);
 
-        if (seg !== null) {
-            // Play welding sound when torch is over the joint
-            if (!isAudioPlaying) {
-                weldingAudio.currentTime = 0;
-                weldingAudio.play().catch(err => console.error('Audio play error:', err));
-                isAudioPlaying = true;
-            }
+        if (seg !== null && !completed)  {
+            // play sound only when dragging over weld
+if (!isAudioPlaying && dragging) {
+    if (weldingAudio.paused) weldingAudio.play();
+    weldingAudio.play().catch(err => console.error('Audio play error:', err));
+    isAudioPlaying = true;
+}
 
             const isNew = weldedAt[seg] === null;
             weldedAt[seg] = Date.now();
@@ -1646,10 +1647,17 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function onPointerUp() {
-        dragging = false;
-        torch.style.cursor = 'grab';
-        arcGlow.setAttribute('opacity', '0');
+    dragging = false;
+    torch.style.cursor = 'grab';
+    arcGlow.setAttribute('opacity', '0');
+
+    // stop welding sound when torch stops moving
+    if (isAudioPlaying) {
+        weldingAudio.pause();
+        weldingAudio.currentTime = 0;
+        isAudioPlaying = false;
     }
+}
 
     torch.addEventListener('mousedown', onPointerDown);
     torch.addEventListener('touchstart', onPointerDown, { passive: false });
