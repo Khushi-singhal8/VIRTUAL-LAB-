@@ -122,9 +122,10 @@ document.addEventListener("DOMContentLoaded", function () {
             title: '1. Measure sheet thickness using micrometer',
             src: 'images/simulation/1.mp4',
             type: 'video',
+            completionInstruction: 'Step complete! Click next to take reading.',
             substeps: [
                 { time: 3.7, hotspot: { x: 0.63985125, y: 0.5428844444444445, w: 0.10389875, h: 0.1802057777777778 }, instruction: 'Click here to rotate the thimble and open micrometer' },
-                { time: 7.83, hotspot: { x: 0.5043387500000001, y: 0.03990222222222222, w: 0.21881162499999998, h: 0.39062933333333333 }, instruction: 'Click here to place sheet between anvil and spindle' },
+                { time: 7.83, hotspot: { x: 0.5502336448598131, y: 0.1640706126687435, w: 0.11682242990654206, h: 0.20768431983385255 }, instruction: 'Click here to place sheet between anvil and spindle' },
                 { time: 10.6, hotspot: { x: 0.6684625, y: 0.5552011111111111, w: 0.11480063530159179, h: 0.1930408398567874 }, instruction: 'Click here to rotate thimble until slip click' },
                 { time: 11.7, hotspot: { x: 0.7797125, y: 0.5840888888888889, w: 0.077300625, h: 0.19304088888888887 }, instruction: 'Click here to rotate ratchet for fine tuning' },
                 { time: 13.5, hotspot: { x: 0.47308875, y: 0.5732355555555556, w: 0.053811625, h: 0.10618488888888888 }, instruction: 'Click here to lock the spindle using the lock lever' }
@@ -146,13 +147,14 @@ document.addEventListener("DOMContentLoaded", function () {
             instruction: 'Take reading:\n    Sleeve reading = 2 mm \n' +
                 'Thimble reading = 4 divisions → 4 × 0.02 = 0.08 mm\n' +
                 'Vernier reading = 3 divisions → 3 × 0.002 = 0.006 mm \n' +
-                'Final reading = 2 + 0.08 + 0.006 = 2.086 mm '
+                'Final reading = 2 + 0.08 + 0.006 = 2.086 mm\n\nClick next to measure wire diamter.'
         },
         {
             id: 'step4',
             title: '2. Measure wire diameter using micrometer',
             src: 'images/simulation/2.mp4',
             type: 'video',
+            completionInstruction: 'Step complete! Click next to take reading.',
             substeps: [
                 { time: 4.1, hotspot: { x: 0.69735125, y: 0.6095799721835883, w: 0.10389874704408286, h: 0.18020588627950723 }, instruction: 'Click here to rotate the thimble and open micrometer' },
                 { time: 8.2, hotspot: { x: 0.30433875, y: 0.1287911111111111, w: 0.05881125, h: 0.39062888888888886 }, instruction: 'Click here to place wire between anvil and spindle' },
@@ -260,6 +262,15 @@ document.addEventListener("DOMContentLoaded", function () {
             cleanupCurrent = null;
         }
         window.removeEventListener('resize', updateScaling);
+    }
+
+    function getStepCompletionInstruction(step) {
+        return step.completionInstruction || 'Step complete! Click Next to continue.';
+    }
+
+    function showStepCompletionInstruction(step, instructionElem) {
+        if (!instructionElem) return;
+        instructionElem.textContent = getStepCompletionInstruction(step);
     }
 
     function updateScaling() {
@@ -393,6 +404,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const isLast = currentSubstep === substeps.length - 1;
                 if (isLast) {
                     if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    showStepCompletionInstruction(step, instructionElem);
                     try { video.play(); } catch (_) { }
                 } else {
                     try { video.play(); } catch (_) { }
@@ -410,7 +422,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const isLast = currentSubstep === substeps.length - 1;
                 if (isLast && !s.hotspot) {
                     if (!finalHandled) {
-                        instructionElem.textContent = s.instruction || 'Step complete!';
+                        showStepCompletionInstruction(step, instructionElem);
                         if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
                         finalHandled = true;
                     }
@@ -422,7 +434,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentSubstep++;
                     setupSubstep();
                 } else {
-                    instructionElem.textContent = s.instruction || 'Step complete!';
+                    showStepCompletionInstruction(step, instructionElem);
                     if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
                 }
             }
@@ -484,12 +496,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div id="play-instruction" class="drag-instructions"></div>
             </div>`;
         const video = document.getElementById('simple-video');
+        const instructionElem = document.getElementById('play-instruction');
         video.addEventListener('loadedmetadata', () => {
             video.play().catch(() => { });
             updateScaling();
             window.addEventListener('resize', updateScaling);
         }, { once: true });
-        video.addEventListener('ended', () => { if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1); }, { once: true });
+        video.addEventListener('ended', () => {
+            showStepCompletionInstruction(step, instructionElem);
+            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+        }, { once: true });
         cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch (_) { } };
     }
 
