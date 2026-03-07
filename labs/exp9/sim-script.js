@@ -1165,9 +1165,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Audio for welding
         const weldingAudio = new Audio(formatSrc('images/simulation/4.mp3', timestamp));
-        weldingAudio.loop = true;
-        weldingAudio.volume = 0.6;
-        let isAudioPlaying = false;
+weldingAudio.preload = "auto";   // loads sound early (no delay)
+weldingAudio.loop = true;        // continuous welding arc
+weldingAudio.volume = 0.75;      // slightly louder
+weldingAudio.playbackRate = 1.1; // adds sharper arc sound
+let isAudioPlaying = false;
 
         function syncCanvasSize() {
             sparkCanvas.width  = stage.offsetWidth;
@@ -1262,7 +1264,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onPointerMove(e) {
-            if (!dragging || completed) return;
+            if (!dragging) return;
             const stageRect = stage.getBoundingClientRect();
             const torchRect = torch.getBoundingClientRect();
             const c = getClient(e);
@@ -1282,12 +1284,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const seg = getSegmentUnderTip(tipX, tipY);
 
-            if (seg !== null) {
+            if (seg !== null && !completed) { 
                 // Play welding sound when torch is over the joint
                 if (!isAudioPlaying) {
-                    weldingAudio.currentTime = 0;
-                    weldingAudio.play().catch(err => console.error('Audio play error:', err));
-                    isAudioPlaying = true;
+    weldingAudio.currentTime = 0;
+    weldingAudio.play().catch(err => console.error('Audio play error:', err));
+    isAudioPlaying = true;
+
                 }
 
                 const isNew = weldedAt[seg] === null;
@@ -1334,10 +1337,15 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onPointerUp() {
-            if (!dragging) return;
-            dragging = false;
-            torch.style.cursor = 'grab';
-            arcGlow.setAttribute('opacity', '0');
+    dragging = false;
+    torch.style.cursor = 'grab';
+    arcGlow.setAttribute('opacity', '0');
+
+    // stop welding sound when torch stops moving
+    if (isAudioPlaying) {
+        weldingAudio.pause();
+        isAudioPlaying = false;
+    }
         }
 
         function emitSparks(px, py, stageRect) {
