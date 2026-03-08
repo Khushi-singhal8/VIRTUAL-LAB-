@@ -1084,16 +1084,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const dx = ex - sx, dy = ey - sy;
             const totalLen = Math.hypot(dx, dy) || 1;
             const ux = dx / totalLen, uy = dy / totalLen;
-            const weldAngleDeg = (Math.atan2(uy, ux) * 180 / Math.PI) - 90;
 
             const scR = WELD_HALF_W * W;
             const stepSize = totalLen / NUM_SEGMENTS;
-            const scallopsPerSeg = Math.max(1, Math.floor(stepSize / (scR * 1.4)));
+            const scallopsPerSeg = 1;
 
             const now = Date.now();
             let newHtml = '';
 
-            for (let seg = 0; seg < NUM_SEGMENTS - 2; seg++) {
+            for (let seg = NUM_SEGMENTS - 3; seg >= 0; seg--) {
                 if (weldedAt[seg] === null) continue;
 
                 const age = now - weldedAt[seg];
@@ -1106,39 +1105,44 @@ document.addEventListener("DOMContentLoaded", function () {
                     const cy = sy + uy * t;
 
                     let fill;
-                    if (hotFrac > 0.7) fill = '#ffcc00';
-                    else if (hotFrac > 0.3) fill = `rgb(${Math.floor(180 + hotFrac * 75)},${Math.floor(hotFrac * 120)},0)`;
+                    if (hotFrac > 0.75) fill = '#ff9f1a';
+                    else if (hotFrac > 0.35) fill = `rgb(${Math.floor(165 + hotFrac * 70)},${Math.floor(78 + hotFrac * 35)},${Math.floor(12 + hotFrac * 10)})`;
                     else {
-                        const shade = 50 + (seg % 2) * 16;
-                        fill = `rgb(${shade},${shade - 6},${shade - 12})`;
+                        fill = (seg % 2 === 0) ? 'rgb(153,95,39)' : 'rgb(125,77,30)';
                     }
 
-                    const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                        const px = -uy;
+                        const py = ux;
 
-                // perpendicular vector
-                const px = -uy;
-                const py = ux;
+                        const halfLen = stepSize * 5.9;
+                        const baseHalfW = scR * 2.25;
+                        const tipOffset = scR * 3;
 
-                const rx = scR * 0.9;
-                const ry = scR * 2.7;
+                        // shift each bead triangle slightly toward groove center
+                        const centerOffset = scR * -0.4;
+                        const centerX = cx + px * centerOffset;
+                        const centerY = cy + py * centerOffset;
 
-                // shift bead toward groove center
-                const offset = scR * -0.9;
+                        // Triangle points (base along weld direction, tip across the joint)
+                        const p1x = centerX - ux * halfLen - px * baseHalfW;
+                        const p1y = centerY - uy * halfLen - py * baseHalfW;
 
-                const drawX = cx + px * offset;
-                const drawY = cy + py * offset;
+                        const p2x = centerX + ux * halfLen - px * baseHalfW;
+                        const p2y = centerY + uy * halfLen - py * baseHalfW;
 
-                newHtml += `
-                <ellipse 
-                    cx="${drawX}" 
-                    cy="${drawY}" 
-                    rx="${rx}" 
-                    ry="${ry}" 
-                    fill="${fill}" 
-                    filter="url(#bead-shadow-4_6)" 
-                    opacity="0.95"
-                    transform="rotate(${angle} ${drawX} ${drawY})">
-                </ellipse>`;
+                        const p3x = centerX + px * tipOffset;
+                        const p3y = centerY + py * tipOffset;
+
+                        newHtml += `
+                    <polygon
+                        points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y}"
+                        fill="${fill}"
+                        stroke="rgba(58,30,10,0.65)"
+                        stroke-width="0.7"
+                        stroke-linejoin="round"
+                        filter="url(#bead-shadow-4_6)"
+                        opacity="0.98">
+                    </polygon>`;
                 }
             }
             beadGroup.innerHTML = newHtml;
