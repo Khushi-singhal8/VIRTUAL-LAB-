@@ -605,8 +605,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step4_5-instruction');
 
         // Drop zone targets (same as step 4)
-        const target1Rel = { x: 0.5, y: 0.55 };
-        const target2Rel = { x: 0.36, y: 0.55 };
+        const target1Rel = { x: 0.45, y: 0.5 };
+        const target2Rel = { x: 0.3, y: 0.5 };
         const tolerancePx = 80;
 
         let tool1Placed = false;
@@ -793,12 +793,16 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
     const torchPath = 'images/simulation/4-tool3.png';
 
     // ─── Tune these to match your 4.5.png joint ────────────────────────────
-    const WELD_START = { x: 0.457, y: 0.753 };
-    const WELD_END = { x: 0.498, y: 0.63 };
-    const WELD_HALF_W = 0.01;     // bead half-width as fraction of image width
+    const WELD_START = { x: 0.42, y: 0.625 };
+    const WELD_END = { x: 0.62, y: 0.535 };
+    const BEAD_ROTATION_DEG = -55; // Rotates only triangle/rectangle bead orientation
+    const WELD_HALF_W = 0.008;     // bead half-width as fraction of image width
+    const BEAD_SURFACE_EDGE_SCALE = 3.8; // Increase/decrease top (surface) edge width
+    const BEAD_ROOT_EDGE_SCALE = 3.2;    // Opposite edge width for trapezoid profile
     const WELD_TOLERANCE = 0.05;  // how close the torch tip must be to the joint
-    const NUM_SEGMENTS = 40;      // joint divided into this many independent slots
+    const NUM_SEGMENTS = 30;      // joint divided into this many independent slots
     const HOT_DURATION = 900;     // ms a freshly welded segment stays "hot"
+    const beadRotationRad = (BEAD_ROTATION_DEG * Math.PI) / 180;
     // ─────────────────────────────────────────────────────────────────────
 
     gifContainer.innerHTML = `
@@ -1055,16 +1059,25 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
         const ex = WELD_END.x * W, ey = WELD_END.y * H;
         const dx = ex - sx, dy = ey - sy;
         const totalLen = Math.hypot(dx, dy) || 1;
-        const ux = dx / totalLen, uy = dy / totalLen;
+        const uxPath = dx / totalLen, uyPath = dy / totalLen;
+        const pxPath = -uyPath, pyPath = uxPath;
+
+        // Rotate bead geometry axes while keeping the weld trajectory fixed.
+        const cosA = Math.cos(beadRotationRad);
+        const sinA = Math.sin(beadRotationRad);
+        const uxShape = uxPath * cosA - uyPath * sinA;
+        const uyShape = uxPath * sinA + uyPath * cosA;
+        const pxShape = -uyShape;
+        const pyShape = uxShape;
 
         const scR = WELD_HALF_W * W;
         const stepSize = totalLen / NUM_SEGMENTS;
-        const scallopsPerSeg = Math.max(1, Math.floor(stepSize / (scR * 1.4)));
+        const scallopsPerSeg = 1;
 
         const now = Date.now();
         let newHtml = '';
 
-        for (let seg = 0; seg < NUM_SEGMENTS - 6; seg++) {
+        for (let seg = NUM_SEGMENTS - 3; seg >= 0; seg--) {
             if (weldedAt[seg] === null) continue;
 
             const age = now - weldedAt[seg];
@@ -1072,15 +1085,9 @@ function renderStep4_6WeldingSimulation(step, timestamp) {
             const hotFrac = isHot ? 1 - age / HOT_DURATION : 0;
 
             for (let sc = 0; sc < scallopsPerSeg; sc++) {
-                const t = (seg + sc / scallopsPerSeg) * stepSize + scR * 0.6;
-                let cx = sx + ux * t;
-let cy = sy + uy * t;
-
-// extend first bead backward
-if (seg === 0 && sc === 0) {
-    cx -= ux * scR * 1.2;
-    cy -= uy * scR * 1.2;
-}
+                const t = (seg + (sc + 0.5) / scallopsPerSeg) * stepSize;
+                const cx = sx + uxPath * t;
+                const cy = sy + uyPath * t;
 
                 let fill;
                 if (hotFrac > 0.7) fill = '#ffcc00';
@@ -1090,33 +1097,57 @@ if (seg === 0 && sc === 0) {
                     fill = `rgb(${shade},${shade - 6},${shade - 12})`;
                 }
 
-                // calculate weld line angle
-                   const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+                const halfAlong = stepSize * 0.48;   // half-width along weld direction
+                const halfAcrossSurface = scR * BEAD_SURFACE_EDGE_SCALE;
+                const halfAcrossRoot = scR * BEAD_ROOT_EDGE_SCALE;
+                const triTipLen = scR * 4;           // triangle tip depth
 
-// perpendicular vector
-const px = -uy;
-const py = ux;
+                // shift each bead slightly toward groove center
+                const centerOffset = scR * -0.4;
+                const centerX = cx + pxPath * centerOffset;
+                const centerY = cy + pyPath * centerOffset;
 
-const rx = scR * 0.9;
-const ry = scR * 2.2;
+                if (seg === 0) {
+                    // First bead uses the same surface/root widths as rectangles for continuity.
+                    const p1x = centerX + pxShape * halfAcrossSurface;
+                    const p1y = centerY + pyShape * halfAcrossSurface;
+                    const p2x = centerX - pxShape * halfAcrossRoot;
+                    const p2y = centerY - pyShape * halfAcrossRoot;
+                    const p3x = centerX - uxShape * triTipLen;
+                    const p3y = centerY - uyShape * triTipLen;
 
-// shift bead toward groove center
-const offset = scR * -0.4;
+                    newHtml += `
+                        <polygon
+                            points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y}"
+                            fill="${fill}"
+                            stroke="rgba(58,30,10,0.65)"
+                            stroke-width="0.7"
+                            stroke-linejoin="round"
+                            filter="url(#bead-shadow-4_6)"
+                            opacity="0.98">
+                        </polygon>`;
+                } else {
+                    // Rectangle: long axis across joint (px), short axis along weld (ux)
+                    const p1x = centerX - uxShape * halfAlong - pxShape * halfAcrossRoot;
+                    const p1y = centerY - uyShape * halfAlong - pyShape * halfAcrossRoot;
+                    const p2x = centerX + uxShape * halfAlong - pxShape * halfAcrossRoot;
+                    const p2y = centerY + uyShape * halfAlong - pyShape * halfAcrossRoot;
+                    const p3x = centerX + uxShape * halfAlong + pxShape * halfAcrossSurface;
+                    const p3y = centerY + uyShape * halfAlong + pyShape * halfAcrossSurface;
+                    const p4x = centerX - uxShape * halfAlong + pxShape * halfAcrossSurface;
+                    const p4y = centerY - uyShape * halfAlong + pyShape * halfAcrossSurface;
 
-const drawX = cx + px * offset;
-const drawY = cy + py * offset;
-
-newHtml += `
-<ellipse 
-    cx="${drawX}" 
-    cy="${drawY}" 
-    rx="${rx}" 
-    ry="${ry}" 
-    fill="${fill}" 
-    filter="url(#bead-shadow-4_6)" 
-    opacity="0.95"
-    transform="rotate(${angle} ${drawX} ${drawY})">
-</ellipse>`;
+                    newHtml += `
+                        <polygon
+                            points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y} ${p4x},${p4y}"
+                            fill="${fill}"
+                            stroke="rgba(58,30,10,0.65)"
+                            stroke-width="0.7"
+                            stroke-linejoin="round"
+                            filter="url(#bead-shadow-4_6)"
+                            opacity="0.98">
+                        </polygon>`;
+                }
             }
         }
         beadGroup.innerHTML = newHtml;
@@ -1179,6 +1210,10 @@ newHtml += `
             redrawBead();
 
             if (totalWelded >= NUM_SEGMENTS && !completed) {
+                if (isAudioPlaying) {
+                    weldingAudio.pause();
+                    isAudioPlaying = false;
+                }
                 finishWeld();
                 return;
             }

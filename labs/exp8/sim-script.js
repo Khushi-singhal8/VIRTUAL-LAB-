@@ -212,17 +212,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const steps = [
-        { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
-
-        { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
-        { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
-        { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
-        { id: 'step2_5', title: 'Coating the flux', src: 'images/simulation/3_1.mp4', type: 'video' },
-        { id: 'step3_1', title: 'Set gas pressure', src: 'images/simulation/3.1.mp4', type: 'video' },
-        { id: 'step3_2', title: 'Ignite the torch', src: 'images/simulation/3.png', type: 'drag-drop' },
-        { id: 'step3_3', title: 'Obtain neutral flame', src: 'images/simulation/3.2.mp4', type: 'video' },
-        { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
-        { id: 'step4_5', title: 'Welding simulation', src: 'images/simulation/4.5.mp4', type: 'video' },
+        // { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
+        //
+        // { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
+        // { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
+        // { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
+        // { id: 'step2_5', title: 'Coating the flux', src: 'images/simulation/3_1.mp4', type: 'video' },
+        // { id: 'step3_1', title: 'Set gas pressure', src: 'images/simulation/3.1.mp4', type: 'video' },
+        // { id: 'step3_2', title: 'Ignite the torch', src: 'images/simulation/3.png', type: 'drag-drop' },
+        // { id: 'step3_3', title: 'Obtain neutral flame', src: 'images/simulation/3.2.mp4', type: 'video' },
+        // { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
+        // { id: 'step4_5', title: 'Welding simulation', src: 'images/simulation/4.5.mp4', type: 'video' },
         { id: 'step4_6', title: 'Perform welding operation', type: 'drag-drop' },
         { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
@@ -824,9 +824,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const torchPath = 'images/simulation/4-tool3.png';
 
         // ─── Tune these to match your 4.5.png joint ────────────────────────────
-        const WELD_START = { x: 0.45, y: 0.758 };
-        const WELD_END = { x: 0.5, y: 0.62 };
-        const BEAD_ROTATION_DEG = -27; // Rotates only triangle/rectangle bead orientation
+        const WELD_START = { x: 0.42, y: 0.625 };
+        const WELD_END = { x: 0.62, y: 0.535 };
+        const BEAD_ROTATION_DEG = -55; // Rotates only triangle/rectangle bead orientation
         const WELD_HALF_W = 0.008;     // bead half-width as fraction of image width
         const BEAD_SURFACE_EDGE_SCALE = 3.8; // Increase/decrease top (surface) edge width
         const BEAD_ROOT_EDGE_SCALE = 3.2;    // Opposite edge width for trapezoid profile
