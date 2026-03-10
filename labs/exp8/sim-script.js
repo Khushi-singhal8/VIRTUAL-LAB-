@@ -212,17 +212,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     const steps = [
-        // { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
-        //
-        // { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
-        // { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
-        // { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
-        // { id: 'step2_5', title: 'Coating the flux', src: 'images/simulation/3_1.mp4', type: 'video' },
-        // { id: 'step3_1', title: 'Set gas pressure', src: 'images/simulation/3.1.mp4', type: 'video' },
-        // { id: 'step3_2', title: 'Ignite the torch', src: 'images/simulation/3.png', type: 'drag-drop' },
-        // { id: 'step3_3', title: 'Obtain neutral flame', src: 'images/simulation/3.2.mp4', type: 'video' },
-        // { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
-        // { id: 'step4_5', title: 'Welding simulation', src: 'images/simulation/4.5.mp4', type: 'video' },
+        { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
+
+        { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
+        { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
+        { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
+        { id: 'step2_5', title: 'Coating the flux', src: 'images/simulation/3_1.mp4', type: 'video' },
+        { id: 'step3_1', title: 'Set gas pressure', src: 'images/simulation/3.1.mp4', type: 'video' },
+        { id: 'step3_2', title: 'Ignite the torch', src: 'images/simulation/3.png', type: 'drag-drop' },
+        { id: 'step3_3', title: 'Obtain neutral flame', src: 'images/simulation/3.2.mp4', type: 'video' },
+        { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
+        { id: 'step4_5', title: 'Welding simulation', src: 'images/simulation/4.5.mp4', type: 'video' },
         { id: 'step4_6', title: 'Perform welding operation', type: 'drag-drop' },
         { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
