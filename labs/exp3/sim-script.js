@@ -358,7 +358,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // }
 
             gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width:100%;height:100%;">
+            <div class="gif-wrapper" style="width:100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 
@@ -372,6 +372,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
+                <div id="step-complete-msg" class="drag-instructions" style="display:none; width:96%;"></div>
             </div>
         `;
 
@@ -396,7 +397,22 @@ document.addEventListener("DOMContentLoaded", function () {
                             container.parentElement.appendChild(instructionDiv);
                         }
 
-                        if (step.id === 'step8') step8Completed = true;
+                        if (step.id === 'step8') {
+                            step8Completed = true;
+                            const msgBox = document.getElementById('step-complete-msg');
+                            if (msgBox) {
+                                msgBox.textContent = 'Step complete! Click next to measure the length of segments.';
+                                msgBox.style.display = 'block';
+                            }
+                        }
+
+                        if (step.id === 'step9') {
+                            const msgBox = document.getElementById('step-complete-msg');
+                            if (msgBox) {
+                                msgBox.textContent = 'Step complete! Click next to view the observation and result.';
+                                msgBox.style.display = 'block';
+                            }
+                        }
 
                         if (nextButton) nextButton.disabled = false;
                         updateScaling();
