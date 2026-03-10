@@ -174,6 +174,13 @@ document.addEventListener("DOMContentLoaded", function () {
     let step5_5Completed = false;
     let step7Completed = false;
 
+    const stepGuidance = {
+        apparatus: {
+            now: "Identify the apparatus used in gas welding flame types.",
+            next: "Begin the gas welding simulation."
+        }
+    };
+
     const steps = [
         {
             id: 'step0',
@@ -460,7 +467,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let apparatusHTML = '';
 
-        apparatusData.forEach(item => {
+        apparatusData.forEach((item, index) => {
             apparatusHTML += `
             <div style="
                 background:#f5f5f5;
@@ -475,7 +482,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <div class="apparatus-img-box">
                     <img src="${getAssetSrc(item.img)}" alt="${item.name}">
                 </div>
-                <h4 style="margin: 10px 0 6px;">${item.name}</h4>
+                <h4 style="margin: 10px 0 6px;">${index + 1}. ${item.name}</h4>
                 <p style="font-size: 14px;">${item.desc}</p>
             </div>
         `;
@@ -499,6 +506,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         ${apparatusHTML}
                     </div>
                 </div>
+            </div>
+
+            <!-- INSTRUCTION BOX -->
+            <div class="drag-instructions" style="margin-top:20px; line-height: 15px">
+                ${stepGuidance.apparatus.now}\n
+                Click next to: ${stepGuidance.apparatus.next}
             </div>
         </div>
     `;
