@@ -528,7 +528,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <video id="step-video" src="${formatSrc(step.src, timestamp)}" preload="auto" playsinline muted style="width: 100%; display: block;"></video>
-                            <button id="play-hotspot" class="play-hotspot ${step.id === 'step2' ? 'step2-arrow' : ''}" style="visibility:hidden; ${step.id === 'step2' ? '--arrow-top: 10%; --arrow-left: -20%; --arrow-width: auto; --arrow-transform: translateX(-50%); --arrow-content: \'➡\';' : ''}"></button>
+                            <button id="play-hotspot" class="play-hotspot ${step.id === 'step2' ? 'step2-arrow' : ''}" style="visibility:hidden; ${step.id === 'step2' ? '--arrow-top: 50%; --arrow-left: -20%; --arrow-width: auto; --arrow-transform: translateY(-50%); --arrow-content: \'➡\';' : ''}"></button>
                         </div>
                     </div>
                 </div>

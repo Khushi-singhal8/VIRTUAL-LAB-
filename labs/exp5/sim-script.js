@@ -218,12 +218,12 @@ document.addEventListener("DOMContentLoaded", function () {
             id: 'step4_5', mode: 'drag', title: 'Measure Angle with Protractor',
             background: 'images/simulation/3.5.png', tool: 'protractor.png',
             target: { mode: 'rel', x: 0.5, y: 0.55 }, // Estimated target
-            init: { mode: 'rel', x: 0.82, y: 0.30 },
+            init: { mode: 'rel', x: 0.52, y: 0.50 },
             anchor: { x: 0.477, y: 0.85 },
             toolSize: { widthRel: 0.6 },
             snapRotation: 323,
             tolerance: 120,
-            arrow: { top: '-284%', left: '912%' },
+            arrow: { top: '-114%', left: '410%' },
             instruction: 'Drag the protractor to measure the angle.'
         },
         { id: 'step5', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
@@ -231,12 +231,12 @@ document.addEventListener("DOMContentLoaded", function () {
             id: 'step5_5', mode: 'drag', title: 'Measure Final Angle with Protractor',
             background: 'images/simulation/4.5.png', tool: 'protractor.png',
             target: { mode: 'rel', x: 0.515, y: 0.68 },
-            init: { mode: 'rel', x: 0.82, y: 0.30 },
+            init: { mode: 'rel', x: 0.52, y: 0.50 },
             anchor: { x: 0.477, y: 0.85 },
             toolSize: { widthRel: 0.6 },
             snapRotation: 324,
             tolerance: 120,
-            arrow: { top: '-394%', left: '889%' },
+            arrow: { top: '-234%', left: '388%' },
             instruction: 'Drag the protractor to measure the final angle after spring back.'
         },
         { id: 'step7', mode: 'print', title: 'Observation & Result (Print)' }

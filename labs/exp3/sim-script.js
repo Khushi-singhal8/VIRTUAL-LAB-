@@ -789,7 +789,7 @@ document.addEventListener("DOMContentLoaded", function () {
             instructionElem.textContent = "Finishing process...";
 
             video.onended = () => {
-                instructionElem.textContent = "Step complete!";
+                instructionElem.textContent = "Step complete! Click next to measure the workpeice.";
                 step7Completed = true; // Assumed global or need to declare
                 if (nextButton) nextButton.disabled = false;
             };
@@ -870,7 +870,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 step6Completed = true;
                 if (nextButton) nextButton.disabled = false;
                 const instructions = gifContainer.querySelector('.drag-instructions');
-                if (instructions) instructions.textContent = 'Step complete! Click next to finsh the process by sanding the workpeice.';
+                if (instructions) instructions.textContent = 'Step complete! Click next to finish the process by sanding the workpeice.';
             });
         }
 

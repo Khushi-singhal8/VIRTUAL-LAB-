@@ -98,13 +98,14 @@
 
 
         .play-hotspot::before {
-            content: "⬇";
+            content: var(--arrow-content, "⬇");
             position: absolute;
-            top: -80px;
-            left: 50%;
+            top: var(--arrow-top, -80px);
+            left: var(--arrow-left, 50%);
+            width: var(--arrow-width, auto);
             font-size: 58px;
             color: #0a0a0a;
-            transform: translateX(-50%);
+            transform: var(--arrow-transform, translateX(-50%));
             animation: bounceArrowPlayHotspot 1s infinite;
         }
 
@@ -151,11 +152,11 @@
 
             0%,
             100% {
-                transform: translateX(-50%) translateX(0);
+                transform: var(--arrow-transform, translateX(-50%)) translateX(0);
             }
 
             50% {
-                transform: translateX(-50%) translateX(8px);
+                transform: var(--arrow-transform, translateX(-50%)) translateX(8px);
             }
         }
 
