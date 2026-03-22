@@ -1,36 +1,31 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E4 script loaded');
-
-    // Inject CSS for apparatus image sizing
     const style = document.createElement('style');
     style.innerHTML = `
 .apparatus-img-box {
     width: 100%;
-    height: 150px;              
+    height: 150px;
     border: 1px solid #ccc;
     border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;          
+    overflow: hidden;
     background: #f8f9fa;
 }
 
 .apparatus-img-box img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain;        
+    object-fit: contain;
 }
 
 `;
     document.head.appendChild(style);
 
-    // Inject print.css
     const printLink = document.createElement('link');
     printLink.rel = 'stylesheet';
-    printLink.href = 'print.css'; // Assuming it's in the same directory relative to index.html
+    printLink.href = 'print.css';
     document.head.appendChild(printLink);
-
 
     const resetButton = document.getElementById('reset-btn');
     const prevButton = document.getElementById('prev-btn');
@@ -42,20 +37,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let cleanupCurrent = null;
 
-    // Web Audio API context and buffer
     let audioCtx = null;
     let hissBuffer = null;
 
-    /* ---------------- ASSET PRELOADING ---------------- */
     const assetList = [
-        // Apparatus
         "images/simulation/torch.png",
         "images/simulation/oxygen cylinder.png",
         "images/simulation/acetylene cylinderr.png",
         "images/simulation/regulator.png",
         "images/simulation/striker.png",
 
-        // Videos
         "images/simulation/1.mp4",
         "images/simulation/2.mp4",
         "images/simulation/3.mp4",
@@ -67,17 +58,14 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/10.mp4",
         "images/simulation/11.mp4",
 
-        // Drag Step
         "images/simulation/6.png",
         "images/simulation/6-tool.png",
         "images/simulation/6.1.png",
 
-        // Result
         "images/carbrizing flame.png",
         "images/neutral flame.png",
         "images/oxidising flame.png",
 
-        // Audio
         "images/simulation/hiss.mp3"
     ];
 
@@ -129,7 +117,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -163,7 +150,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const arrayBuffer = await response.arrayBuffer();
                 hissBuffer = await audioCtx.decodeAudioData(arrayBuffer);
             } catch (e) {
-                console.error('Error loading audio:', e);
             }
         }
     }
@@ -192,9 +178,9 @@ document.addEventListener("DOMContentLoaded", function () {
             title: 'Setup',
             src: 'images/simulation/1 (1).mp4',
             type: 'video',
-            initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure',
+            initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder\u2019s pressure',
             finalInstruction: 'Click on next to set the pressure',
-            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42994331737492386, w: 0.07249351389399054, h: 0.12887735803376096 }, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder’s pressure' }
+            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42994331737492386, w: 0.07249351389399054, h: 0.12887735803376096 }, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder\u2019s pressure' }
         },
         {
             id: 'step2',
@@ -219,9 +205,9 @@ document.addEventListener("DOMContentLoaded", function () {
             title: 'Setup',
             src: 'images/simulation/4 (1).mp4',
             type: 'video',
-            initialInstruction: 'Turn on the acetylene valve before setting the acetylene cylinder’s pressure',
+            initialInstruction: 'Turn on the acetylene valve before setting the acetylene cylinder\u2019s pressure',
             finalInstruction: 'Click on next to set the pressure of acetylene',
-            interaction: { pauseAt: 1.7, hotspot: { x: 0.4744391495613936, y: 0.4333997658625178, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Turn on the acetylene valve before setting the acetylene cylinder’s pressure' }
+            interaction: { pauseAt: 1.7, hotspot: { x: 0.4744391495613936, y: 0.4333997658625178, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Turn on the acetylene valve before setting the acetylene cylinder\u2019s pressure' }
         },
         {
             id: 'step5',
@@ -242,7 +228,7 @@ document.addEventListener("DOMContentLoaded", function () {
             finalInstruction: 'Now we will observe the different types of flames.',
             interaction: {
                 target: { x: 0.408297138221516, y: 0.447313881310034, w: 0.2, h: 0.2 },
-                anchor: { x: 0.8, y: 0.15 }, /* Tip of the striker */
+                anchor: { x: 0.8, y: 0.15 },
                 initialPos: { x: 0.1, y: 0.15 },
                 tolerance: 80
             }
@@ -262,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
             src: 'images/simulation/8.mp4',
             type: 'video',
             initialInstruction: 'Increase oxygen to obtain neutral flame',
-            finalInstruction: 'Neutral flame\nThis flame has a well-defined inner luminous cone and an outer envelope. It has a temperature around 3300°C and does not oxidize or carburize the metal. It is ideal for welding steels and cast iron.\n\nClick next to obtain and study oxidizing flame.',
+            finalInstruction: 'Neutral flame\nThis flame has a well-defined inner luminous cone and an outer envelope. It has a temperature around 3300\u00B0C and does not oxidize or carburize the metal. It is ideal for welding steels and cast iron.\n\nClick next to obtain and study oxidizing flame.',
             interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain neutral flame' }
         },
         {
@@ -337,7 +323,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!container || !wrapper || !stage) return;
 
-        // Reset scale for measurement
         wrapper.style.transform = 'scale(1)';
 
         const containerHeight = container.offsetHeight;
@@ -404,17 +389,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     ];
 
-
     function showCurrentStep() {
         if (!gifContainer) return;
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
 
         clearCleanup();
+
+        if (nextButton) nextButton.disabled = true;
+
         if (step.type === 'apparatus') {
             renderApparatusStep();
-        }
-        else if (step.type === 'gif') {
+        } else if (step.type === 'gif') {
             renderGifStep(step, timestamp);
         } else if (step.type === 'drag') {
             renderDragStep(step, timestamp);
@@ -426,10 +412,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
-        if (nextButton) {
-            // nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
-            nextButton.disabled = (currentStepIndex === totalSteps - 1);
-        }
 
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
@@ -459,6 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
         gif.addEventListener('load', () => {
             updateScaling();
             window.addEventListener('resize', updateScaling);
+            if (nextButton) nextButton.disabled = false;
         });
     }
 
@@ -508,7 +491,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
 
-            <!-- INSTRUCTION BOX -->
             <div class="drag-instructions" style="margin-top:20px; line-height: 15px">
                 ${stepGuidance.apparatus.now}\n
                 Click next to: ${stepGuidance.apparatus.next}
@@ -518,7 +500,6 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScaling();
         window.addEventListener('resize', updateScaling);
     }
-
 
     function renderDragStep(step, timestamp) {
         setInteractiveCompleted(step.id, false);
@@ -544,15 +525,11 @@ document.addEventListener("DOMContentLoaded", function () {
         const tool = document.getElementById('draggable-tool');
         const dropZone = document.getElementById('drop-zone');
         const instructionElem = document.getElementById('drag-instruction');
-        const rect = stage.getBoundingClientRect(); // Simplified, might need resize handler
 
-        // Layout Drop Zone
         function layoutDropZone() {
             if (!stage) return;
-            const r = stage.getBoundingClientRect();
             const tx = stage.offsetWidth * step.interaction.target.x;
             const ty = stage.offsetHeight * step.interaction.target.y;
-            // Actually let's use a fixed size dropzone
             const dzSize = 80;
             dropZone.style.width = dzSize + 'px';
             dropZone.style.height = dzSize + 'px';
@@ -580,7 +557,6 @@ document.addEventListener("DOMContentLoaded", function () {
         tool.onmousedown = dragStart;
         tool.ontouchstart = dragStart;
 
-        // Position tool initially
         if (step.interaction && step.interaction.initialPos) {
             tool.style.left = (step.interaction.initialPos.x * 100) + '%';
             tool.style.top = (step.interaction.initialPos.y * 100) + '%';
@@ -601,7 +577,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.onmouseup = dragEnd;
             document.ontouchend = dragEnd;
             tool.style.cursor = 'grabbing';
-            // Hide only the arrow as soon as dragging starts
             dropZone.classList.add('dragging-active');
         }
 
@@ -622,10 +597,6 @@ document.addEventListener("DOMContentLoaded", function () {
             document.onmouseup = null;
             document.ontouchend = null;
             tool.style.cursor = 'grab';
-
-            // Re-show arrow (REMOVED: it should stay hidden)
-            // dropZone.classList.remove('arrow-hidden');
-
             checkDrop();
         }
 
@@ -634,26 +605,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const zoneRect = dropZone.getBoundingClientRect();
             const anchor = step.interaction.anchor || { x: 0.5, y: 0.5 };
 
-            // Calculate tool anchor point absolute position
             const toolAx = toolRect.left + toolRect.width * anchor.x;
             const toolAy = toolRect.top + toolRect.height * anchor.y;
 
-            // Calculate zone center absolute position
             const zoneCx = zoneRect.left + zoneRect.width / 2;
             const zoneCy = zoneRect.top + zoneRect.height / 2;
 
             const dist = Math.hypot(toolAx - zoneCx, toolAy - zoneCy);
 
             if (dist < (step.interaction.tolerance || 80)) {
-                // Snapped
-                // Calculate new top/left to align anchor with zone center
-                // zoneCx = newLeft + toolWidth * anchorX
-                // newLeft = zoneCx - toolWidth * anchorX
-                // RELATIVE to parent stage:
-                // We need to set style.left/top relative to stage.
-                // zoneCenterRelX = dropZone.offsetLeft + dropZone.offsetWidth/2
-                // toolNewLeft = zoneCenterRelX - tool.offsetWidth * anchor.x
-
                 const zoneCenterRelX = dropZone.offsetLeft + dropZone.offsetWidth / 2;
                 const zoneCenterRelY = dropZone.offsetTop + dropZone.offsetHeight / 2;
 
@@ -663,7 +623,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 tool.onmousedown = null;
                 tool.ontouchstart = null;
                 tool.style.cursor = 'pointer';
-                dropZone.style.display = 'none'; // Hide the whole hotspot when placed correctly
+                dropZone.style.display = 'none';
 
                 instructionElem.textContent = 'Click the lighter to ignite.';
 
@@ -682,7 +642,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         cleanupCurrent = function () {
-            // Drop zone resize handled by updateScaling if needed
         };
     }
 
@@ -713,12 +672,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const hotspot = document.getElementById('play-hotspot');
         const instructionElem = document.getElementById('play-instruction');
 
-        // Audio source node for step 9
         let hissSource = null;
 
         if (step.id === 'step9') {
-            // Initialize audio context and load buffer
-            initAudio().catch(console.error);
+            initAudio().catch(() => {});
         }
 
         function layoutHotspot() {
@@ -779,22 +736,17 @@ document.addEventListener("DOMContentLoaded", function () {
             instructionElem.textContent = step.finalInstruction;
             if (nextButton) nextButton.disabled = false;
 
-            // Play hiss sound on seamless loop for step 9
-            // Play hiss sound on seamless loop for step 9 using Web Audio API
             if (step.id === 'step9' && audioCtx && hissBuffer) {
                 try {
-                    // Resume context just in case
                     if (audioCtx.state === 'suspended') {
                         audioCtx.resume();
                     }
-
                     hissSource = audioCtx.createBufferSource();
                     hissSource.buffer = hissBuffer;
                     hissSource.loop = true;
                     hissSource.connect(audioCtx.destination);
                     hissSource.start(0);
                 } catch (e) {
-                    console.error('Error playing Web Audio:', e);
                 }
             }
         }
@@ -811,8 +763,6 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
 
-            // Pre-load audio for step 9 to ensure seamless playback
-            // Pre-load audio for step 9
             if (step.id === 'step9') {
                 initAudio();
             }
@@ -833,15 +783,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 clearInterval(intervalId);
                 intervalId = null;
             }
-            // Stop and cleanup hiss audio when leaving step 9
-            // Stop and cleanup hiss audio when leaving step 9
             if (hissSource) {
                 try {
                     hissSource.stop();
                     hissSource.disconnect();
                     hissSource = null;
                 } catch (e) {
-                    // Ignore errors if already stopped
                 }
             }
         };
@@ -869,7 +816,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // Start with preloading
     preloadAssets();
 
     function renderResultStep() {
@@ -878,14 +824,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const flames = [
             {
                 name: 'Carburizing Flame',
-                img: 'images/carbrizing flame.png', // Using video thumbnails or screenshots if available, else video
+                img: 'images/carbrizing flame.png',
                 desc: 'This flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal.',
                 app: 'Welding high-carbon steels, lead, and aluminum where oxidation must be avoided.'
             },
             {
                 name: 'Neutral Flame',
                 img: 'images/neutral flame.png',
-                desc: 'This flame has a well-defined inner luminous cone and an outer envelope. Temperature around 3300°C.',
+                desc: 'This flame has a well-defined inner luminous cone and an outer envelope. Temperature around 3300\u00B0C.',
                 app: 'Ideal for welding steels and cast iron. Does not oxidize or carburize the metal.'
             },
             {
@@ -898,7 +844,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let tableRows = '';
         flames.forEach(f => {
-            // Using video as image/thumbnail if static image not available, or just use the video element
             tableRows += `
                 <tr>
                     <td style="text-align:center;">
@@ -915,7 +860,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
                 <h2 style="text-align:center;">Experiment Result: Types of Flames</h2>
                 <hr>
-                
+
                 <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse; margin-top:20px;">
                     <thead>
                         <tr style="background:#f0f0f0;">
@@ -928,7 +873,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         ${tableRows}
                     </tbody>
                 </table>
-                
+
                 <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom: 20px;">
                     <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
                 </div>

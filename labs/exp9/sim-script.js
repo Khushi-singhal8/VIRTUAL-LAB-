@@ -1,7 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E6 script loaded');
-
-    /* ---------------- CSS ---------------- */
     const style = document.createElement('style');
     style.innerHTML = `
     .apparatus-img-box {
@@ -31,7 +28,6 @@ document.addEventListener("DOMContentLoaded", function () {
     `;
     document.head.appendChild(style);
 
-    /* ---------------- DOM ---------------- */
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
     const gifContainer = document.getElementById('gif-container');
@@ -41,11 +37,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let cleanupCurrent = null;
 
-    /* ---------------- HOTSPOTS ---------------- */
     const hotspotSteps = new Set(['step0', 'step2', 'step3']);
     const hotspotCompleted = { step0: false, step1_5: false, step2: false, step3: false };
 
-    /* ---------------- APPARATUS DATA ---------------- */
     const apparatusData = [
         {
             name: "Wire Brush",
@@ -79,48 +73,29 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     ];
 
-    /* ---------------- ASSET PRELOADING ---------------- */
     const assetList = [
-        // Apparatus
         "images/simulation/apparatus/brush.png",
         "images/simulation/apparatus/cylinder.png",
         "images/simulation/apparatus/plates.png",
         "images/simulation/apparatus/machine.png",
         "images/simulation/apparatus/torch.png",
         "images/simulation/apparatus/CLIP.png",
-
-        // Step 0
         "images/simulation/0.5.mp4",
-
-        // Step 1
         "images/simulation/1.mp4",
         "images/simulation/1.png",
         "images/simulation/1-tool.png",
-
-        // Step 1.5
         "images/simulation/1.5.mp4",
         "images/simulation/1.5.png",
         "images/simulation/1.5-tool.png",
         "images/simulation/1.5.2.png",
-
-        // Step 2
         "images/simulation/2.mp4",
-
-        // Step 3
         "images/simulation/3.mp4",
-
-        // Step 4
         "images/simulation/4.mp4",
         "images/simulation/4.png",
         "images/simulation/4-tool.png",
         "images/simulation/4.mp3",
-
-        // Step 5
         "images/simulation/5.mp4",
         "images/simulation/5.png",
-        // Note: Step 5 reuses 1-tool.png which is already listed 
-
-        // Result
         "images/simulation/result.png"
     ];
 
@@ -172,7 +147,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -192,8 +166,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 500);
     }
 
-
-    /* ---------------- STEPS ---------------- */
     const steps = [
         { id: 'apparatus', title: 'Apparatus Used', type: 'apparatus' },
         { id: 'step0', title: 'Align the plates', src: 'images/simulation/0.5.mp4', type: 'video' },
@@ -212,32 +184,26 @@ document.addEventListener("DOMContentLoaded", function () {
             now: "Carefully observe all the apparatus shown above.",
             next: "Begin the welding simulation."
         },
-
         step0: {
             now: "Click on both metal plates one by one to align them properly before welding.",
             next: "Clean the metal surface."
         },
-
         step1: {
             now: "Drag the wire brush and place it on the metal surface to remove dust, rust, and impurities.",
             next: "Set the current."
         },
-
         step1_5: {
             now: "Click to attach the ground clamp to the workpiece.",
             next: "Adjust shielding gas flow rate"
         },
-
         step2: {
             now: "Click on the control and adjust the welding current to 60 Amperes (60A).",
             next: "Attach the ground clamp."
         },
-
         step3: {
             now: "Set the shielding gas flow rate to 10 LPM (Liters Per Minute) to protect the weld area.",
             next: "Start welding process."
         },
-
         step4_5: {
             now: "Drag the welding torch to the joint area to start welding the plates together.",
             next: "Perform the process on your own."
@@ -252,13 +218,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     };
 
-
-
     let currentStepIndex = 0;
     const totalSteps = steps.length;
     if (totalStepsElement) totalStepsElement.textContent = totalSteps;
 
-    /* ---------------- APPARATUS RENDER ---------------- */
     function renderApparatusStep() {
         let html = `
         <div class="gif-wrapper">
@@ -307,6 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </div>`;
 
         gifContainer.innerHTML = html;
+        if (nextButton) nextButton.disabled = false;
         updateScaling();
         window.addEventListener('resize', updateScaling);
     }
@@ -322,7 +286,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!container || !wrapper || !stage) return;
 
-        // Reset scale for measurement
         wrapper.style.transform = 'scale(1)';
 
         const containerHeight = container.offsetHeight;
@@ -357,13 +320,14 @@ document.addEventListener("DOMContentLoaded", function () {
         hotspotCompleted[stepId] = true;
     }
 
-
-
     function showCurrentStep() {
         if (!gifContainer) return;
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
         clearCleanup();
+
+        if (nextButton) nextButton.disabled = true;
+
         if (step.type === 'apparatus') {
             renderApparatusStep();
         }
@@ -375,9 +339,9 @@ document.addEventListener("DOMContentLoaded", function () {
             renderStep1DragDrop(step, timestamp);
         } else if (step.id === 'step1_5') {
             renderStep1_5DragDrop(step, timestamp);
-        }else if (step.id === 'step4_5') {
+        } else if (step.id === 'step4_5') {
             renderStep4_5DragDrop(step, timestamp);
-        }else if (step.id === 'step4') {
+        } else if (step.id === 'step4') {
             renderStep4WeldingSimulation(step, timestamp);
         } else if (step.id === 'step5') {
             renderStep5DragDrop(step, timestamp);
@@ -393,13 +357,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (step.id !== 'result') {
             document.body.classList.remove('result-mode');
         }
-        // if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1) || !isHotspotDone(step);
-        if (nextButton) {
-            nextButton.disabled =
-                (currentStepIndex === totalSteps - 1);
-            // || !isHotspotDone(step);
-        }
-
 
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
@@ -422,11 +379,9 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         let config = hotspotMap[step.id] || [{ time: 0, x: 0.45, y: 0.45, w: 0.15, h: 0.15, instruction: 'Click to continue.' }];
-        // Normalize to array of substeps
         if (!Array.isArray(config)) {
             config = [{ ...config, time: 0 }];
         }
-        // Build substeps
         const substeps = config.map(c => ({ ...c, done: false }));
         let currentSubIndex = 0;
 
@@ -469,12 +424,8 @@ document.addEventListener("DOMContentLoaded", function () {
         function checkPause() {
             if (currentSubIndex >= substeps.length) return;
             const sub = substeps[currentSubIndex];
-            // If time is 0, we handle it on load/init separately or here if we catch it fast enough. 
-            // Usually timeupdate is good for > 0.
             if (!sub.done && video.currentTime >= sub.time && !video.paused) {
                 video.pause();
-                // Ensure we don't overshoot too much?
-                // video.currentTime = sub.time; 
                 showHotspot(sub);
             }
         }
@@ -482,7 +433,6 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot(substeps[currentSubIndex]);
             updateScaling();
-            // Handle start-of-video hotspot
             if (currentSubIndex < substeps.length && substeps[currentSubIndex].time <= 0.1) {
                 video.currentTime = 0.01;
                 video.pause();
@@ -499,12 +449,9 @@ document.addEventListener("DOMContentLoaded", function () {
             substeps[currentSubIndex].done = true;
             currentSubIndex++;
 
-            // If all substeps done, we just play to end? 
-            // Or if there are more substeps, we play until next.
             if (currentSubIndex >= substeps.length) {
                 setHotspotDone(step.id);
                 instructionElem.textContent = '  ';
-                if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
             } else {
                 instructionElem.textContent = 'Aligning...';
             }
@@ -514,6 +461,7 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('ended', () => {
             if (currentSubIndex >= substeps.length) {
                 instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
+                if (nextButton) nextButton.disabled = false;
             } else {
                 instructionElem.textContent = 'Step complete.';
             }
@@ -527,7 +475,6 @@ document.addEventListener("DOMContentLoaded", function () {
         cleanupCurrent = function () {
             try {
                 video.removeEventListener('timeupdate', checkPause);
-                // window.removeEventListener... attached anonymous function (leak), but okay for now or fix
             } catch (_) { }
         };
     }
@@ -550,7 +497,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step-video');
         const instructionElem = document.getElementById('play-instruction');
 
-        // Initial instruction
         instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : '';
 
         video.addEventListener('loadedmetadata', () => {
@@ -563,7 +509,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (stepGuidance[step.id]) {
                 instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
             }
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            if (nextButton) nextButton.disabled = false;
         }, { once: true });
 
         cleanupCurrent = function () {
@@ -572,8 +518,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderStep1DragDrop(step, timestamp) {
-        // if (nextButton) nextButton.disabled = true;
-
         const videoSrc = 'images/simulation/1.mp4';
         const bgPath = 'images/simulation/1.png';
         const toolPath = 'images/simulation/1-tool.png';
@@ -582,23 +526,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
                             <div id="step1-drop-zone" class="drop-zone" style="--arrow-top: -150%; --arrow-left: 225%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                             <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step1-instruction" class="drag-instructions"></div>
             </div>
         `;
@@ -610,15 +552,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const playStage = document.getElementById('step1-play-stage');
         const video = document.getElementById('step1-video');
 
-        // Initial Instruction
         instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : "Drag the tool.";
 
-        const targetRel = { x: 0.5, y: 0.5 }; // Center target for now
+        const targetRel = { x: 0.5, y: 0.5 };
         const tolerancePx = 100;
 
         function setDropZoneLayout() {
             const rect = dragStage.getBoundingClientRect();
-            // Wait for rect to be valid
             if (rect.width === 0) return;
 
             const w = rect.width * 0.15;
@@ -632,7 +572,6 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - h / 2) + 'px';
         }
 
-        // Delay slightly to ensure layout
         setTimeout(() => {
             setDropZoneLayout();
             updateScaling();
@@ -642,7 +581,6 @@ document.addEventListener("DOMContentLoaded", function () {
             updateScaling();
         });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -668,7 +606,6 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            // Constrain
             newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
             newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
@@ -695,7 +632,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                // Success
                 dropZone.style.display = 'none';
                 setTimeout(startVideoPhase, 200);
             }
@@ -709,7 +645,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
             window.removeEventListener('mouseup', onPointerUp);
@@ -719,7 +654,6 @@ document.addEventListener("DOMContentLoaded", function () {
             dragStage.style.display = 'none';
             playStage.style.display = 'block';
 
-            // Can update instruction here to something transitional if needed, or leave 'now' 
             instructionElem.textContent = "Cleaning...";
 
             video.play().catch(() => { });
@@ -731,8 +665,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 instructionElem.textContent = 'Step complete.';
             }
-            if (nextButton) nextButton.disabled = false; // Allow next regardless of total steps for now, or check
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            if (nextButton) nextButton.disabled = false;
         }, { once: true });
 
         cleanupCurrent = function () {
@@ -748,8 +681,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderStep1_5DragDrop(step, timestamp) {
-        if (nextButton) nextButton.disabled = true;
-
         const bgPath = 'images/simulation/1.5.png';
         const toolPath = 'images/simulation/1.5-tool.png';
         const finalPath = 'images/simulation/1.5.2.png';
@@ -758,7 +689,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
@@ -768,7 +699,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step1_5-instruction" class="drag-instructions"></div>
             </div>
         `;
@@ -781,7 +712,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         instructionElem.textContent = "Drag the ground clamp to the workpiece.";
 
-        // Hotspot target relative coordinates
         const targetRel = { x: 0.465, y: 0.801 };
         const tolerancePx = 100;
 
@@ -803,7 +733,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -855,9 +784,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                // Success
                 tool.style.display = 'none';
-                dropZone.style.display = 'none'; // Hide drop zone on success
+                dropZone.style.display = 'none';
                 bgImg.src = formatSrc(finalPath, timestamp);
 
                 if (stepGuidance[step.id]) {
@@ -868,7 +796,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 if (nextButton) nextButton.disabled = false;
 
-                // Cleanup events since we are done interacting
                 try {
                     window.removeEventListener('mousemove', onPointerMove);
                     window.removeEventListener('touchmove', onPointerMove);
@@ -897,33 +824,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderStep4_5DragDrop(step, timestamp) {
-        if (nextButton) nextButton.disabled = false;
-
         const videoSrc = 'images/simulation/4.mp4';
         const bgPath = 'images/simulation/4.png';
-        const toolPath = 'images/simulation/4-tool.png'; // Assuming 4-tool.png exists
+        const toolPath = 'images/simulation/4-tool.png';
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-4" class="draggable" style="position: absolute; width: 25%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
                             <div id="step4-drop-zone" class="drop-zone" style="--arrow-top: -10%; --arrow-left: 345%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                             <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step4-instruction" class="drag-instructions"></div>
             </div>
         `;
@@ -935,10 +858,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const playStage = document.getElementById('step4-play-stage');
         const video = document.getElementById('step4-video');
 
-        // Initial Instruction
         instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : "Start welding.";
 
-        const targetRel = { x: 0.28, y: 0.27 }; // Center target for now
+        const targetRel = { x: 0.28, y: 0.27 };
         const tolerancePx = 100;
 
         function setDropZoneLayout() {
@@ -959,7 +881,6 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -1045,7 +966,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 instructionElem.textContent = 'Step complete.';
             }
             if (nextButton) nextButton.disabled = false;
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
         }, { once: true });
 
         cleanupCurrent = function () {
@@ -1060,20 +980,16 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-
     function renderStep4WeldingSimulation(step, timestamp) {
-        if (nextButton) nextButton.disabled = true;
         const bgPath   = 'images/simulation/4.png';
         const toolPath = 'images/simulation/4-tool.png';
 
-        // ─── Tune these to match your 4.png joint ────────────────────────────
         const WELD_START     = { x: 0.29, y: 0.28 };
         const WELD_END       = { x: 0.7,  y: 0.7  };
-        const WELD_HALF_W    = 0.008;    // bead half-width as fraction of image width
-        const WELD_TOLERANCE = 0.02;     // how close the torch tip must be to the joint
-        const NUM_SEGMENTS   = 80;       // joint divided into this many independent slots
-        const HOT_DURATION   = 900;      // ms a freshly welded segment stays "hot"
-        // ─────────────────────────────────────────────────────────────────────
+        const WELD_HALF_W    = 0.008;
+        const WELD_TOLERANCE = 0.02;
+        const NUM_SEGMENTS   = 80;
+        const HOT_DURATION   = 900;
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
@@ -1109,13 +1025,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                  style="position:absolute; width:22%; top:8%; right:5%;
                                         cursor:grab; z-index:30; user-select:none; touch-action:none;"
                                  draggable="false"/>
-
-<!--                            <div id="step4-hint"-->
-<!--                                 style="position:absolute; top:16%; left:30%; font-size:1.6em; color:#ffd54f;-->
-<!--                                        text-shadow:0 0 8px #ff9800; animation:bounceArrow 1s infinite;-->
-<!--                                        pointer-events:none; z-index:25; white-space:nowrap;">-->
-<!--                                ⬇ Drag torch here-->
-<!--                            </div>-->
                         </div>
                     </div>
                 </div>
@@ -1154,8 +1063,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const instructionElem = document.getElementById('step4-instruction');
         const ctx         = sparkCanvas.getContext('2d');
 
-        // Per-segment state
-        const weldedAt = new Array(NUM_SEGMENTS).fill(null); // null = not welded, else Date.now() timestamp
+        const weldedAt = new Array(NUM_SEGMENTS).fill(null);
         let totalWelded = 0;
         let sparks      = [];
         let dragging    = false;
@@ -1163,13 +1071,12 @@ document.addEventListener("DOMContentLoaded", function () {
         let animFrame   = null;
         let completed   = false;
 
-        // Audio for welding
         const weldingAudio = new Audio(formatSrc('images/simulation/4.mp3', timestamp));
-weldingAudio.preload = "auto";   // loads sound early (no delay)
-weldingAudio.loop = true;        // continuous welding arc
-weldingAudio.volume = 0.75;      // slightly louder
-weldingAudio.playbackRate = 1.1; // adds sharper arc sound
-let isAudioPlaying = false;
+        weldingAudio.preload = "auto";
+        weldingAudio.loop = true;
+        weldingAudio.volume = 0.75;
+        weldingAudio.playbackRate = 1.1;
+        let isAudioPlaying = false;
 
         function syncCanvasSize() {
             sparkCanvas.width  = stage.offsetWidth;
@@ -1178,19 +1085,14 @@ let isAudioPlaying = false;
         bgImg.addEventListener('load', () => { syncCanvasSize(); updateScaling(); });
         if (bgImg.complete) syncCanvasSize();
 
-        // Project torch tip position onto joint line → return segment index (0..NUM_SEGMENTS-1)
-        // Returns null if the tip is too far from the joint
         function getSegmentUnderTip(tipX, tipY) {
             const ax = WELD_START.x, ay = WELD_START.y;
             const bx = WELD_END.x,   by = WELD_END.y;
             const dx = bx - ax, dy = by - ay;
             const lenSq = dx * dx + dy * dy;
-            // Parameter t: projection of tip onto line segment
             const t = Math.max(0, Math.min(1, ((tipX - ax) * dx + (tipY - ay) * dy) / lenSq));
-            // Closest point on segment
             const closestX = ax + t * dx;
             const closestY = ay + t * dy;
-            // Distance from tip to closest point
             const dist = Math.hypot(tipX - closestX, tipY - closestY);
             if (dist > WELD_TOLERANCE) return null;
             return Math.min(NUM_SEGMENTS - 1, Math.floor(t * NUM_SEGMENTS));
@@ -1205,7 +1107,7 @@ let isAudioPlaying = false;
             const ux = dx / totalLen, uy = dy / totalLen;
 
             const scR  = WELD_HALF_W * W;
-            const step = totalLen / NUM_SEGMENTS;       // pixel length of each segment
+            const step = totalLen / NUM_SEGMENTS;
             const scallopsPerSeg = Math.max(1, Math.floor(step / (scR * 1.4)));
 
             const now = Date.now();
@@ -1216,7 +1118,7 @@ let isAudioPlaying = false;
 
                 const age     = now - weldedAt[seg];
                 const isHot   = age < HOT_DURATION;
-                const hotFrac = isHot ? 1 - age / HOT_DURATION : 0; // 1=just welded, 0=cool
+                const hotFrac = isHot ? 1 - age / HOT_DURATION : 0;
 
                 for (let sc = 0; sc < scallopsPerSeg; sc++) {
                     const t  = (seg + (sc + 0.5) / scallopsPerSeg) * step;
@@ -1229,7 +1131,6 @@ let isAudioPlaying = false;
                     } else if (hotFrac > 0.3) {
                         fill = `rgb(${Math.floor(180 + hotFrac * 75)},${Math.floor(hotFrac * 120)},0)`;
                     } else {
-                        // Cooled — dark rippled metal; slight alternating shimmer
                         const shade = 50 + (seg % 2) * 16;
                         fill = `rgb(${shade},${shade - 6},${shade - 12})`;
                     }
@@ -1255,7 +1156,6 @@ let isAudioPlaying = false;
             if (completed) return;
             dragging = true;
             torch.style.cursor = 'grabbing';
-            // hint.style.display = 'none';
             const r = torch.getBoundingClientRect();
             const c = getClient(e);
             startX = c.x - r.left;
@@ -1279,22 +1179,20 @@ let isAudioPlaying = false;
             torch.style.top   = newTop  + 'px';
             torch.style.right = 'auto';
 
-            const tipX = (newLeft + torchRect.width  * 0.15) / W;   // left tip of torch
-            const tipY = (newTop  + torchRect.height * 0.8)  / H;   // vertical centre
+            const tipX = (newLeft + torchRect.width  * 0.15) / W;
+            const tipY = (newTop  + torchRect.height * 0.8)  / H;
 
             const seg = getSegmentUnderTip(tipX, tipY);
 
-            if (seg !== null && !completed) { 
-                // Play welding sound when torch is over the joint
+            if (seg !== null && !completed) {
                 if (!isAudioPlaying) {
-    weldingAudio.currentTime = 0;
-    weldingAudio.play().catch(err => console.error('Audio play error:', err));
-    isAudioPlaying = true;
-
+                    weldingAudio.currentTime = 0;
+                    weldingAudio.play().catch(() => { });
+                    isAudioPlaying = true;
                 }
 
                 const isNew = weldedAt[seg] === null;
-                weldedAt[seg] = Date.now();   // always refresh timestamp (keeps it hot)
+                weldedAt[seg] = Date.now();
                 if (isNew) {
                     totalWelded++;
                     const pct = Math.round((totalWelded / NUM_SEGMENTS) * 100);
@@ -1322,7 +1220,6 @@ let isAudioPlaying = false;
                     instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
                 }
             } else {
-                // Stop welding sound when torch leaves the joint
                 if (isAudioPlaying) {
                     weldingAudio.pause();
                     isAudioPlaying = false;
@@ -1337,15 +1234,14 @@ let isAudioPlaying = false;
         }
 
         function onPointerUp() {
-    dragging = false;
-    torch.style.cursor = 'grab';
-    arcGlow.setAttribute('opacity', '0');
+            dragging = false;
+            torch.style.cursor = 'grab';
+            arcGlow.setAttribute('opacity', '0');
 
-    // stop welding sound when torch stops moving
-    if (isAudioPlaying) {
-        weldingAudio.pause();
-        isAudioPlaying = false;
-    }
+            if (isAudioPlaying) {
+                weldingAudio.pause();
+                isAudioPlaying = false;
+            }
         }
 
         function emitSparks(px, py, stageRect) {
@@ -1370,7 +1266,6 @@ let isAudioPlaying = false;
         }
 
         function animateLoop() {
-            // Sparks
             ctx.clearRect(0, 0, sparkCanvas.width, sparkCanvas.height);
             for (let i = sparks.length - 1; i >= 0; i--) {
                 const s = sparks[i];
@@ -1394,7 +1289,6 @@ let isAudioPlaying = false;
             }
             ctx.globalAlpha = 1;
 
-            // Continuously redraw bead so hot→cool colour transition animates smoothly
             const hasHot = weldedAt.some(t => t !== null && Date.now() - t < HOT_DURATION);
             if (hasHot) redrawBead();
 
@@ -1404,7 +1298,6 @@ let isAudioPlaying = false;
 
         function finishWeld() {
             completed = true;
-            // Stop welding sound
             if (isAudioPlaying) {
                 weldingAudio.pause();
                 isAudioPlaying = false;
@@ -1427,7 +1320,6 @@ let isAudioPlaying = false;
 
         cleanupCurrent = function () {
             try {
-                // Stop welding sound
                 if (weldingAudio) {
                     weldingAudio.pause();
                     weldingAudio.currentTime = 0;
@@ -1442,35 +1334,30 @@ let isAudioPlaying = false;
         };
     }
 
-
     function renderStep5DragDrop(step, timestamp) {
-        if (nextButton) nextButton.disabled = false;
-
         const videoSrc = 'images/simulation/5.mp4';
-        const bgPath = 'images/simulation/5.png'; // Reusing 1.png as per "copy step 1" request
-        const toolPath = 'images/simulation/1-tool.png'; // Reusing 1-tool.png
+        const bgPath = 'images/simulation/5.png';
+        const toolPath = 'images/simulation/1-tool.png';
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%; height: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: 100%; object-fit: contain; pointer-events: none;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-5" class="draggable" style="position: absolute; width: 20%; top: 10%; right: 10%; cursor: grab; z-index: 20;"/>
                             <div id="step5-drop-zone" class="drop-zone" style="--arrow-top: -140%; --arrow-left: 255%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                             <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step5-instruction" class="drag-instructions"></div>
             </div>
         `;
@@ -1482,10 +1369,9 @@ let isAudioPlaying = false;
         const playStage = document.getElementById('step5-play-stage');
         const video = document.getElementById('step5-video');
 
-        // Initial Instruction
         instructionElem.textContent = stepGuidance[step.id] ? stepGuidance[step.id].now : "Drag the tool.";
 
-        const targetRel = { x: 0.47, y: 0.5 }; // Center target
+        const targetRel = { x: 0.47, y: 0.5 };
         const tolerancePx = 100;
 
         function setDropZoneLayout() {
@@ -1506,7 +1392,6 @@ let isAudioPlaying = false;
         setTimeout(() => { setDropZoneLayout(); updateScaling(); }, 50);
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -1592,7 +1477,6 @@ let isAudioPlaying = false;
                 instructionElem.textContent = 'Step complete.';
             }
             if (nextButton) nextButton.disabled = false;
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
         }, { once: true });
 
         cleanupCurrent = function () {
@@ -1615,8 +1499,8 @@ let isAudioPlaying = false;
 
             <div class="sim-media-container" style="height: auto; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
                 <div style="text-align:center; margin:20px 0; width: 100%;">
-                    <img src="${getAssetSrc('images/simulation/result.png')}" 
-                         alt="Final Welded Joint" 
+                    <img src="${getAssetSrc('images/simulation/result.png')}"
+                         alt="Final Welded Joint"
                          style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
                     <p style="font-size:14px; margin-top:6px;">Final welded joint after cleaning</p>
                 </div>
@@ -1624,85 +1508,67 @@ let isAudioPlaying = false;
 
             <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family:sans-serif;">
                 <tbody>
-
-                    <!-- Welding Parameters -->
                     <tr>
                         <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
                             Welding Parameters
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Welding Process</td>
                         <td style="border:1px solid #000; padding:10px 15px;">Gas Tungsten Arc Welding (GTAW / TIG)</td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Workpiece Material</td>
                         <td style="border:1px solid #000; padding:10px 15px;">Stainless Steel</td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Welding Current</td>
                         <td style="border:1px solid #000; padding:10px 15px;">60 Amperes (60 A)</td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Filler Material</td>
                         <td style="border:1px solid #000; padding:10px 15px;">ER308L</td>
                     </tr>
-
-                    <!-- Shielding Gas Settings -->
                     <tr>
                         <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
                             Shielding Gas Settings
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Shielding Gas</td>
                         <td style="border:1px solid #000; padding:10px 15px;">Argon</td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Gas Flow Rate</td>
                         <td style="border:1px solid #000; padding:10px 15px;">10 LPM (liters per minute)</td>
                     </tr>
-
-                    <!-- Welding Operation Parameters -->
                     <tr>
                         <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
                             Welding Operation Parameters
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Welding Gun Travel Speed</td>
                         <td style="border:1px solid #000; padding:10px 15px;">2.5 mm/s</td>
                     </tr>
-
-                    <!-- Result -->
                     <tr>
                         <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background:#f0f0f0;">
                             Result
                         </td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Joint Quality</td>
                         <td style="border:1px solid #000; padding:10px 15px;">High-quality, clean weld</td>
                     </tr>
-
                     <tr>
                         <td style="border:1px solid #000; padding:10px 15px;">Dressing</td>
                         <td style="border:1px solid #000; padding:10px 15px;">Slag removed, smooth finish</td>
                     </tr>
-
                 </tbody>
             </table>
 
             <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                <button onclick="window.print()" 
+                <button onclick="window.print()"
                         style="padding:12px 24px; font-size:16px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:6px;">
                     🖨 Print Results
                 </button>
@@ -1712,8 +1578,6 @@ let isAudioPlaying = false;
 
         if (nextButton) nextButton.disabled = true;
     }
-
-
 
     if (prevButton) {
         prevButton.addEventListener('click', () => {
@@ -1726,10 +1590,6 @@ let isAudioPlaying = false;
 
     if (nextButton) {
         nextButton.addEventListener('click', () => {
-            const step = steps[currentStepIndex];
-
-            // if (!isHotspotDone(step)) return;
-
             if (currentStepIndex < totalSteps - 1) {
                 currentStepIndex++;
                 showCurrentStep();
@@ -1738,5 +1598,4 @@ let isAudioPlaying = false;
     }
 
     preloadAssets();
-
 });

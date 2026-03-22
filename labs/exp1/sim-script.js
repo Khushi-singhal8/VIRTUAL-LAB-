@@ -1,37 +1,27 @@
-/* jshint esversion: 6 */
-/* global console */
 'use strict';
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E1 script loaded');
-
-    // --- ASSET PRELOADING ---
     const assetList = [
-        // Simulation videos
         "images/simulation/1.mp4",
         "images/simulation/2.mp4",
         "images/simulation/3.mp4",
         "images/simulation/4.mp4",
 
-        // Result images
         "images/workpiece.png",
         "images/vernier.png",
         "images/vernier calliper.png",
         "images/scale.png",
 
-        // Reading images (all frames)
         "images/p1.1.png", "images/p1.2.png", "images/p1.3.png", "images/p1.4.png", "images/p1.5.png", "images/p1.6.png",
         "images/p2.1.png", "images/p2.2.png", "images/p2.3.png", "images/p2.4.png", "images/p2.5.png", "images/p2.6.png",
         "images/p3.1.png", "images/p3.2.png", "images/p3.3.png", "images/p3.4.png", "images/p3.5.png", "images/p3.6.png",
         "images/p4.1.png", "images/p4.2.png", "images/p4.3.png", "images/p4.4.png", "images/p4.5.png",
 
-        // Step images
         "images/step1.png",
         "images/step2.png",
         "images/step3.png",
         "images/step4.png",
 
-        // Finals
         "images/final read.png",
         "images/final read 2.png",
         "images/A.png"
@@ -85,7 +75,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -203,15 +192,13 @@ document.addEventListener("DOMContentLoaded", function () {
             <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
             <hr style="margin-bottom:30px;">
 
-            <!-- Workpiece Section -->
             <div style="text-align:center; margin-bottom:20px;">
-                <img src="images/workpiece.png" 
-                     alt="Workpiece" 
+                <img src="images/workpiece.png"
+                     alt="Workpiece"
                      style="width:500px; border:1px solid #ccc; border-radius:6px;">
                 <p style="font-size:14px; margin-top:6px;">Workpiece</p>
             </div>
 
-            <!-- Workpiece Table -->
             <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
                 <tbody>
                     <tr style="background:#f0f0f0; font-weight:bold;">
@@ -235,8 +222,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     </tr>
                 </tbody>
             </table>
-            
-            <!-- Vernier Caliper Table -->
+
             <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
                 <tbody>
                     <tr style="background:#f0f0f0; font-weight:bold;">
@@ -253,19 +239,15 @@ document.addEventListener("DOMContentLoaded", function () {
                 </tbody>
             </table>
 
-            <!-- Print Button -->
             <div style="text-align:center; margin-top:30px;">
-                <button onclick="window.print()" 
+                <button onclick="window.print()"
                         style="padding:12px 24px; font-size:16px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:6px;">
-                    🖨 Print Results
+                    Print Results
                 </button>
             </div>
         </div>
     `
         }
-
-
-
     ];
 
     let currentStepIndex = 0;
@@ -301,16 +283,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function showCurrentStep() {
         if (!gifContainer) return;
 
+        if (nextButton) nextButton.disabled = true;
+
         if (currentStepIndex === totalSteps - 1 && steps[currentStepIndex].type === 'final') {
             const step = steps[currentStepIndex];
-            gifContainer.innerHTML = step.content;  // <-- render the HTML content
+            gifContainer.innerHTML = step.content;
             if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
             if (totalStepsElement) totalStepsElement.textContent = totalSteps;
             if (prevButton) prevButton.disabled = false;
-            if (nextButton) nextButton.disabled = true;
             return;
         }
-
 
         const step = steps[currentStepIndex];
         clearCleanup();
@@ -323,7 +305,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
-        if (nextButton) nextButton.disabled = currentStepIndex === totalSteps - 1;
 
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
@@ -336,15 +317,12 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderSubstepVideo(step, timestamp) {
         const substeps = step.substeps;
         let currentSubstep = 0;
-        if (nextButton) nextButton.disabled = true;
         const hotspotDebug = true;
         let finalHandled = false;
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width:100%;height:100%;">
                 <h3>${step.title}</h3>
-                
-                
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="width: 100%; position: relative;">
@@ -359,7 +337,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('substep-video');
         const hotspot = document.getElementById('substep-hotspot');
         const instructionElem = document.getElementById('substep-instruction');
-        // Ensure newline characters ("\n") inside instruction text render as line breaks
         if (instructionElem) instructionElem.style.whiteSpace = 'pre-line';
         const stage = document.getElementById('play-stage');
         if (hotspotDebug) hotspot.classList.add('debug-highlight');
@@ -390,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const isLast = currentSubstep === substeps.length - 1;
                 if (isLast) {
-                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    if (nextButton) nextButton.disabled = false;
                     try { video.play(); } catch (_) { }
                 } else {
                     try { video.play(); } catch (_) { }
@@ -409,7 +386,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (isLast && !s.hotspot) {
                     if (!finalHandled) {
                         instructionElem.textContent = s.instruction || 'Step complete!';
-                        if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                        if (nextButton) nextButton.disabled = false;
                         finalHandled = true;
                     }
                     currentSubstep = substeps.length;
@@ -421,7 +398,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     setupSubstep();
                 } else {
                     instructionElem.textContent = s.instruction || 'Step complete!';
-                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    if (nextButton) nextButton.disabled = false;
                 }
             }
         }
@@ -477,12 +454,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function renderSimpleVideo(step, timestamp) {
-
         gifContainer.innerHTML = `
         <div class="gif-wrapper" style="width:100%;height:100%;">
             <h3>${step.title}</h3>
-            
-
             <div class="sim-media-container">
                 <div class="scaling-wrapper">
                     <div class="play-stage" id="play-stage" style="width:100%; position: relative;">
@@ -490,7 +464,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>
                 </div>
             </div>
-
             <div id="play-instruction" class="drag-instructions"></div>
         </div>
     `;
@@ -502,7 +475,6 @@ document.addEventListener("DOMContentLoaded", function () {
             inst.style.whiteSpace = 'pre-line';
         }
 
-        // Auto play when metadata loads
         video.addEventListener(
             'loadedmetadata',
             () => {
@@ -513,18 +485,16 @@ document.addEventListener("DOMContentLoaded", function () {
         );
         window.addEventListener('resize', updateScaling);
 
-        // Enable next button when video ends
         video.addEventListener(
             'ended',
             () => {
                 if (nextButton) {
-                    nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    nextButton.disabled = false;
                 }
             },
             { once: true }
         );
 
-        // Cleanup function
         cleanupCurrent = () => {
             try {
                 video.pause();
@@ -533,11 +503,6 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (_) { }
         };
     }
-
-
-    /* =========================
-       Navigation Buttons
-       ========================= */
 
     if (prevButton) {
         prevButton.addEventListener('click', () => {
@@ -556,11 +521,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
-
-
-    /* =========================
-       Initial Load
-       ========================= */
 
     preloadAssets();
 });

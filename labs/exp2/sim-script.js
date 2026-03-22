@@ -1,41 +1,24 @@
-/* jshint esversion: 6 */
-/* global console */
 'use strict';
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E2 script loaded');
 
-    // --- ASSET PRELOADING ---
     const assetList = [
-        // Simulation videos
         "images/simulation/1.mp4",
         "images/simulation/2.mp4",
-
-        // Measurement images
         "images/simulation/measurement1.1.png",
         "images/simulation/measurement1.2.png",
         "images/simulation/measurement2.1.png",
         "images/simulation/measurement2.2.png",
-
-        // Micrometer images
         "images/micrometer.png",
         "images/micrometer 1.png",
         "images/micrometer 2.png",
         "images/micrometer 3.png",
-
-        // Workpiece images
         "images/b.png",
         "images/c.png",
-
-        // Result images
         "images/result1.png",
         "images/result2.png",
-
-        // Reading frames
         "images/p1.1.png", "images/p1.2.png", "images/p1.3.png", "images/p1.4.png",
         "images/p2.1.png", "images/p2.2.png", "images/p2.3.png", "images/p2.4.png",
-
-        // Step images
         "images/1.png", "images/2.png", "images/3.png", "images/4.png", "images/5.png", "images/6.png"
     ];
 
@@ -87,7 +70,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -191,21 +173,17 @@ document.addEventListener("DOMContentLoaded", function () {
         <div style="padding:20px; font-family:Arial, sans-serif;">
             <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
             <hr style="margin-bottom:30px;">
-
-            <!-- Workpiece Section -->
             <div style="text-align:center; margin-bottom:20px;">
             <div class="row" style="display:flex; gap:20px; justify-content:center; align-items:stretch;">
-                <img src="images/c.png" 
-                     alt="Workpiece" 
+                <img src="images/c.png"
+                     alt="Workpiece"
                      style="height:190px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
-                     <img src="images/b.png" 
-                     alt="Workpiece" 
+                     <img src="images/b.png"
+                     alt="Workpiece"
                      style="height:190px; width:auto; border:1px solid #ccc; border-radius:6px; object-fit:contain;">
                      </div>
                 <p style="font-size:14px; margin-top:6px;">Workpiece</p>
             </div>
-
-            <!-- Workpiece Table -->
             <table style="border-collapse:collapse; width:100%; max-width:500px; margin:0 auto 40px auto; border:1px solid #000; font-size:14px;">
                 <tbody>
                     <tr style="background:#f0f0f0; font-weight:bold;">
@@ -221,10 +199,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     </tr>
                 </tbody>
             </table>
-
-            <!-- Print Button -->
             <div style="text-align:center; margin-top:30px;">
-                <button onclick="window.print()" 
+                <button onclick="window.print()"
                         style="padding:12px 24px; font-size:16px; cursor:pointer; background-color:#007bff; color:white; border:none; border-radius:6px;">
                     🖨 Print Results
                 </button>
@@ -280,7 +256,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!container || !wrapper || !stage) return;
 
-        // Reset scale for measurement
         wrapper.style.transform = 'scale(1)';
         wrapper.style.width = '100%';
 
@@ -289,10 +264,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (stageHeight > 0) {
             const scale = containerHeight / stageHeight;
-            // Only scale down if it exceeds the height
             if (scale < 1) {
                 wrapper.style.transform = `scale(${scale})`;
-                // Adjust width to compensate for scale since we want 100% width visually
                 wrapper.style.width = `${(1 / scale) * 100}%`;
                 wrapper.style.transformOrigin = 'center center';
                 wrapper.style.marginLeft = '0';
@@ -312,18 +285,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const timestamp = Date.now();
         clearCleanup();
 
-        /* ✅ FINAL STEP (VERY IMPORTANT) */
-        if (step.type === 'final') {
-            gifContainer.innerHTML = step.content;   // render HTML table + images
+        if (nextButton) nextButton.disabled = true;
 
+        if (step.type === 'final') {
+            gifContainer.innerHTML = step.content;
             if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
             if (prevButton) prevButton.disabled = false;
-            if (nextButton) nextButton.disabled = false;
-
-            return; // stop here (don't run video logic)
+            if (nextButton) nextButton.disabled = true;
+            return;
         }
 
-        /* normal steps */
         if (step.type === 'image') {
             renderImage(step);
         }
@@ -337,11 +308,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
 
-        if (nextButton) {
-            const hasSubsteps = Array.isArray(step.substeps) && step.substeps.length > 0;
-            // nextButton.disabled = hasSubsteps ? true : (currentStepIndex === totalSteps - 1);
-        }
-
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
             items.forEach((itm, idx) => {
@@ -351,11 +317,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
     function renderSubstepVideo(step, timestamp) {
         const substeps = step.substeps;
         let currentSubstep = 0;
-        if (nextButton) nextButton.disabled = false;
         const hotspotDebug = true;
         let finalHandled = false;
 
@@ -403,7 +367,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } else {
                 const isLast = currentSubstep === substeps.length - 1;
                 if (isLast) {
-                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    if (nextButton) nextButton.disabled = false;
                     showStepCompletionInstruction(step, instructionElem);
                     try { video.play(); } catch (_) { }
                 } else {
@@ -423,7 +387,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (isLast && !s.hotspot) {
                     if (!finalHandled) {
                         showStepCompletionInstruction(step, instructionElem);
-                        if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                        if (nextButton) nextButton.disabled = false;
                         finalHandled = true;
                     }
                     currentSubstep = substeps.length;
@@ -435,7 +399,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     setupSubstep();
                 } else {
                     showStepCompletionInstruction(step, instructionElem);
-                    if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+                    if (nextButton) nextButton.disabled = false;
                 }
             }
         }
@@ -467,8 +431,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         video.addEventListener('play', onPlay);
         video.addEventListener('pause', onPause);
-
-        // window.addEventListener('resize', () => { if (substeps[currentSubstep] && substeps[currentSubstep].hotspot) layoutHotspot(substeps[currentSubstep].hotspot); });
 
         cleanupCurrent = () => {
             try {
@@ -504,7 +466,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }, { once: true });
         video.addEventListener('ended', () => {
             showStepCompletionInstruction(step, instructionElem);
-            if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
+            if (nextButton) nextButton.disabled = false;
         }, { once: true });
         cleanupCurrent = () => { try { video.pause(); video.removeAttribute('src'); video.load(); } catch (_) { } };
     }
@@ -544,4 +506,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
     preloadAssets();
 });
-

@@ -1,12 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E5 script loaded');
-
 
     const style = document.createElement('style');
     style.innerHTML = `
 .apparatus-img-box {
     width: 100%;
-    height: 150px;          /* ✅ increased */
+    height: 150px;
     border: 1px solid #ccc;
     border-radius: 6px;
     display: flex;
@@ -23,9 +21,6 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 `;
     document.head.appendChild(style);
-
-
-
 
     const resetButton = document.getElementById('reset-btn');
     const prevButton = document.getElementById('prev-btn');
@@ -49,7 +44,6 @@ document.addEventListener("DOMContentLoaded", function () {
     let step5Completed = false;
     let step6Completed = false;
 
-    // ---------- APPARATUS DATA ----------
     const apparatusData = [
         {
             name: "File",
@@ -83,60 +77,38 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     ];
 
-    // --- ASSET PRELOADING ---
     const assetList = [
-        // Apparatus
         "images/apparatus/d].png",
         "images/apparatus/c].png",
         "images/apparatus/g].png",
         "images/apparatus/e].png",
         "images/apparatus/b].png",
         "images/apparatus/f].png",
-
-        // Step 1
         "images/simulation/1.mp4",
         "images/simulation/1.png",
         "images/simulation/1-tool.png",
-
-        // Step 1.5
         "images/simulation/1.5.mp4",
         "images/simulation/1.5.png",
         "images/simulation/1.5-tool.png",
-
-        // Step 2
         "images/simulation/2.mp4",
-
-        // Step 3
-        "images/simulation/3.1.mp4", // Phase 1
-        "images/simulation/3.png",     // Phase 2 BG
-        "images/simulation/3.1.png", // [NEW] Phase 2 ignited
-        "images/simulation/3.1.5.mp4", // [NEW] Phase 2 ignited
-        "images/simulation/3-tool.png",// Phase 2 Tool
-        "images/simulation/3.2.mp4",   // Phase 3
-
-        // Step 2.5
+        "images/simulation/3.1.mp4",
+        "images/simulation/3.png",
+        "images/simulation/3.1.png",
+        "images/simulation/3.1.5.mp4",
+        "images/simulation/3-tool.png",
+        "images/simulation/3.2.mp4",
         "images/simulation/3_1.mp4",
         "images/simulation/3_1.png",
         "images/simulation/3_1-tool.png",
-
-        // Step 4
         "images/simulation/4.mp4",
         "images/simulation/4.png",
         "images/simulation/4-tool1.png",
         "images/simulation/4-tool2.png",
-
-        // Step 4.5
         "images/simulation/4.5.mp4",
-
-        // Step 4.6
         "images/simulation/4.6.mp3",
-
-        // Step 5
         "images/simulation/5.mp4",
         "images/simulation/5.png",
         "images/simulation/5-tool.png",
-
-        // Result
         "images/simulation/print1.png"
     ];
 
@@ -153,7 +125,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     async function preloadAssets() {
-        // Create overlay
         const overlay = document.createElement('div');
         overlay.id = 'preload-overlay';
         overlay.style.position = 'fixed';
@@ -189,7 +160,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -200,20 +170,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
         await Promise.all(promises);
 
-        // Small delay to ensure smooth transition
         setTimeout(() => {
             overlay.style.opacity = '0';
             setTimeout(() => {
                 document.body.removeChild(overlay);
-                showCurrentStep(); // Start simulation after loading
+                showCurrentStep();
             }, 500);
         }, 500);
     }
 
-
     const steps = [
         { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
-
         { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
         { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
@@ -226,7 +193,6 @@ document.addEventListener("DOMContentLoaded", function () {
         { id: 'step4_6', title: 'Perform welding operation', type: 'drag-drop' },
         { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
-
     ];
 
     const stepGuidance = {
@@ -278,9 +244,7 @@ document.addEventListener("DOMContentLoaded", function () {
             now: "Drag the filing tool on top of the plate.",
             next: "Observation."
         },
-
     };
-
 
     let currentStepIndex = 0;
     const totalSteps = steps.length;
@@ -328,7 +292,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!container || !wrapper || !stage) return;
 
-        // Reset scale for measurement
         wrapper.style.transform = 'scale(1)';
 
         const containerHeight = container.offsetHeight;
@@ -398,7 +361,6 @@ document.addEventListener("DOMContentLoaded", function () {
                         ">
         `;
 
-        // First 3 items in first row
         for (let i = 0; i < 3; i++) {
             const item = apparatusData[i];
             html += `
@@ -418,8 +380,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         html += `</div>
-            
-            <!-- Second row with 2 centered items -->
+
             <div style="
                 display:flex;
                 justify-content:center;
@@ -428,7 +389,6 @@ document.addEventListener("DOMContentLoaded", function () {
             ">
     `;
 
-        // Last 2 items centered
         for (let i = 3; i < apparatusData.length; i++) {
             const item = apparatusData[i];
             html += `
@@ -454,7 +414,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
 
-            <!-- BLUE INSTRUCTION BOX -->
             <div class="drag-instructions" style="margin-top:20px;">
                 ${stepGuidance.apparatus.now}<br>
                 Click next to: ${stepGuidance.apparatus.next}
@@ -466,9 +425,6 @@ document.addEventListener("DOMContentLoaded", function () {
         updateScaling();
         window.addEventListener('resize', updateScaling);
     }
-
-
-
 
     function showCurrentStep() {
         if (!gifContainer) return;
@@ -489,7 +445,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             return;
         }
-
 
         clearCleanup();
 
@@ -525,10 +480,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
         if (nextButton) {
-            // Temporarily enable next button always for testing
-            nextButton.disabled = (currentStepIndex === totalSteps - 1);
-            //             nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
-            // nextButton.disabled = (currentStepIndex === totalSteps - 1) || (isInteractiveStep(step.id) && !isInteractiveCompleted(step.id));
+            nextButton.disabled = true;
         }
 
         if (stepsList) {
@@ -586,10 +538,9 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
@@ -599,13 +550,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div id="step4_5-drop-zone2" class="drop-zone" style="--arrow-top: -250%; --arrow-left: -135%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
                             <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step4_5-instruction" class="drag-instructions">
                     Drag the torch to the starting position to begin welding.
                 </div>
@@ -623,7 +573,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step4_5-video');
         const instructionElem = document.getElementById('step4_5-instruction');
 
-        // Drop zone targets (same as step 4 in E7)
         const target1Rel = { x: 0.5, y: 0.6 };
         const target2Rel = { x: 0.36, y: 0.55 };
         const tolerancePx = 80;
@@ -632,7 +581,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let tool2Placed = false;
         let activeTool = null;
 
-        // Initially hide tool2 and its drop zone
         tool2.style.display = 'none';
         dropZone2.style.display = 'none';
 
@@ -641,7 +589,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const w = rect.width * 0.08;
             const h = w;
 
-            // Layout drop zone 1
             const tx1 = rect.width * target1Rel.x;
             const ty1 = rect.height * target1Rel.y;
             dropZone1.style.width = w + 'px';
@@ -649,7 +596,6 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone1.style.left = (tx1 - w / 2) + 'px';
             dropZone1.style.top = (ty1 - h / 2) + 'px';
 
-            // Layout drop zone 2
             const tx2 = rect.width * target2Rel.x;
             const ty2 = rect.height * target2Rel.y;
             dropZone2.style.width = w + 'px';
@@ -670,7 +616,6 @@ document.addEventListener("DOMContentLoaded", function () {
             };
         }
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -681,7 +626,6 @@ document.addEventListener("DOMContentLoaded", function () {
             dragging = true;
             activeTool.classList.add('dragging');
 
-            // Add dragging-active to the corresponding drop zone
             if (activeTool === tool1) {
                 dropZone1.classList.add('dragging-active');
             } else if (activeTool === tool2) {
@@ -709,10 +653,6 @@ document.addEventListener("DOMContentLoaded", function () {
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
 
-            // removed clamping to allow dragging outside the box
-            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            // newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
-
             activeTool.style.left = newLeft + 'px';
             activeTool.style.top = newTop + 'px';
         }
@@ -739,17 +679,14 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                // Snap tool
                 activeTool.style.left = (targetX - toolRect.width / 2) + 'px';
                 activeTool.style.top = (targetY - toolRect.height / 2) + 'px';
 
-                // Lock this tool
                 activeTool.style.pointerEvents = 'none';
                 activeTool.style.cursor = 'default';
 
                 dropZone.classList.add('success');
 
-                // Mark completion
                 if (activeTool === tool1) {
                     tool1Placed = true;
                     dropZone1.style.display = 'none';
@@ -762,7 +699,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     instructionElem.textContent = "Great! Starting welding process...";
                 }
 
-                // When BOTH are placed → play video
                 if (tool1Placed && tool2Placed) {
                     setTimeout(startVideoPhase, 500);
                 }
@@ -781,7 +717,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -823,18 +758,16 @@ document.addEventListener("DOMContentLoaded", function () {
         const tool2Path = 'images/simulation/4-tool2.png';
         const torchPath = 'images/simulation/4-tool3.png';
 
-        // ─── Tune these to match your 4.5.png joint ────────────────────────────
         const WELD_START = { x: 0.42, y: 0.625 };
         const WELD_END = { x: 0.62, y: 0.535 };
-        const BEAD_ROTATION_DEG = -55; // Rotates only triangle/rectangle bead orientation
-        const WELD_HALF_W = 0.008;     // bead half-width as fraction of image width
-        const BEAD_SURFACE_EDGE_SCALE = 3.8; // Increase/decrease top (surface) edge width
-        const BEAD_ROOT_EDGE_SCALE = 3.2;    // Opposite edge width for trapezoid profile
-        const WELD_TOLERANCE = 0.05;  // how close the torch tip must be to the joint
-        const NUM_SEGMENTS = 30;      // joint divided into this many independent slots
-        const HOT_DURATION = 900;     // ms a freshly welded segment stays "hot"
+        const BEAD_ROTATION_DEG = -55;
+        const WELD_HALF_W = 0.008;
+        const BEAD_SURFACE_EDGE_SCALE = 3.8;
+        const BEAD_ROOT_EDGE_SCALE = 3.2;
+        const WELD_TOLERANCE = 0.05;
+        const NUM_SEGMENTS = 30;
+        const HOT_DURATION = 900;
         const beadRotationRad = (BEAD_ROTATION_DEG * Math.PI) / 180;
-        // ─────────────────────────────────────────────────────────────────────
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
@@ -843,7 +776,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step4_6-drag-stage" style="position: relative; width: 100%;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_6" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
@@ -853,7 +785,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div id="step4_6-drop-zone2" class="drop-zone" style="--arrow-top: -250%; --arrow-left: 70%;"></div>
                         </div>
 
-                        <!-- Welding Phase -->
                         <div class="play-stage" id="step4_6-weld-stage" style="position: relative; width: 100%; height: 100%; display: none; line-height: 0;">
                             <img id="step4_6-bg" src="${formatSrc(bgPath, timestamp)}" style="width:100%; height:auto; display:block; pointer-events:none; user-select:none;"/>
 
@@ -894,7 +825,6 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-        // Elements for Drag Phase
         const dragStage = document.getElementById('step4_6-drag-stage');
         const tool1 = document.getElementById('draggable-tool1-4_6');
         const tool2 = document.getElementById('draggable-tool2-4_6');
@@ -1034,7 +964,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('mouseup', onPointerUpPhase1);
         window.addEventListener('touchend', onPointerUpPhase1);
 
-        // Elements for Welding Phase
         const weldStage = document.getElementById('step4_6-weld-stage');
         const weldBg = document.getElementById('step4_6-bg');
         const torch = document.getElementById('step4_6-torch');
@@ -1054,7 +983,6 @@ document.addEventListener("DOMContentLoaded", function () {
         let animFrame = null;
         let completed = false;
 
-        // Audio for welding
         const weldingAudio = new Audio(formatSrc('images/simulation/4.6.mp3', timestamp));
         weldingAudio.loop = true;
         weldingAudio.volume = 0.6;
@@ -1090,7 +1018,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const uxPath = dx / totalLen, uyPath = dy / totalLen;
             const pxPath = -uyPath, pyPath = uxPath;
 
-            // Rotate bead geometry axes while keeping the weld trajectory fixed.
             const cosA = Math.cos(beadRotationRad);
             const sinA = Math.sin(beadRotationRad);
             const uxShape = uxPath * cosA - uyPath * sinA;
@@ -1124,18 +1051,16 @@ document.addEventListener("DOMContentLoaded", function () {
                         fill = (seg % 2 === 0) ? 'rgb(153,95,39)' : 'rgb(125,77,30)';
                     }
 
-                        const halfAlong = stepSize * 0.48;   // half-width along weld direction
+                        const halfAlong = stepSize * 0.48;
                         const halfAcrossSurface = scR * BEAD_SURFACE_EDGE_SCALE;
                         const halfAcrossRoot = scR * BEAD_ROOT_EDGE_SCALE;
-                        const triTipLen = scR * 4;           // triangle tip depth
+                        const triTipLen = scR * 4;
 
-                        // shift each bead slightly toward groove center
                         const centerOffset = scR * -0.4;
                         const centerX = cx + pxPath * centerOffset;
                         const centerY = cy + pyPath * centerOffset;
 
                         if (seg === 0) {
-                            // First bead uses the same surface/root widths as rectangles for continuity.
                             const p1x = centerX + pxShape * halfAcrossSurface;
                             const p1y = centerY + pyShape * halfAcrossSurface;
                             const p2x = centerX - pxShape * halfAcrossRoot;
@@ -1154,7 +1079,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             opacity="0.98">
                         </polygon>`;
                         } else {
-                            // Rectangle: long axis across joint (px), short axis along weld (ux)
                             const p1x = centerX - uxShape * halfAlong - pxShape * halfAcrossRoot;
                             const p1y = centerY - uyShape * halfAlong - pyShape * halfAcrossRoot;
                             const p2x = centerX + uxShape * halfAlong - pxShape * halfAcrossRoot;
@@ -1217,10 +1141,9 @@ document.addEventListener("DOMContentLoaded", function () {
             const seg = getSegmentUnderTip(tipX, tipY);
 
             if (seg !== null && !completed) {
-                // Play welding sound when torch is over the joint
                 if (!isAudioPlaying) {
                     weldingAudio.currentTime = 0;
-                    weldingAudio.play().catch(err => console.error('Audio play error:', err));
+                    weldingAudio.play().catch(() => { });
                     isAudioPlaying = true;
                 }
 
@@ -1253,7 +1176,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     instructionElem.textContent = 'Welding… drag the torch along the entire joint!';
                 }
             } else {
-                // Stop welding sound when torch leaves the joint
                 if (isAudioPlaying) {
                     weldingAudio.pause();
                     isAudioPlaying = false;
@@ -1273,14 +1195,12 @@ document.addEventListener("DOMContentLoaded", function () {
             torch.style.cursor = 'grab';
             arcGlow.setAttribute('opacity', '0');
 
-            // 🔊 stop welding sound when torch stops moving
             if (isAudioPlaying) {
                 weldingAudio.pause();
                 weldingAudio.currentTime = 0;
                 isAudioPlaying = false;
-    }
-}
-        
+            }
+        }
 
         function emitSparks(px, py, stageRect) {
             if (Math.random() > 0.6) return;
@@ -1353,7 +1273,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function finishWeld() {
             phase2Dragging = true;
-            // Stop welding sound
             if (isAudioPlaying) {
                 weldingAudio.pause();
                 isAudioPlaying = false;
@@ -1372,7 +1291,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cleanupCurrent = () => {
             try {
-                // Stop welding sound
                 if (weldingAudio) {
                     weldingAudio.pause();
                     weldingAudio.currentTime = 0;
@@ -1403,7 +1321,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 { pauseAt: 0, hotspot: { x: 0.3, y: 0.5251851851851852, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the first plate.' },
                 { pauseAt: 1.95, hotspot: { x: 0.7144444444444444, y: 0.591604938271605, w: 0.08, h: 0.14222222222222222 }, instruction: 'Click here to align the second plate.' }
             ];
-
         } else if (step.id === 'step4') {
             cfgSeq = [
                 { pauseAt: 0, hotspot: { x: 0.44, y: 0.717283950617284, w: 0.042222222222222223, h: 0.07506172839506173 }, instruction: 'Click here to apply tack weld at the first end.' },
@@ -1440,8 +1357,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function layoutHotspot() {
             if (!stage) return;
-            const rect = stage.getBoundingClientRect(); // Still need rect for absolute positioning relative to stage
-            // Actually, offsetWidth/Height are better for transforms
             const w = stage.offsetWidth;
             const h = stage.offsetHeight;
             const cfg = cfgSeq[Math.min(segmentIndex, cfgSeq.length - 1)];
@@ -1510,7 +1425,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (nextButton) nextButton.disabled = false;
         }
 
-
         video.addEventListener('play', onPlay);
         video.addEventListener('pause', onPause);
         video.addEventListener('ended', onEnded, { once: true });
@@ -1552,23 +1466,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
                             <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: 445%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
                             <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
             </div>
         `;
@@ -1582,7 +1494,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step1-video');
         const instructionElem = document.getElementById('step1-instruction');
 
-        // Drop zone target (adjust x and y for the plate edge location)
         const targetRel = { x: 0.4, y: 0.55 };
         const tolerancePx = 80;
 
@@ -1602,7 +1513,6 @@ document.addEventListener("DOMContentLoaded", function () {
         else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -1668,7 +1578,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -1714,10 +1623,9 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step2_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
@@ -1725,13 +1633,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div id="step2_5-drag-text" style="position: absolute; z-index: 15; font-size: 33px; color: #333; top: 22%; left: 73%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; white-space: nowrap; transition: opacity 0.01s ease;font-family: sans-serif">Filler rod</div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step2_5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
                             <video id="step2_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step2_5-instruction" class="drag-instructions">Drag the flux to the plate joint.</div>
             </div>
         `;
@@ -1745,7 +1652,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step2_5-video');
         const instructionElem = document.getElementById('step2_5-instruction');
 
-        // Drop zone target 
         const targetRel = { x: 0.25, y: 0.5 };
         const tolerancePx = 100;
 
@@ -1765,7 +1671,6 @@ document.addEventListener("DOMContentLoaded", function () {
         else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -1835,7 +1740,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -2026,7 +1930,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step3_2-instruction" class="drag-instructions">Drag the ignitor to the torch.</div>
             </div>
         `;
@@ -2109,7 +2013,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                // Snap to target
                 const zoneCenterRelX = dropZone.offsetLeft + dropZone.offsetWidth / 2;
                 const zoneCenterRelY = dropZone.offsetTop + dropZone.offsetHeight / 2;
 
@@ -2127,7 +2030,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 window.removeEventListener('mouseup', onPointerUp);
                 window.removeEventListener('touchend', onPointerUp);
 
-                // Delay adding click listener to avoid 'click' from mouseup triggering immediately
                 setTimeout(() => {
                     draggable.addEventListener('click', onToolClick);
                 }, 100);
@@ -2313,14 +2215,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 60%;"/>
                             <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: -445%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
                             <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
                         </div>
@@ -2340,7 +2240,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step1_5-video');
         const instructionElem = document.getElementById('step1_5-instruction');
 
-        // Drop zone target (adjust x and y for the plate edge location)
         const targetRel = { x: 0.6, y: 0.55 };
         const tolerancePx = 80;
 
@@ -2360,7 +2259,6 @@ document.addEventListener("DOMContentLoaded", function () {
         else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -2426,7 +2324,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -2472,28 +2369,25 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
-                            
+
                             <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -405%; --arrow-left: 455%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
                             <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step4-instruction" class="drag-instructions">
                     Drag the welding torch to the plate edge.
                 </div>
-
             </div>
         `;
 
@@ -2506,7 +2400,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step4-video');
         const instructionElem = document.getElementById('step4-instruction');
 
-        // Drop zone target
         const target1Rel = { x: 0.5, y: 0.6 };
         const tolerancePx = 80;
 
@@ -2515,7 +2408,6 @@ document.addEventListener("DOMContentLoaded", function () {
             const w = rect.width * 0.08;
             const h = w;
 
-            // Layout drop zone 1
             const tx1 = rect.width * target1Rel.x;
             const ty1 = rect.height * target1Rel.y;
             dropZone1.style.width = w + 'px';
@@ -2528,7 +2420,6 @@ document.addEventListener("DOMContentLoaded", function () {
         else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -2599,7 +2490,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -2648,7 +2538,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!-- Drag Phase -->
                         <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
@@ -2656,7 +2545,6 @@ document.addEventListener("DOMContentLoaded", function () {
                             <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: 235%;"></div>
                         </div>
 
-                        <!-- Video Phase -->
                         <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
                             <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
                         </div>
@@ -2678,8 +2566,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step5-video');
         const instructionElem = document.getElementById('step5-instruction');
 
-        // Drop zone target
-        const targetRel = { x: 0.56, y: 0.57 }; // Adjust as needed based on image
+        const targetRel = { x: 0.56, y: 0.57 };
         const tolerancePx = 80;
 
         function setDropZoneLayout() {
@@ -2699,7 +2586,6 @@ document.addEventListener("DOMContentLoaded", function () {
         else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
         window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -2728,9 +2614,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
-
-            // newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
-            // newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
             tool.style.left = newLeft + 'px';
             tool.style.top = newTop + 'px';
@@ -2770,7 +2653,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -2911,6 +2793,5 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Start preloading instead of showing step immediately
     preloadAssets();
-}); 
+});

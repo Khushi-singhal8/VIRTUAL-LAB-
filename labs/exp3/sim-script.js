@@ -1,22 +1,15 @@
 'use strict';
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation script loaded');
 
-    // --- ASSET PRELOADING ---
     const assetList = [
-        // Base simulation images
         "images/simulation/1.png",
         "images/simulation/2.gif",
         "images/simulation/5.png",
         "images/simulation/6.png",
         "images/simulation/tool.png",
-
-        // Base simulation videos
         "images/simulation/8.mp4",
         "images/simulation/9.mp4",
-
-        // Teak wood assets
         "images/simulation/teak/1.5.mp4",
         "images/simulation/teak/1.5.png",
         "images/simulation/teak/2.1.mp4",
@@ -38,8 +31,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/teak/teak.png",
         "images/simulation/teak/tool.png",
         "images/simulation/teak/wood.png",
-
-        // Pine wood assets
         "images/simulation/pine/1.5.mp4",
         "images/simulation/pine/1.5.png",
         "images/simulation/pine/2.1.mp4",
@@ -61,8 +52,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/pine/pine.png",
         "images/simulation/pine/tool.png",
         "images/simulation/pine/wood.png",
-
-        // Mahogany wood assets
         "images/simulation/mahogany/1.5.mp4",
         "images/simulation/mahogany/1.5.png",
         "images/simulation/mahogany/2.1.mp4",
@@ -133,7 +122,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -192,7 +180,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    // Wood selection data
     const woodTypes = [
         { name: 'Teak', id: 'teak', hotspot: { x: 0.0025, y: 0.03974230857537948, w: 0.16875, h: 0.8585458443321057 } },
         { name: 'Pine wood', id: 'pine', hotspot: { x: 0.415, y: 0.03974230857537948, w: 0.16875, h: 0.8585458443321057 } },
@@ -263,7 +250,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     ];
 
-
     let steps = baseSteps;
 
     let currentStepIndex = 0;
@@ -272,19 +258,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (prevButton) {
             prevButton.disabled = currentStepIndex === 0;
         }
-
-        if (nextButton) {
-            const step = steps[currentStepIndex];
-            // Only disable if it's the wood selection step and no wood is selected
-            if (step.isWoodSelection) {
-                nextButton.disabled = !selectedWood;
-            } else if (step.isPrintStep) {
-                nextButton.disabled = true;
-            } else {
-                nextButton.disabled = false;
-            }
-        }
     }
+
     const totalSteps = steps.length;
     const stepsList = document.getElementById('steps-list');
     if (stepsList) {
@@ -316,7 +291,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const step = steps[currentStepIndex];
 
-        // PRINT STEP
+        if (nextButton) nextButton.disabled = true;
+
         if (step.isPrintStep) {
             renderPrintStep();
             updateButtons();
@@ -326,14 +302,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const timestamp = new Date().getTime();
         const currentSrc = getSimulationPath(step.src);
 
-        // Cleanup
         if (cleanupStep2) { try { cleanupStep2(); } catch { } cleanupStep2 = null; }
         if (cleanupStep3) { try { cleanupStep3(); } catch { } cleanupStep3 = null; }
         if (cleanupStep5) { try { cleanupStep5(); } catch { } cleanupStep5 = null; }
         if (cleanupStep6) { try { cleanupStep6(); } catch { } cleanupStep6 = null; }
         if (cleanupStep7) { try { cleanupStep7(); } catch { } cleanupStep7 = null; }
 
-        // Step routing
         if (step.isWoodSelection) {
             renderWoodSelection(timestamp);
         } else if (step.id === 'step2') {
@@ -347,21 +321,13 @@ document.addEventListener("DOMContentLoaded", function () {
         } else if (step.id === 'step7') {
             renderStep7(timestamp);
         } else {
-            // Determine media type from the configured step source (not from any cached blob URL)
             const isVideo = step.src && step.src.endsWith('.mp4');
-
-            // Initial button state for generic steps
-            // if (nextButton) {
-            //    if (step.id === 'step1.5') nextButton.disabled = !step1_5Completed;
-            //    else if (step.id === 'step8') nextButton.disabled = !step8Completed;
-            //    else nextButton.disabled = isVideo;
-            // }
 
             gifContainer.innerHTML = `
             <div class="gif-wrapper" style="width:100%;">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="width:100%; position: relative; min-height:300px; display:flex; align-items:center; justify-content:center; background:#fff">
@@ -381,15 +347,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (v) {
                     v.onended = () => {
                         if (step.id === 'step1.5') {
-                            step1_5Completed = true; // Still track completion
+                            step1_5Completed = true;
 
-                            // Show 1.5.png
                             const imgPath = getSimulationPath('images/simulation/1.5.png');
-                            // We replace the video with the image
                             const container = v.parentElement;
                             container.innerHTML = `<img src="${formatSrc(imgPath, timestamp)}" class="step-gif" style="width:100%;height:100%;object-fit:cover;">`;
 
-                            // Add instruction after step 1.5 finishes
                             const instructionDiv = document.createElement('div');
                             instructionDiv.className = 'drag-instructions';
                             instructionDiv.style.width = '96%';
@@ -420,6 +383,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     v.addEventListener('loadedmetadata', updateScaling, { once: true });
                 }
             } else {
+                if (nextButton) nextButton.disabled = false;
                 const img = gifContainer.querySelector('.step-gif');
                 if (img) {
                     if (img.complete) updateScaling();
@@ -429,19 +393,6 @@ document.addEventListener("DOMContentLoaded", function () {
             window.addEventListener('resize', updateScaling);
         }
 
-        // Call updateButton to set initial state based on logic (except for generic video which handled above)
-        // Actually, updateButtons might overwrite what we just did corresponding to generic video if we fall through to 'else' block in updateButtons.
-        // Let's refine updateButtons to read a state we set here? 
-        // Or just let showCurrentStep logic prevail by NOT calling updateButtons immediately for generic steps?
-        // Current updateButtons structure calculates state every time. 
-        // Ideally we should track 'step.completed' state.
-
-        // For now, let's inject a property into the step object at runtime for generic videos.
-        if (step.id !== 'step1' && !step.id.startsWith('step1') && !['step2', 'step3', 'step5', 'step6', 'step7'].includes(step.id)) {
-            // This block handles other generic steps if any? currently just 1.5, 8.
-        }
-
-        // We update buttons AFTER render to ensure correct initial state for complex steps
         updateButtons();
     }
 
@@ -480,9 +431,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <hr>
 
             <div style="text-align:center; margin:20px 0;">
-             <!-- Use the selected wood image as the result image for now, as there isn't a specific 'result' image logic defined other than the wood choice -->
              ${selectedWood
-                ? `<img 
+                ? `<img
                        src="${getAssetSrc(`images/simulation/${selectedWood}/${selectedWood}.png`)}"
                        alt="${selectedWood}"
                        style="max-width:90%; border:1px solid #ccc; border-radius:6px;"
@@ -567,7 +517,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="gif-wrapper" style="width: 100%; height: 100%;">
             <h3>Choose the wood to use for pattern making</h3>
             <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-            
+
             <div class="sim-media-container">
                 <div class="scaling-wrapper">
                     <div class="play-stage" id="play-stage" style="width: 100%; position: relative;">
@@ -581,7 +531,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const stage = document.getElementById('play-stage');
         const img = document.getElementById('wood-selection-img');
-
 
         function createWoodHotspots() {
             woodTypes.forEach(wood => {
@@ -598,7 +547,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
             layoutWoodHotspots();
         }
-
 
         function layoutWoodHotspots() {
             const rect = stage.getBoundingClientRect();
@@ -631,10 +579,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function selectWood(woodId, woodName) {
         selectedWood = woodId;
-        console.log('Selected wood:', woodName);
         if (nextButton) nextButton.disabled = false;
 
-        // Visual feedback
         const hotspots = gifContainer.querySelectorAll('.wood-hotspot');
         hotspots.forEach(hs => {
             if (hs.dataset.wood === woodId) {
@@ -645,7 +591,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        // Show confirmation message
         const instructions = gifContainer.querySelector('.drag-instructions');
         if (instructions) {
             instructions.textContent = `You selected: ${woodName} `;
@@ -662,23 +607,21 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!--Drag Phase-->
                         <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(toolPath, timestamp)}" id="draggable-sand" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
                             <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -170%; --arrow-left: 863%;"></div>
                         </div>
 
-                        <!--Video Phase-->
                         <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                             <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" playsinline muted style="width:100%"></video>
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="step7-instruction" class="drag-instructions">Drag the sandpaper to the workpiece.</div>
             </div>
             `;
@@ -692,9 +635,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step7-video');
         const instructionElem = document.getElementById('step7-instruction');
 
-        // Layout
-        // To change the target location, adjust x and y values below (0.0 to 1.0)
-        // x=0.5, y=0.5 is the center of the image.
         const targetRel = { x: 0.25, y: 0.3 };
         const tolerancePx = 60;
 
@@ -727,7 +667,6 @@ document.addEventListener("DOMContentLoaded", function () {
             updateScaling();
         });
 
-        // Drag Logic
         let dragging = false;
         let startX = 0, startY = 0;
 
@@ -780,7 +719,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dist < tolerancePx) {
                 dropZone.classList.add('success');
-                // Successfully dropped - no snapping, keep current position
                 setTimeout(startVideoPhase, 500);
             }
         }
@@ -793,7 +731,6 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('touchend', onPointerUp);
 
         function startVideoPhase() {
-            // Cleanup drag listeners
             window.removeEventListener('resize', setDropZoneLayout);
             window.removeEventListener('mousemove', onPointerMove);
             window.removeEventListener('touchmove', onPointerMove);
@@ -806,7 +743,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.onended = () => {
                 instructionElem.textContent = "Step complete! Click next to measure the workpeice.";
-                step7Completed = true; // Assumed global or need to declare
+                step7Completed = true;
                 if (nextButton) nextButton.disabled = false;
             };
             video.play();
@@ -822,6 +759,7 @@ document.addEventListener("DOMContentLoaded", function () {
             } catch (_) { }
         };
     }
+
     function renderStep6(timestamp) {
         if (cleanupStep6) {
             try { cleanupStep6(); } catch (e) { }
@@ -835,7 +773,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>Press green button to start operation.</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
@@ -891,7 +829,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         poster.src = formatSrc(posterPath, timestamp);
-        // Layout hotspot based on poster size initially
         poster.onload = () => {
             layoutHotspot();
             updateScaling();
@@ -912,11 +849,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderStep3(timestamp) {
         step3Completed = false;
-        // if (nextButton) nextButton.disabled = true;
 
         const videoSrc = getSimulationPath('images/simulation/3.mp4');
         const substeps = [
-            // Placeholder substeps - Adjust time and hotspots as needed
             { time: 0.97, hotspot: { x: 0.61625, y: 0.5266666666666666, w: 0.045, h: 0.15333333333333332 }, instruction: 'Unlock the tool rest lock' },
             { time: 3.97, hotspot: { x: 0.50625, y: 0.31777777777777777, w: 0.2475, h: 0.36444444444444446 }, instruction: 'Move tool post to its position' },
             { time: 7, hotspot: { x: 0.71625, y: 0.31777777777777777, w: 0.23375, h: 0.3 }, instruction: 'Move tail stock to its position' },
@@ -932,7 +867,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage" style="position: relative; width: 100%; overflow: hidden;">
@@ -978,17 +913,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         let rafId = null;
         let intervalId = null;
-        const EPS = 0.05; // Slightly larger tolerance
+        const EPS = 0.05;
 
         function checkAndPause() {
             if (currentSubstep >= substeps.length) return;
             const target = substeps[currentSubstep].time;
             const t = video.currentTime;
 
-            // Debug check
-            // console.log(`Step 3 Check: t = ${ t }, target = ${ target }, currentSubstep = ${ currentSubstep } `);
-
-            // Remove upper bound to ensure we catch it even if we skip a frame
             if (t >= target) {
                 video.pause();
 
@@ -999,7 +930,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 } else {
                     instructionElem.textContent = 'Step complete! Click next to begin the process.';
 
-                    // Final step actions
                     step3Completed = true;
                     if (nextButton) {
                         nextButton.disabled = false;
@@ -1010,7 +940,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         video.addEventListener('ended', () => {
-            console.log('Step 3 video ended fallback');
             step3Completed = true;
             if (nextButton) {
                 nextButton.disabled = false;
@@ -1091,7 +1020,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>Move the tool to the tool post (drag and drop).</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="drag-stage" style="position: relative; width: 100%; overflow: hidden;">
@@ -1271,14 +1200,12 @@ document.addEventListener("DOMContentLoaded", function () {
             step5Completed = true;
             if (nextButton) nextButton.disabled = false;
 
-            // Remove the drop zone immediately when placed correctly
             dropZone.style.opacity = '0';
             dropZone.style.transition = 'opacity 0.3s ease';
             setTimeout(() => {
                 dropZone.remove();
             }, 300);
 
-            // Update instruction text
             const instructions = gifContainer.querySelector('.drag-instructions');
             if (instructions) {
                 instructions.textContent = 'Step complete! Click next to begin the process.';
@@ -1313,14 +1240,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function renderStep2(timestamp) {
         step2Completed = false;
-        // if (nextButton) nextButton.disabled = true;
 
         const videoSrc = getSimulationPath('images/simulation/2.1.mp4');
         const video1Src = getSimulationPath('images/simulation/2.1.mp4');
         const chunkBgPath = getSimulationPath('images/simulation/2.png');
         const keyPath = getSimulationPath('images/simulation/key.png');
 
-        // Phase 3 Assets
         const chunkOpenBgPath = getSimulationPath('images/simulation/2.1.png');
         const video2Src = getSimulationPath('images/simulation/2.2.mp4');
         const woodPath = getSimulationPath('images/simulation/wood.png');
@@ -1334,7 +1259,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ];
 
         const substeps2 = [
-            // Placeholders for 2.2.mp4
             { time: 0, hotspot: { x: 0.4503, y: 0.2473, w: 0.047, h: 0.1042 }, instruction: 'Click on the chuck key to tighten.' },
             { time: 1.3, hotspot: { x: 0.5615, y: 0.4937436108689752, w: 0.061, h: 0.1002 }, instruction: 'Click on the chuck key to tighten.' },
             { time: 2.9, hotspot: { x: 0.4503, y: 0.7004, w: 0.047, h: 0.1042 }, instruction: 'Click on the chuck key to tighten.' },
@@ -1350,23 +1274,20 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper" style="width: 100%; height: 100%;">
                 <h3>${steps[currentStepIndex].title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <!--Drag Phase 1: Key-->
                         <div class="drag-stage" id="step2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(chunkBgPath, timestamp)}" class="stage-bg" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(keyPath, timestamp)}" id="draggable-key" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 8%; top: 20%; right: 10%;"/>
                             <div id="step2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -356%; --arrow-left: 415%;"></div>
                         </div>
 
-                        <!--Video Phase-->
                         <div class="play-stage" id="step2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
                             <video id="step2-video" src="${formatSrc(video1Src, timestamp)}" playsinline muted style="width: 100%; display: block;"></video>
                             <button id="substep-hotspot" class="play-hotspot" style="display:none;"></button>
                         </div>
 
-                        <!--Drag Phase 2: Wood-->
                         <div class="drag-stage" id="step2-drag-stage-2" style="position: relative; width: 100%; overflow: hidden; display: none;">
                             <img src="${formatSrc(chunkOpenBgPath, timestamp)}" class="stage-bg-2" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(woodPath, timestamp)}" id="draggable-wood" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 33%; right: 10%;"/>
@@ -1374,12 +1295,11 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>
                     </div>
                 </div>
-                
+
                 <div id="substep-instruction" class="drag-instructions">Drag the chuck key to the chuck.</div>
             </div>
             `;
 
-        // -- Elements --
         const dragStage1 = document.getElementById('step2-drag-stage');
         const key = document.getElementById('draggable-key');
         const dropZone1 = document.getElementById('step2-drop-zone');
@@ -1398,7 +1318,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (hotspotDebug) hotspot.classList.add('debug-highlight');
 
-        // --- Drag Logic 1 (Key) ---
         const targetRel1 = { x: 0.58, y: 0.54 };
         const tolerancePx = 50;
         let dragging = false;
@@ -1424,9 +1343,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (dragBg1.complete && dragBg1.naturalWidth) layout1();
         else dragBg1.onload = layout1;
 
-        // --- Generic Drag Handlers ---
         function onPointerDown(e) {
-            // Determine which object triggers this
             if (e.target === key) {
                 currentDragObject = key;
                 currentStage = dragStage1;
@@ -1482,7 +1399,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!dragging) return;
             dragging = false;
 
-            // Check Drop
             const stageRect = currentStage.getBoundingClientRect();
             const objRect = currentDragObject.getBoundingClientRect();
             const anchor = (currentDragObject === wood)
@@ -1493,7 +1409,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 y: objRect.top - stageRect.top + objRect.height * anchor.y
             };
 
-            // Re-calc target center based on drop zone
             const dzRect = currentDropZone.getBoundingClientRect();
             const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
             const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
@@ -1509,7 +1424,6 @@ document.addEventListener("DOMContentLoaded", function () {
                     currentDragObject.style.left = left + 'px';
                     currentDragObject.style.top = top + 'px';
                 }
-                // Successfully dropped - no snapping, keep current position
                 if (onCurrentDropSuccess) onCurrentDropSuccess();
             }
 
@@ -1540,8 +1454,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
         updateScaling();
 
-
-        // --- Video Logic ---
         let waitingForInteraction = false;
         let isSecondVideo = false;
 
@@ -1554,7 +1466,6 @@ document.addEventListener("DOMContentLoaded", function () {
             substeps = substeps1;
             instructionElem.textContent = substeps[currentSubstep].instruction;
 
-            // Reset video generic listeners
             video.onended = () => {
                 startWoodDragPhase();
             };
@@ -1573,13 +1484,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
             video.src = formatSrc(video2Src, timestamp);
 
-            // Define handler
             const onVideoEnded = () => {
-                console.log('Step 2 Final Video Ended');
                 instructionElem.textContent = 'Step complete! Click next to start with the setup.';
                 step2Completed = true;
                 if (nextButton) nextButton.disabled = false;
-                // Remove listener to prevent duplicates if function called multiple times
                 video.removeEventListener('ended', onVideoEnded);
             };
 
@@ -1609,20 +1517,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 instructionElem.textContent = substeps[currentSubstep].instruction;
                 video.play();
             } else {
-                // Last interaction done. Resume video to finish.
-                currentSubstep++; // Move past last substep so checkAndPause stops
+                currentSubstep++;
                 video.play();
             }
         };
 
-        // When video ends, move to next phase
         video.onended = () => {
             startWoodDragPhase();
         };
 
-        // --- Phase 3: Wood Drag ---
-        const targetRel2 = { x: 0.473, y: 0.535 }; // Center of chuck roughly
-        const layout2 = () => setDropZoneLayout(dragStage2, dropZone2, targetRel2, 0.15); // Bigger zone for wood
+        const targetRel2 = { x: 0.473, y: 0.535 };
+        const layout2 = () => setDropZoneLayout(dragStage2, dropZone2, targetRel2, 0.15);
 
         function startWoodDragPhase() {
             playStage.style.display = 'none';
@@ -1636,7 +1541,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 dragBg2.onload = () => requestAnimationFrame(layoutAfterShow);
             }
         }
-
 
         let rafId = null;
         let intervalId = null;
@@ -1687,7 +1591,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cleanupStep2 = () => {
             try {
-                // Remove all generic listeners
                 window.removeEventListener('mousemove', onPointerMove);
                 window.removeEventListener('touchmove', onPointerMove);
                 window.removeEventListener('mouseup', onPointerUp);
@@ -1727,7 +1630,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (resetButton) {
         resetButton.addEventListener('click', function () {
-            // Reset to wood selection screen (step 0)
             selectedWood = null;
             currentStepIndex = 0;
             showCurrentStep();

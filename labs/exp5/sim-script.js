@@ -1,13 +1,8 @@
-/* jshint esversion: 11 */
-/* global console */
 'use strict';
 
 document.addEventListener("DOMContentLoaded", function () {
-    console.log('Simulation E9 script loaded');
 
-    // --- ASSET PRELOADING ---
     const assetList = [
-        // Base simulation assets
         "images/simulation/0.5.mp4",
         "images/simulation/1.png",
         "images/simulation/1-tool.png",
@@ -19,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/5mm.png",
         "images/simulation/protractor.png",
 
-        // Aluminium 1mm assets
         "images/simulation/aluminium-1mm/0.5.mp4",
         "images/simulation/aluminium-1mm/1.png",
         "images/simulation/aluminium-1mm/1-tool.png",
@@ -31,7 +25,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/aluminium-1mm/4.5.png",
         "images/simulation/aluminium-1mm/1mm.png",
 
-        // Aluminium 5mm assets
         "images/simulation/aluminium-5mm/0.5.mp4",
         "images/simulation/aluminium-5mm/1.png",
         "images/simulation/aluminium-5mm/1-tool.png",
@@ -43,7 +36,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/aluminium-5mm/4.5.png",
         "images/simulation/aluminium-5mm/5mm.png",
 
-        // Brass 1mm assets
         "images/simulation/brass-1mm/0.5.mp4",
         "images/simulation/brass-1mm/1.png",
         "images/simulation/brass-1mm/1-tool.png",
@@ -55,7 +47,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/brass-1mm/4.5.png",
         "images/simulation/brass-1mm/1mm.png",
 
-        // Brass 5mm assets
         "images/simulation/brass-5mm/0.5.mp4",
         "images/simulation/brass-5mm/1.png",
         "images/simulation/brass-5mm/1-tool.png",
@@ -67,7 +58,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/brass-5mm/4.5.png",
         "images/simulation/brass-5mm/5mm.png",
 
-        // Steel 1mm assets
         "images/simulation/steel-1mm/0.5.mp4",
         "images/simulation/steel-1mm/1.png",
         "images/simulation/steel-1mm/1-tool.png",
@@ -79,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/steel-1mm/4.5.png",
         "images/simulation/steel-1mm/1mm.png",
 
-        // Steel 5mm assets
         "images/simulation/steel-5mm/0.5.mp4",
         "images/simulation/steel-5mm/1.png",
         "images/simulation/steel-5mm/1-tool.png",
@@ -99,7 +88,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function formatSrc(url, timestamp) {
-        // url might already be a blob URL from getSimulationPath/getAssetSrc
         if (url.startsWith('blob:')) return url;
         return `${url}?t=${timestamp}`;
     }
@@ -140,7 +128,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const objectUrl = URL.createObjectURL(blob);
                 assetCache[url] = objectUrl;
             } catch (err) {
-                console.error(`Error preloading ${url}:`, err);
             } finally {
                 loadedCount++;
                 const percent = Math.round((loadedCount / assetList.length) * 100);
@@ -169,8 +156,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const stepsList = document.getElementById('steps-list');
 
     let cleanupCurrent = null;
-    let selectedMaterial = null; // 'aluminium', 'brass' or 'steel'
-    let selectedThickness = null; // '1mm' or '5mm'
+    let selectedMaterial = null;
+    let selectedThickness = null;
 
     const steps = [
         {
@@ -217,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
         {
             id: 'step4_5', mode: 'drag', title: 'Measure Angle with Protractor',
             background: 'images/simulation/3.5.png', tool: 'protractor.png',
-            target: { mode: 'rel', x: 0.5, y: 0.55 }, // Estimated target
+            target: { mode: 'rel', x: 0.5, y: 0.55 },
             init: { mode: 'rel', x: 0.52, y: 0.50 },
             anchor: { x: 0.477, y: 0.85 },
             toolSize: { widthRel: 0.6 },
@@ -322,7 +309,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (!container || !wrapper || !stage) return;
 
-        // Reset scale for measurement
         wrapper.style.transform = 'scale(1)';
         wrapper.style.width = '100%';
         wrapper.style.marginLeft = '0';
@@ -347,24 +333,20 @@ document.addEventListener("DOMContentLoaded", function () {
     function isHotspotDone(step) { return stepCompleted[step.id]; }
     function setStepDone(stepId) { if (stepCompleted.hasOwnProperty(stepId)) stepCompleted[stepId] = true; }
 
-    // Get simulation path based on material and thickness selection
     function getSimulationPath(src) {
         if (!src) return src;
 
-        // Handle protractor special case
         if (src === 'protractor.png') {
             const protractorPath = 'images/simulation/' + src;
             return getAssetSrc(protractorPath);
         }
 
-        // If material/thickness selected, get from folder
         if (selectedMaterial && selectedThickness) {
             const folderName = `${selectedMaterial}-${selectedThickness}`;
             const folderPath = src.replace('images/simulation/', `images/simulation/${folderName}/`);
             return getAssetSrc(folderPath);
         }
 
-        // Otherwise return base asset
         return getAssetSrc(src);
     }
 
@@ -375,13 +357,14 @@ document.addEventListener("DOMContentLoaded", function () {
         const timestamp = Date.now();
         clearCleanup();
 
+        if (nextButton) nextButton.disabled = true;
+
         if (step.isSelectionStep) {
             renderSelectionStep();
         } else if (step.mode === 'schematic') {
             renderSchematicStep(step, timestamp);
         } else if (step.mode === 'drag') {
             renderDragStep(step, timestamp);
-
         } else if (isHotspotStep(step)) {
             renderHotspotFirstFrame(step, timestamp);
         } else if (step.mode === 'print') {
@@ -393,22 +376,8 @@ document.addEventListener("DOMContentLoaded", function () {
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
 
-        // Update next button logic
-        if (nextButton) {
-            if (step.isSelectionStep) {
-                // Enabled only when selection is complete (handled in renderSelectionStep and updateSelectionSummary)
-                nextButton.disabled = !selectedMaterial || !selectedThickness;
-            } else if (step.mode === 'schematic') {
-                // Schematic is just viewing an image, always enabled
-                nextButton.disabled = false;
-            } else if (step.mode === 'print') {
-                nextButton.disabled = true; // Last step
-            } else {
-                // For drag, hotspot, autoplay: disabled until explicitly completed
-                // nextButton.disabled = !isHotspotDone(step);
-            }
-            // Final check for last step
-            if (currentStepIndex === totalSteps - 1) nextButton.disabled = true;
+        if (nextButton && currentStepIndex === totalSteps - 1) {
+            nextButton.disabled = true;
         }
 
         if (stepsList) {
@@ -424,7 +393,7 @@ document.addEventListener("DOMContentLoaded", function () {
             <div class="gif-wrapper">
                 <h3>Select Material and Thickness</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                
+
                 <div class="selection-container">
                     <div class="selection-section">
                         <h4>Choose Material:</h4>
@@ -452,7 +421,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="selection-section">
                         <h4>Choose Thickness:</h4>
                         <div class="thickness-options">
@@ -460,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             <button class="thickness-btn" data-thickness="5mm" id="thickness-5mm">5mm</button>
                         </div>
                     </div>
-                    
+
                     <div class="selection-summary" id="selection-summary">
                         Please select both material and thickness to proceed.
                     </div>
@@ -468,7 +437,6 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-        // Material selection handlers
         const materialCards = gifContainer.querySelectorAll('.material-card');
         materialCards.forEach(card => {
             if (selectedMaterial && card.dataset.material === selectedMaterial) {
@@ -482,7 +450,6 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         });
 
-        // Thickness selection handlers
         const thicknessButtons = gifContainer.querySelectorAll('.thickness-btn');
         thicknessButtons.forEach(btn => {
             if (selectedThickness && btn.dataset.thickness === selectedThickness) {
@@ -515,15 +482,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (!selectedThickness) parts.push('thickness');
                 summary.textContent = `Please select ${parts.join(' and ')} to proceed.`;
                 summary.classList.remove('complete');
-                // if (nextButton) nextButton.disabled = true;
+                if (nextButton) nextButton.disabled = true;
             }
         }
     }
 
     function renderSchematicStep(step, timestamp) {
-        // Determine which schematic image to show based on thickness
         const schematicImage = selectedThickness === '5mm' ? '5mm.png' : '1mm.png';
-        // Use getSimulationPath to load from material-specific folders
         const imagePath = getSimulationPath(`images/simulation/${schematicImage}`);
         const formattedPath = formatSrc(imagePath, timestamp);
 
@@ -554,9 +519,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
     }
 
-    // Generate dynamic instruction based on selection
     function getDynamicInstruction(stepId) {
-
         if (stepId === 'step4_5') {
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
                 return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
@@ -612,10 +575,8 @@ Spring Back angle = 74° - 64° = 10°`;
         return 'Click to continue.';
     }
 
-    // Get snap rotation angle based on selection and step
     function getSnapRotation(stepId) {
         if (stepId === 'step4_5') {
-            // All materials use 323 degrees for step 3.5 (can be customized per material)
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 323;
             if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 323;
             if (selectedMaterial == 'brass' && selectedThickness == '1mm') return 323;
@@ -623,7 +584,6 @@ Spring Back angle = 74° - 64° = 10°`;
             if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 323;
             if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 323;
         } else if (stepId === 'step5_5') {
-            // All materials use 324 degrees for step 4.5 (can be customized per material)
             if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 326;
             if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 326;
             if (selectedMaterial == 'brass' && selectedThickness == '1mm') return 327;
@@ -631,11 +591,10 @@ Spring Back angle = 74° - 64° = 10°`;
             if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 333;
             if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 328;
         }
-        return 0; // Default: no rotation
+        return 0;
     }
 
     function renderHotspotFirstFrame(step, timestamp) {
-        // Generate initial instruction shown before hotspot is clicked
         function getInitialInstruction(stepId) {
             if (stepId === 'step1') {
                 return 'Click to start the marking step.';
@@ -647,7 +606,6 @@ Spring Back angle = 74° - 64° = 10°`;
             return 'Click to continue.';
         }
 
-
         const hotspotMap = {
             step1: { x: 0.5, y: 0.5, w: 0.15, h: 0.15 },
             step4: { x: 0.5347906403940886, y: 0.5697624521072796, w: 0.07376974935177183, h: 0.12618494945713216 },
@@ -656,7 +614,7 @@ Spring Back angle = 74° - 64° = 10°`;
         const cfg = hotspotMap[step.id] || { x: 0.45, y: 0.45, w: 0.15, h: 0.15 };
         const initialInstruction = getInitialInstruction(step.id);
         const dynamicInstruction = getDynamicInstruction(step.id);
-        const videoSrc = getSimulationPath(step.src); // Apply branching
+        const videoSrc = getSimulationPath(step.src);
         const formattedVideoSrc = formatSrc(videoSrc, timestamp);
 
         gifContainer.innerHTML = `
@@ -706,14 +664,11 @@ Spring Back angle = 74° - 64° = 10°`;
 
         hotspot.addEventListener('click', () => {
             hotspot.style.visibility = 'hidden';
-            // Do not marks as done here - wait for video end
             instructionElem.textContent = '  ';
             video.play().catch(() => { });
-            // if (nextButton) nextButton.disabled = true;
         }, { once: true });
 
         video.addEventListener('ended', () => {
-            // Show "Step complete!"
             instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
             if (nextButton) nextButton.disabled = false;
             setStepDone(step.id);
@@ -722,12 +677,11 @@ Spring Back angle = 74° - 64° = 10°`;
         window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
 
         cleanupCurrent = function () {
-            // Hotspot resize removed as managed by updateScaling
         };
     }
 
     function renderAutoplayStep(step, timestamp) {
-        const videoSrc = getSimulationPath(step.src); // Apply branching
+        const videoSrc = getSimulationPath(step.src);
         const formattedVideoSrc = formatSrc(videoSrc, timestamp);
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
@@ -765,15 +719,13 @@ Spring Back angle = 74° - 64° = 10°`;
 
     function renderDragStep(step, timestamp) {
         stepCompleted[step.id] = false;
-        // if (nextButton) nextButton.disabled = true;
 
-        const backgroundPng = getSimulationPath(step.background); // Apply branching
-        const toolPng = getSimulationPath(step.tool); // Apply branching
+        const backgroundPng = getSimulationPath(step.background);
+        const toolPng = getSimulationPath(step.tool);
         const formattedBgSrc = formatSrc(backgroundPng, timestamp);
         const formattedToolSrc = formatSrc(toolPng, timestamp);
         const tolerancePx = step.tolerance || 50;
 
-        // Get arrow position from step config or use defaults
         const arrowTop = step.arrow?.top || '-370%';
         const arrowLeft = step.arrow?.left || '643%';
 
@@ -797,6 +749,7 @@ Spring Back angle = 74° - 64° = 10°`;
         const tool = document.getElementById('draggable-tool');
         const dropZone = document.getElementById('drop-zone');
         const stageBg = document.getElementById('drag-bg');
+
         let toolPlacedInitially = false;
         let toolMovedByUser = false;
 
@@ -855,7 +808,6 @@ Spring Back angle = 74° - 64° = 10°`;
             tool.style.height = 'auto';
         }
 
-        // Hide tool initially until properly positioned
         tool.style.visibility = 'hidden';
 
         if (stageBg.complete && stageBg.naturalWidth) {
@@ -932,12 +884,10 @@ Spring Back angle = 74° - 64° = 10°`;
             tool.style.left = left + 'px';
             tool.style.top = top + 'px';
 
-            // Remove drop zone immediately for all drag steps
             dropZone.remove();
 
             const rotation = getSnapRotation(step.id);
 
-            // Function to run after successful placement/rotation
             const onComplete = () => {
                 stepCompleted[step.id] = true;
                 setStepDone(step.id);
@@ -961,28 +911,21 @@ Spring Back angle = 74° - 64° = 10°`;
             };
 
             if (rotation) {
-                // Determine anchor percent for transform origin
                 const anchorPercentX = (anchor.x * 100).toFixed(1);
                 const anchorPercentY = (anchor.y * 100).toFixed(1);
 
-                // Set instruction to prompt for click
                 document.getElementById('drag-instruction').textContent = "Click on the protractor to align it.";
 
-                // Add one-time click listener for rotation
                 tool.style.cursor = 'pointer';
                 const rotateOnClick = () => {
                     tool.style.cursor = 'default';
-                    // Set transform-origin to the anchor point (base of protractor)
                     tool.style.transformOrigin = `${anchorPercentX}% ${anchorPercentY}%`;
                     tool.style.transform = `rotate(${rotation - 360}deg)`;
 
-                    // Wait for rotation animation then complete
                     setTimeout(onComplete, 350);
                 };
-                // Add listener after a short delay to avoid triggering on the current drag-release click
                 setTimeout(() => {
                     tool.addEventListener('click', rotateOnClick, { once: true });
-                    // Also support touch
                     tool.addEventListener('touchend', (e) => {
                         e.preventDefault();
                         rotateOnClick();
@@ -990,7 +933,6 @@ Spring Back angle = 74° - 64° = 10°`;
                 }, 100);
 
             } else {
-                // No rotation needed, complete immediately
                 onComplete();
             }
         }
@@ -1017,54 +959,34 @@ Spring Back angle = 74° - 64° = 10°`;
     function renderResultStep() {
         if (!selectedMaterial || !selectedThickness) return;
 
-        // Calculate values based on selection
         let step3Angle, step4Angle, springBack;
         let matName = 'Aluminium';
         if (selectedMaterial === 'brass') matName = 'Brass';
         if (selectedMaterial === 'steel') matName = 'Mild Steel';
 
-        // Logic from getDynamicInstruction
         if (selectedMaterial == 'aluminium') {
             if (selectedThickness == '1mm') {
                 step3Angle = 106;
                 step4Angle = 114;
-                // Bend Angle = 74
-                // Final Angle = 66
-                // Spring Back = 8
-            } else { // 5mm
+            } else {
                 step3Angle = 106;
                 step4Angle = 110;
-                // Bend Angle = 74
-                // Final Angle = 70
-                // Spring Back = 4
             }
         } else if (selectedMaterial == 'brass') {
             if (selectedThickness == '1mm') {
-                step3Angle = 106; // Protractor reading
-                step4Angle = 112; // Protractor reading
-                // Bend Angle = 180 - 106 = 74
-                // Final Angle = 180 - 112 = 68
-                // Spring Back = 74 - 68 = 6
-            } else { // 5mm
+                step3Angle = 106;
+                step4Angle = 112;
+            } else {
                 step3Angle = 106;
                 step4Angle = 110;
-                // Bend Angle = 74
-                // Final Angle = 70
-                // Spring Back = 4
             }
-        } else { // Steel
+        } else {
             if (selectedThickness == '1mm') {
                 step3Angle = 106;
                 step4Angle = 126;
-                // Bend Angle = 74
-                // Final Angle = 54
-                // Spring Back = 20
-            } else { // 5mm
+            } else {
                 step3Angle = 106;
                 step4Angle = 116;
-                // Bend Angle = 74
-                // Final Angle = 64
-                // Spring Back = 10
             }
         }
 
@@ -1072,10 +994,8 @@ Spring Back angle = 74° - 64° = 10°`;
         const finalAngle = 180 - step4Angle;
         springBack = bendAngle - finalAngle;
 
-
         document.body.classList.add('result-mode');
 
-        // Get result image path - pass base path to getSimulationPath so it adds the folder correctly
         const resultImagePath = getSimulationPath('images/simulation/1-tool.png');
         const formattedResultImageSrc = formatSrc(resultImagePath, Date.now());
 
@@ -1083,7 +1003,7 @@ Spring Back angle = 74° - 64° = 10°`;
             <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
                 <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
                 <hr>
-                
+
                 <div style="text-align:center; margin:20px 0;">
                     <img src="${formattedResultImageSrc}" alt="${matName} ${selectedThickness}" style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
                     <p style="font-size:14px; margin-top:6px;">Spring Back Effect Analysis for ${matName} (${selectedThickness})</p>
@@ -1118,7 +1038,7 @@ Spring Back angle = 74° - 64° = 10°`;
                             <td style="border:1px solid #000; padding:10px 15px;">Bend Angle (180° - Reading)</td>
                             <td style="border:1px solid #000; padding:10px 15px;">${bendAngle}°</td>
                         </tr>
-                        
+
                         <tr>
                             <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Unloaded State Measurements</td>
                         </tr>
@@ -1130,7 +1050,7 @@ Spring Back angle = 74° - 64° = 10°`;
                             <td style="border:1px solid #000; padding:10px 15px;">Final Bend Angle (180° - Reading)</td>
                             <td style="border:1px solid #000; padding:10px 15px;">${finalAngle}°</td>
                         </tr>
-                        
+
                         <tr>
                              <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Result</td>
                         </tr>
@@ -1140,20 +1060,18 @@ Spring Back angle = 74° - 64° = 10°`;
                         </tr>
                     </tbody>
                 </table>
-                
+
                 <h3 style="margin-top:20px;">Conclusion</h3>
                 <p>
                     The spring back effect was observed for ${matName} with ${selectedThickness} thickness.
                     The difference between the loaded bend angle and the final unloaded angle indicates the elastic recovery of the material.
                 </p>
-                
+
                 <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
                     <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Observation Sheet</button>
                 </div>
             </div>
         `;
-
-        // if (nextButton) nextButton.disabled = true;
     }
 
     if (prevButton) {
