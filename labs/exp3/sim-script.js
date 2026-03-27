@@ -1483,11 +1483,15 @@ document.addEventListener("DOMContentLoaded", function () {
             isSecondVideo = true;
 
             video.src = formatSrc(video2Src, timestamp);
+            video.onended = null;
 
             const onVideoEnded = () => {
-                instructionElem.textContent = 'Step complete! Click next to start with the setup.';
+                instructionElem.textContent = 'Step complete! Click next to proceed with the setup.';
                 step2Completed = true;
-                if (nextButton) nextButton.disabled = false;
+                if (nextButton) {
+                    nextButton.disabled = false;
+                    nextButton.removeAttribute('disabled');
+                }
                 video.removeEventListener('ended', onVideoEnded);
             };
 
@@ -1515,6 +1519,13 @@ document.addEventListener("DOMContentLoaded", function () {
             if (currentSubstep < substeps.length - 1) {
                 currentSubstep++;
                 instructionElem.textContent = substeps[currentSubstep].instruction;
+                if (!substeps[currentSubstep].hotspot && isSecondVideo) {
+                    step2Completed = true;
+                    if (nextButton) {
+                        nextButton.disabled = false;
+                        nextButton.removeAttribute('disabled');
+                    }
+                }
                 video.play();
             } else {
                 currentSubstep++;
@@ -1550,13 +1561,26 @@ document.addEventListener("DOMContentLoaded", function () {
             if (playStage.style.display === 'none' || waitingForInteraction) return;
 
             if (currentSubstep >= substeps.length) return;
-            const target = substeps[currentSubstep].time;
+            const substep = substeps[currentSubstep];
+            const target = substep.time;
             const t = video.currentTime;
 
             if (t >= target && t < target + 0.5) {
-                video.pause();
-                waitingForInteraction = true;
-                showHotspot();
+                if (!substep.hotspot) {
+                    instructionElem.textContent = substep.instruction;
+                    if (isSecondVideo) {
+                        step2Completed = true;
+                        if (nextButton) {
+                            nextButton.disabled = false;
+                            nextButton.removeAttribute('disabled');
+                        }
+                    }
+                    currentSubstep++;
+                } else {
+                    video.pause();
+                    waitingForInteraction = true;
+                    showHotspot();
+                }
             }
         }
 
