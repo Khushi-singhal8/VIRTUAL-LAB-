@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Virtual Labs</title>
+    <title>Virtual Labs </title>
     <style>
         /* Simulation Styles */
         .container {
@@ -53,7 +53,7 @@
         .play-stage {
             position: relative;
             width: 100%;
-            /*border-radius: 8px;*/
+            border-radius: 8px;
             overflow: hidden;
         }
 
@@ -158,7 +158,7 @@
 
 
         .play-hotspot.debug-highlight {
-            background: rgba(255, 100, 100, 0.4);
+            background: rgba(255, 0, 0, 0.4);
             border: 3px solid red;
             animation: none;
         }
@@ -225,27 +225,6 @@
             padding-left: 20px;
             box-shadow: -1px 0 0 #ddd;
         }
-
-        .sim-media-container {
-            width: 100%;
-            height: 600px;
-            overflow: hidden;
-            position: relative;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .scaling-wrapper {
-            width: 100%;
-            transform-origin: center center;
-            transition: transform 0.2s ease-out;
-            position: relative;
-        }
     </style>
     <style>
         /* Overrides: larger media like exp1/exp2 and keep controls visible */
@@ -268,7 +247,6 @@
         .button-container {
             position: sticky;
             bottom: 0;
-            
             padding: 10px 0;
             z-index: 100;
         }
@@ -292,7 +270,6 @@
         }
 
         /* Draggable tool styling */
-        /* Draggable item */
         .draggable {
             position: absolute;
             cursor: grab;
@@ -319,8 +296,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            box-sizing: border-box;
 
             font-size: 12px;
             font-weight: bold;
@@ -344,7 +319,7 @@
             font-size: 15PX;
             font-weight: bold;
             text-align: center;
-            color: black;
+            color: #0f0f0e;
             width: 100%;
             height: 100%;
             display: flex;
@@ -368,14 +343,70 @@
 
         .drop-zone.dragging-active::before {
             display: none !important;
-            content: "";
-            animation: none;
+        }
+
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
         }
 
         .drop-zone.debug-highlight {
             background: rgba(255, 0, 0, 0.281);
             border: 3px solid red;
             animation: none;
+        }
+
+        /* Fixed-height simulation container */
+        .sim-media-container {
+            width: 100%;
+            height: 600px;
+            /* Fixed height for the simulation area */
+            overflow: hidden;
+            position: relative;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .scaling-wrapper {
+            width: 100%;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .play-stage {
+            border-radius: 0 !important;
+            /* Managed by parent container */
         }
         body {
     background: url('bg.png') no-repeat center center fixed;

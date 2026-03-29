@@ -1,6 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
 
-    // Injects custom CSS styles for apparatus cards, click hints, and animations
     const style = document.createElement('style');
     style.innerHTML = `
 .apparatus-img-box {
@@ -20,61 +19,31 @@ document.addEventListener("DOMContentLoaded", function () {
     max-height: 95%;
     object-fit: contain;
 }
-
-.click-hint {
-    position: absolute;
-    border: 3px dashed #00ffcc;
-    border-radius: 8px;
-    animation: pulse 1.4s infinite;
-    pointer-events: none;
-    box-shadow: 0 0 12px rgba(0,255,204,0.7);
-    z-index: 9;
-}
-
-.click-label {
-    position: absolute;
-    top: -28px;
-    left: 0;
-    background: #00ffcc;
-    color: #000;
-    padding: 3px 8px;
-    font-size: 13px;
-    font-weight: bold;
-    border-radius: 4px;
-}
-
-@keyframes pulse {
-    0%   { opacity: 0.3; }
-    50%  { opacity: 1; }
-    100% { opacity: 0.3; }
-}
 `;
     document.head.appendChild(style);
 
-    // DOM references for navigation buttons and display containers
     const resetButton = document.getElementById('reset-btn');
     const prevButton = document.getElementById('prev-btn');
     const nextButton = document.getElementById('next-btn');
     const gifContainer = document.getElementById('gif-container');
     const currentStepElement = document.getElementById('current-step');
     const totalStepsElement = document.getElementById('total-steps');
+    const stepsList = document.getElementById('steps-list');
 
-    // Tracks completion state for each interactive step
     let cleanupCurrent = null;
     let step1Completed = false;
     let step1_5Completed = false;
     let step2Completed = false;
+    let step2_5Completed = false;
     let step3_1Completed = false;
     let step3_2Completed = false;
     let step3_3Completed = false;
     let step4Completed = false;
     let step4_5Completed = false;
     let step4_6Completed = false;
+    let step5Completed = false;
     let step6Completed = false;
-    let step7Completed = false;
-    let step8Completed = false;
 
-    // Apparatus items displayed in the identification step
     const apparatusData = [
         {
             name: "File",
@@ -87,14 +56,14 @@ document.addEventListener("DOMContentLoaded", function () {
             desc: "Used to supply additional molten metal to the joint during welding for proper fusion and strength."
         },
         {
-            name: "Chipping Hammer",
-            img: "images/apparatus/a].png",
-            desc: "Used to remove slag and impurities from the welded joint after welding."
+            name: "Flux",
+            img: "images/apparatus/g].png",
+            desc: "Applied to the filler rod or electrode during the joining process. Its primary function is to coat these materials, thereby preventing oxidation of the welded components and ensuring a high-quality joint."
         },
         {
-            name: "Workpiece Clamp",
+            name: "Workpiece",
             img: "images/apparatus/e].png",
-            desc: "Used to hold the workpieces firmly in position and maintain proper alignment during welding."
+            desc: "Two clean metal sheets (mild steel or copper)."
         },
         {
             name: "Ignitor",
@@ -108,11 +77,10 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     ];
 
-    // List of all images, videos, and audio files to preload before simulation starts
     const assetList = [
         "images/apparatus/d].png",
         "images/apparatus/c].png",
-        "images/apparatus/a].png",
+        "images/apparatus/g].png",
         "images/apparatus/e].png",
         "images/apparatus/b].png",
         "images/apparatus/f].png",
@@ -124,43 +92,38 @@ document.addEventListener("DOMContentLoaded", function () {
         "images/simulation/1.5-tool.png",
         "images/simulation/2.mp4",
         "images/simulation/3.1.mp4",
-        "images/simulation/3.2.mp4",
-        "images/simulation/3.1.5.mp4",
         "images/simulation/3.png",
         "images/simulation/3.1.png",
+        "images/simulation/3.1.5.mp4",
         "images/simulation/3-tool.png",
+        "images/simulation/3.2.mp4",
+        "images/simulation/3_1.mp4",
+        "images/simulation/3_1.png",
+        "images/simulation/3_1-tool.png",
         "images/simulation/4.mp4",
         "images/simulation/4.png",
         "images/simulation/4-tool1.png",
         "images/simulation/4-tool2.png",
         "images/simulation/4.5.mp4",
-        "images/simulation/4.5.png",
-        "images/simulation/4-tool3.png",
         "images/simulation/4.6.mp3",
-        "images/simulation/7.mp4",
-        "images/simulation/7.png",
-        "images/simulation/7-tool.png",
-        "images/simulation/8.mp4",
-        "images/simulation/8.png",
-        "images/simulation/8-tool.png",
-        "images/simulation/print .png"
+        "images/simulation/5.mp4",
+        "images/simulation/5.png",
+        "images/simulation/5-tool.png",
+        "images/simulation/print1.png"
     ];
 
     const assetCache = {};
 
-    // Returns a cached blob URL for an asset, or the original URL if not cached
     function getAssetSrc(originalUrl) {
         return assetCache[originalUrl] || originalUrl;
     }
 
-    // Appends a cache-busting timestamp to non-blob URLs
     function formatSrc(url, timestamp) {
         const src = getAssetSrc(url);
         if (src.startsWith('blob:')) return src;
         return `${src}?t=${timestamp}`;
     }
 
-    // Fetches all assets into blob URLs and shows a loading overlay with progress bar
     async function preloadAssets() {
         const overlay = document.createElement('div');
         overlay.id = 'preload-overlay';
@@ -216,24 +179,22 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 500);
     }
 
-    // Defines all simulation steps in order with their type and media source
     const steps = [
         { id: 'apparatus', title: 'Apparatus Identification', type: 'apparatus' },
-        { id: 'step1', title: 'Clean plate edges', src: 'images/simulation/1.mp4', type: 'video' },
+        { id: 'step1', title: 'Clean plate edges with file', src: 'images/simulation/1.mp4', type: 'video' },
         { id: 'step1_5', title: 'Clean second plate', src: 'images/simulation/1.5.mp4', type: 'video' },
         { id: 'step2', title: 'Align plates and clamp them', src: 'images/simulation/2.mp4', type: 'video' },
+        { id: 'step2_5', title: 'Coating the flux', src: 'images/simulation/3_1.mp4', type: 'video' },
         { id: 'step3_1', title: 'Set gas pressure', src: 'images/simulation/3.1.mp4', type: 'video' },
         { id: 'step3_2', title: 'Ignite the torch', src: 'images/simulation/3.png', type: 'drag-drop' },
         { id: 'step3_3', title: 'Obtain neutral flame', src: 'images/simulation/3.2.mp4', type: 'video' },
-        { id: 'step4', title: 'Apply tack welds at both ends of the plates', src: 'images/simulation/4.mp4', type: 'video' },
+        { id: 'step4', title: 'Preheat the plates', src: 'images/simulation/4.mp4', type: 'video' },
         { id: 'step4_5', title: 'Welding simulation', src: 'images/simulation/4.5.mp4', type: 'video' },
         { id: 'step4_6', title: 'Perform welding operation', type: 'drag-drop' },
-        { id: 'step7', title: 'Remove slag', src: 'images/simulation/7.mp4', type: 'video' },
-        { id: 'step8', title: 'File edges', src: 'images/simulation/8.mp4', type: 'video' },
+        { id: 'step5', title: 'Cleaning', src: 'images/simulation/5.mp4', type: 'video' },
         { id: 'result', title: 'Observation & Result', type: 'result' }
     ];
 
-    // Instruction text shown for each step: what to do now and what comes next
     const stepGuidance = {
         apparatus: {
             now: "Identify the apparatus used in gas welding.",
@@ -249,7 +210,11 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         step2: {
             now: "Click the highlighted areas to align plates.",
-            next: "Adjust gas pressure."
+            next: "Coat flux."
+        },
+        step2_5: {
+            now: "Flux coating",
+            next: "Adjust the pressure."
         },
         step3_1: {
             now: "Follow the steps to set pressure and open acetylene valve.",
@@ -261,36 +226,48 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         step3_3: {
             now: "Click to increase oxygen to obtain neutral flame.",
-            next: "Apply tack welds."
+            next: "Preheat."
         },
         step4: {
-            now: "Apply tack welds at both ends of the plates.",
+            now: "Preheating the plates.",
             next: "Start the welding process."
         },
         step4_5: {
-            now: "Perform welding.",
+            now: "Drag the torch to the starting position to begin welding.",
             next: "Perform welding on your own."
         },
         step4_6: {
             now: "Drag the torch and carefully weld the joint.",
-            next: "Remove slag."
+            next: "Clean the weld."
         },
-        step7: {
-            now: "Drag the chipping hammer to remove slag from the weld.",
-            next: "File the edges."
+        step5: {
+            now: "Drag the filing tool on top of the plate.",
+            next: "Observation."
         },
-        step8: {
-            now: "Drag the filing tool tool to start filing edges.",
-            next: "View results."
-        }
     };
 
     let currentStepIndex = 0;
     const totalSteps = steps.length;
 
+    if (stepsList) {
+        stepsList.innerHTML = '';
+        steps.forEach((step, index) => {
+            const item = document.createElement('div');
+            item.className = 'step-item';
+            item.dataset.step = index + 1;
+            const titleDiv = document.createElement('div');
+            titleDiv.className = 'step-item-title';
+            titleDiv.innerHTML = `<h4 style="margin:0">${index + 1}. ${step.title}</h4>`;
+            item.appendChild(titleDiv);
+            item.setAttribute('aria-disabled', 'true');
+            item.style.cursor = 'default';
+            item.title = 'Use Previous/Next to navigate';
+            stepsList.appendChild(item);
+        });
+    }
+
     if (totalStepsElement) totalStepsElement.textContent = totalSteps;
 
-    // Runs the previous step's cleanup function and removes resize listener
     function clearCleanup() {
         if (typeof cleanupCurrent === 'function') {
             try { cleanupCurrent(); } catch (_) { }
@@ -299,25 +276,23 @@ document.addEventListener("DOMContentLoaded", function () {
         window.removeEventListener('resize', updateScaling);
     }
 
-    // Scales the simulation stage to fit within its container without overflow
     function updateScaling() {
         const container = document.querySelector('.sim-media-container');
         const wrapper = document.querySelector('.scaling-wrapper');
         const stage = document.getElementById('play-stage') ||
             document.getElementById('step1-drag-stage') ||
             document.getElementById('step1_5-drag-stage') ||
+            document.getElementById('step2_5-drag-stage') ||
+            document.getElementById('step3_2-drag-stage') ||
             document.getElementById('step4-drag-stage') ||
             document.getElementById('step4_5-drag-stage') ||
             document.getElementById('step4_6-drag-stage') ||
             document.getElementById('step4_6-weld-stage') ||
-            document.getElementById('step7-drag-stage') ||
-            document.getElementById('step8-drag-stage');
+            document.getElementById('step5-drag-stage');
 
         if (!container || !wrapper || !stage) return;
 
         wrapper.style.transform = 'scale(1)';
-        wrapper.style.width = '100%';
-        wrapper.style.marginLeft = '0';
 
         const containerHeight = container.offsetHeight;
         const stageHeight = stage.offsetHeight;
@@ -326,52 +301,45 @@ document.addEventListener("DOMContentLoaded", function () {
             const scale = containerHeight / stageHeight;
             if (scale < 1) {
                 wrapper.style.transform = `scale(${scale})`;
-                wrapper.style.width = `${(1 / scale) * 100}%`;
-                wrapper.style.transformOrigin = 'center center';
-                wrapper.style.marginLeft = '0';
-            } else {
-                wrapper.style.transformOrigin = 'center center';
             }
         }
     }
 
-    // Checks if a step requires user interaction before proceeding
     function isInteractiveStep(stepId) {
-        return stepId === 'step1' || stepId === 'step1_5' || stepId === 'step2' || stepId === 'step3_1' || stepId === 'step3_2' || stepId === 'step3_3' || stepId === 'step4' || stepId === 'step4_6' || stepId === 'step6' || stepId === 'step8';
+        return stepId === 'step1' || stepId === 'step1_5' || stepId === 'step2' || stepId === 'step2_5' || stepId === 'step3_1' || stepId === 'step3_2' || stepId === 'step3_3' || stepId === 'step4' || stepId === 'step4_5' || stepId === 'step4_6' || stepId === 'step5';
     }
 
-    // Returns whether a given interactive step has been completed
     function isInteractiveCompleted(stepId) {
         if (stepId === 'step1') return step1Completed;
         if (stepId === 'step1_5') return step1_5Completed;
         if (stepId === 'step2') return step2Completed;
+        if (stepId === 'step2_5') return step2_5Completed;
         if (stepId === 'step3_1') return step3_1Completed;
         if (stepId === 'step3_2') return step3_2Completed;
         if (stepId === 'step3_3') return step3_3Completed;
         if (stepId === 'step4') return step4Completed;
         if (stepId === 'step4_5') return step4_5Completed;
         if (stepId === 'step4_6') return step4_6Completed;
+        if (stepId === 'step5') return step5Completed;
         if (stepId === 'step6') return step6Completed;
-        if (stepId === 'step8') return step8Completed;
         return true;
     }
 
-    // Marks a given interactive step as completed or not
     function setInteractiveCompleted(stepId, done) {
         if (stepId === 'step1') step1Completed = done;
         if (stepId === 'step1_5') step1_5Completed = done;
         if (stepId === 'step2') step2Completed = done;
+        if (stepId === 'step2_5') step2_5Completed = done;
         if (stepId === 'step3_1') step3_1Completed = done;
         if (stepId === 'step3_2') step3_2Completed = done;
         if (stepId === 'step3_3') step3_3Completed = done;
         if (stepId === 'step4') step4Completed = done;
         if (stepId === 'step4_5') step4_5Completed = done;
         if (stepId === 'step4_6') step4_6Completed = done;
+        if (stepId === 'step5') step5Completed = done;
         if (stepId === 'step6') step6Completed = done;
-        if (stepId === 'step8') step8Completed = done;
     }
 
-    // Renders the apparatus identification grid showing all welding tools
     function renderApparatusStep() {
         let html = `
         <div class="gif-wrapper">
@@ -393,23 +361,52 @@ document.addEventListener("DOMContentLoaded", function () {
                         ">
         `;
 
-        apparatusData.forEach((item, index) => {
+        for (let i = 0; i < 3; i++) {
+            const item = apparatusData[i];
             html += `
-                        <div style="
-                            background:#f5f5f5;
-                            border-radius:12px;
-                            padding:15px;
-                            text-align:center;
-                        ">
-                            <div class="apparatus-img-box">
-                                <img src="${getAssetSrc(item.img)}" alt="${item.name}">
-                            </div>
+            <div style="
+                background:#f5f5f5;
+                border-radius:12px;
+                padding:15px;
+                text-align:center;
+            ">
+                <div class="apparatus-img-box">
+                    <img src="${getAssetSrc(item.img)}" alt="${item.name}">
+                </div>
+                <h4 style="margin-top:10px;">${i + 1}. ${item.name}</h4>
+                <p style="font-size:14px;">${item.desc}</p>
+            </div>
+        `;
+        }
 
-                            <h4 style="margin-top:10px;">${index + 1}. ${item.name}</h4>
-                            <p style="font-size:14px;">${item.desc}</p>
-                        </div>
-            `;
-        });
+        html += `</div>
+
+            <div style="
+                display:flex;
+                justify-content:center;
+                gap:20px;
+                margin-top:20px;
+            ">
+    `;
+
+        for (let i = 3; i < apparatusData.length; i++) {
+            const item = apparatusData[i];
+            html += `
+            <div style="
+                background:#f5f5f5;
+                border-radius:12px;
+                padding:15px;
+                text-align:center;
+                width: 280px;
+            ">
+                <div class="apparatus-img-box">
+                    <img src="${getAssetSrc(item.img)}" alt="${item.name}">
+                </div>
+                <h4 style="margin-top:10px;">${i + 1}. ${item.name}</h4>
+                <p style="font-size:14px;">${item.desc}</p>
+            </div>
+        `;
+        }
 
         html += `
                         </div>
@@ -417,8 +414,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 </div>
             </div>
 
-            <div class="drag-instructions" style="margin-top:20px; line-height: 15px">
-                ${stepGuidance.apparatus.now}\n
+            <div class="drag-instructions" style="margin-top:20px;">
+                ${stepGuidance.apparatus.now}<br>
                 Click next to: ${stepGuidance.apparatus.next}
             </div>
         </div>
@@ -429,14 +426,12 @@ document.addEventListener("DOMContentLoaded", function () {
         window.addEventListener('resize', updateScaling);
     }
 
-    // Main step router: cleans up previous step, disables next button, and renders the current step
     function showCurrentStep() {
         if (!gifContainer) return;
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
 
         document.body.classList.remove('result-mode');
-        clearCleanup();
 
         if (step.id === 'apparatus') {
             clearCleanup();
@@ -459,6 +454,8 @@ document.addEventListener("DOMContentLoaded", function () {
             renderStep1_5DragDrop(step, timestamp);
         } else if (step.id === 'step2') {
             renderInteractiveVideoStep(step, timestamp);
+        } else if (step.id === 'step2_5') {
+            renderStep2_5DragDrop(step, timestamp);
         } else if (step.id === 'step3_1') {
             renderStep3_1(step, timestamp);
         } else if (step.id === 'step3_2') {
@@ -471,10 +468,8 @@ document.addEventListener("DOMContentLoaded", function () {
             renderStep4_5DragDrop(step, timestamp);
         } else if (step.id === 'step4_6') {
             renderStep4_6WeldingSimulation(step, timestamp);
-        } else if (step.id === 'step7') {
-            renderStep7DragDrop(step, timestamp);
-        } else if (step.id === 'step8') {
-            renderStep8DragDrop(step, timestamp);
+        } else if (step.id === 'step5') {
+            renderStep5DragDrop(step, timestamp);
         } else if (step.id === 'result') {
             document.body.classList.add('result-mode');
             renderResultStep();
@@ -487,36 +482,38 @@ document.addEventListener("DOMContentLoaded", function () {
         if (nextButton) {
             nextButton.disabled = true;
         }
+
+        if (stepsList) {
+            const items = stepsList.querySelectorAll('.step-item');
+            items.forEach((itm, idx) => {
+                if (idx === currentStepIndex) itm.classList.add('active');
+                else itm.classList.remove('active');
+            });
+        }
     }
 
-    // Plays a simple video step with no interaction required, enables next when video ends
     function renderPlainVideoStep(step, timestamp) {
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
-                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
+                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
                         </div>
                     </div>
                 </div>
             </div>
         `;
 
-        if (nextButton) nextButton.disabled = true;
-
         const video = document.getElementById('step-video');
         const onMeta = () => {
             updateScaling();
+            window.addEventListener('resize', updateScaling);
             video.play().catch(() => { });
         };
         video.addEventListener('loadedmetadata', onMeta, { once: true });
-        video.addEventListener('ended', () => {
-            if (nextButton) nextButton.disabled = false;
-        }, { once: true });
-        window.addEventListener('resize', updateScaling);
 
         cleanupCurrent = function () {
             try {
@@ -528,18 +525,17 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Handles drag-and-drop of torch and filler rod, then plays the welding video
     function renderStep4_5DragDrop(step, timestamp) {
         step4_5Completed = false;
         if (nextButton) nextButton.disabled = true;
 
         const videoSrc = 'images/simulation/4.5.mp4';
-        const bgPath = 'images/simulation/4.5.png';
+        const bgPath = 'images/simulation/4.png';
         const tool1Path = 'images/simulation/4-tool1.png';
         const tool2Path = 'images/simulation/4-tool2.png';
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
 
@@ -548,14 +544,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         <div class="drag-stage" id="step4_5-drag-stage" style="position: relative; width: 100%;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for welding" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1-4_5" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 33%; right: 39%;"/>
-                            <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 27%; right: 50%;"/>
+                            <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2-4_5" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 15%; right: 70%;"/>
 
-                            <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -230%; --arrow-left: 100%;"></div>
-                            <div id="step4_5-drop-zone2" class="drop-zone" style="--arrow-top: -250%; --arrow-left: 70%;"></div>
+                            <div id="step4_5-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -260%; --arrow-left: 95%;"></div>
+                            <div id="step4_5-drop-zone2" class="drop-zone" style="--arrow-top: -250%; --arrow-left: -135%;"></div>
                         </div>
 
-                        <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                        <div class="play-stage" id="step4_5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step4_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline></video>
                         </div>
                     </div>
                 </div>
@@ -577,8 +573,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step4_5-video');
         const instructionElem = document.getElementById('step4_5-instruction');
 
-        const target1Rel = { x: 0.45, y: 0.5 };
-        const target2Rel = { x: 0.3, y: 0.5 };
+        const target1Rel = { x: 0.5, y: 0.6 };
+        const target2Rel = { x: 0.36, y: 0.55 };
         const tolerancePx = 80;
 
         let tool1Placed = false;
@@ -608,21 +604,33 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone2.style.top = (ty2 - h / 2) + 'px';
         }
 
-        if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
-        else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
-        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
+        if (dragBg.complete && dragBg.naturalWidth) {
+            setDropZoneLayout();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        } else {
+            dragBg.onload = () => {
+                setDropZoneLayout();
+                updateScaling();
+                window.addEventListener('resize', updateScaling);
+            };
+        }
 
         let dragging = false;
         let startX = 0, startY = 0;
 
         function onPointerDown(e) {
             if (e.target !== tool1 && e.target !== tool2) return;
-            dropZone1.classList.add('dragging-active');
-            dropZone2.classList.add('dragging-active');
 
             activeTool = e.target;
             dragging = true;
             activeTool.classList.add('dragging');
+
+            if (activeTool === tool1) {
+                dropZone1.classList.add('dragging-active');
+            } else if (activeTool === tool2) {
+                dropZone2.classList.add('dragging-active');
+            }
 
             const rect = activeTool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
@@ -637,6 +645,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!dragging || !activeTool) return;
 
             const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = activeTool.getBoundingClientRect();
 
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -682,7 +691,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     tool1Placed = true;
                     dropZone1.style.display = 'none';
                     tool2.style.display = 'block';
-                    dropZone2.style.display = 'flex';
+                    dropZone2.style.display = 'block';
                     instructionElem.textContent = "Good! Now position the filler rod.";
                 }
                 if (activeTool === tool2) {
@@ -740,12 +749,11 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Interactive welding step: drag tools into position, then drag torch along the joint to weld
     function renderStep4_6WeldingSimulation(step, timestamp) {
         step4_6Completed = false;
         if (nextButton) nextButton.disabled = true;
 
-        const bgPath = 'images/simulation/4.5.png';
+        const bgPath = 'images/simulation/4.png';
         const tool1Path = 'images/simulation/4-tool1.png';
         const tool2Path = 'images/simulation/4-tool2.png';
         const torchPath = 'images/simulation/4-tool3.png';
@@ -964,7 +972,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const arcGlow = document.getElementById('step4_6-arc-glow');
         const progressBar = document.getElementById('step4_6-progress-bar');
         const progressTxt = document.getElementById('step4_6-progress-text');
-        const hint = document.getElementById('step4_6-hint');
         const progressContainer = document.getElementById('step4_6-weld-progress-container');
         const ctx = sparkCanvas.getContext('2d');
 
@@ -989,7 +996,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         weldBg.addEventListener('load', () => { syncCanvasSize(); updateScaling(); });
 
-        // Determines which weld segment the torch tip is currently over
         function getSegmentUnderTip(tipX, tipY) {
             const ax = WELD_START.x, ay = WELD_START.y;
             const bx = WELD_END.x, by = WELD_END.y;
@@ -1003,7 +1009,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return Math.min(NUM_SEGMENTS - 1, Math.floor(t * NUM_SEGMENTS));
         }
 
-        // Draws the weld bead SVG polygons with hot/cool color transitions
         function redrawBead() {
             const W = weldStage.offsetWidth, H = weldStage.offsetHeight;
             const sx = WELD_START.x * W, sy = WELD_START.y * H;
@@ -1040,61 +1045,60 @@ document.addEventListener("DOMContentLoaded", function () {
                     const cy = sy + uyPath * t;
 
                     let fill;
-                    if (hotFrac > 0.7) fill = '#ffcc00';
-                    else if (hotFrac > 0.3) fill = `rgb(${Math.floor(180 + hotFrac * 75)},${Math.floor(hotFrac * 120)},0)`;
+                    if (hotFrac > 0.75) fill = '#ff9f1a';
+                    else if (hotFrac > 0.35) fill = `rgb(${Math.floor(165 + hotFrac * 70)},${Math.floor(78 + hotFrac * 35)},${Math.floor(12 + hotFrac * 10)})`;
                     else {
-                        const shade = 50 + (seg % 2) * 16;
-                        fill = `rgb(${shade},${shade - 6},${shade - 12})`;
+                        fill = (seg % 2 === 0) ? 'rgb(153,95,39)' : 'rgb(125,77,30)';
                     }
 
-                    const halfAlong = stepSize * 0.48;
-                    const halfAcrossSurface = scR * BEAD_SURFACE_EDGE_SCALE;
-                    const halfAcrossRoot = scR * BEAD_ROOT_EDGE_SCALE;
-                    const triTipLen = scR * 4;
+                        const halfAlong = stepSize * 0.48;
+                        const halfAcrossSurface = scR * BEAD_SURFACE_EDGE_SCALE;
+                        const halfAcrossRoot = scR * BEAD_ROOT_EDGE_SCALE;
+                        const triTipLen = scR * 4;
 
-                    const centerOffset = scR * -0.4;
-                    const centerX = cx + pxPath * centerOffset;
-                    const centerY = cy + pyPath * centerOffset;
+                        const centerOffset = scR * -0.4;
+                        const centerX = cx + pxPath * centerOffset;
+                        const centerY = cy + pyPath * centerOffset;
 
-                    if (seg === 0) {
-                        const p1x = centerX + pxShape * halfAcrossSurface;
-                        const p1y = centerY + pyShape * halfAcrossSurface;
-                        const p2x = centerX - pxShape * halfAcrossRoot;
-                        const p2y = centerY - pyShape * halfAcrossRoot;
-                        const p3x = centerX - uxShape * triTipLen;
-                        const p3y = centerY - uyShape * triTipLen;
+                        if (seg === 0) {
+                            const p1x = centerX + pxShape * halfAcrossSurface;
+                            const p1y = centerY + pyShape * halfAcrossSurface;
+                            const p2x = centerX - pxShape * halfAcrossRoot;
+                            const p2y = centerY - pyShape * halfAcrossRoot;
+                            const p3x = centerX - uxShape * triTipLen;
+                            const p3y = centerY - uyShape * triTipLen;
 
-                        newHtml += `
-                            <polygon
-                                points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y}"
-                                fill="${fill}"
-                                stroke="rgba(58,30,10,0.65)"
-                                stroke-width="0.7"
-                                stroke-linejoin="round"
-                                filter="url(#bead-shadow-4_6)"
-                                opacity="0.98">
-                            </polygon>`;
-                    } else {
-                        const p1x = centerX - uxShape * halfAlong - pxShape * halfAcrossRoot;
-                        const p1y = centerY - uyShape * halfAlong - pyShape * halfAcrossRoot;
-                        const p2x = centerX + uxShape * halfAlong - pxShape * halfAcrossRoot;
-                        const p2y = centerY + uyShape * halfAlong - pyShape * halfAcrossRoot;
-                        const p3x = centerX + uxShape * halfAlong + pxShape * halfAcrossSurface;
-                        const p3y = centerY + uyShape * halfAlong + pyShape * halfAcrossSurface;
-                        const p4x = centerX - uxShape * halfAlong + pxShape * halfAcrossSurface;
-                        const p4y = centerY - uyShape * halfAlong + pyShape * halfAcrossSurface;
+                            newHtml += `
+                        <polygon
+                            points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y}"
+                            fill="${fill}"
+                            stroke="rgba(58,30,10,0.65)"
+                            stroke-width="0.7"
+                            stroke-linejoin="round"
+                            filter="url(#bead-shadow-4_6)"
+                            opacity="0.98">
+                        </polygon>`;
+                        } else {
+                            const p1x = centerX - uxShape * halfAlong - pxShape * halfAcrossRoot;
+                            const p1y = centerY - uyShape * halfAlong - pyShape * halfAcrossRoot;
+                            const p2x = centerX + uxShape * halfAlong - pxShape * halfAcrossRoot;
+                            const p2y = centerY + uyShape * halfAlong - pyShape * halfAcrossRoot;
+                            const p3x = centerX + uxShape * halfAlong + pxShape * halfAcrossSurface;
+                            const p3y = centerY + uyShape * halfAlong + pyShape * halfAcrossSurface;
+                            const p4x = centerX - uxShape * halfAlong + pxShape * halfAcrossSurface;
+                            const p4y = centerY - uyShape * halfAlong + pyShape * halfAcrossSurface;
 
-                        newHtml += `
-                            <polygon
-                                points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y} ${p4x},${p4y}"
-                                fill="${fill}"
-                                stroke="rgba(58,30,10,0.65)"
-                                stroke-width="0.7"
-                                stroke-linejoin="round"
-                                filter="url(#bead-shadow-4_6)"
-                                opacity="0.98">
-                            </polygon>`;
-                    }
+                            newHtml += `
+                        <polygon
+                            points="${p1x},${p1y} ${p2x},${p2y} ${p3x},${p3y} ${p4x},${p4y}"
+                            fill="${fill}"
+                            stroke="rgba(58,30,10,0.65)"
+                            stroke-width="0.7"
+                            stroke-linejoin="round"
+                            filter="url(#bead-shadow-4_6)"
+                            opacity="0.98">
+                        </polygon>`;
+                        }
                 }
             }
             beadGroup.innerHTML = newHtml;
@@ -1116,7 +1120,6 @@ document.addEventListener("DOMContentLoaded", function () {
             e.preventDefault();
         }
 
-        // Moves the torch and welds segments as it passes over the joint line
         function onPointerMovePhase2(e) {
             if (!phase2Dragging) return;
             const stageRect = weldStage.getBoundingClientRect();
@@ -1140,7 +1143,7 @@ document.addEventListener("DOMContentLoaded", function () {
             if (seg !== null && !completed) {
                 if (!isAudioPlaying) {
                     weldingAudio.currentTime = 0;
-                    weldingAudio.play().catch(() => {});
+                    weldingAudio.play().catch(() => { });
                     isAudioPlaying = true;
                 }
 
@@ -1199,7 +1202,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Creates random spark particles near the torch tip for visual effect
         function emitSparks(px, py, stageRect) {
             if (Math.random() > 0.6) return;
             const count = Math.floor(Math.random() * 3) + 1;
@@ -1216,7 +1218,6 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
 
-        // Animation loop that updates spark particles and redraws the weld bead
         function animateLoop() {
             if (!weldStage) return;
             const W = sparkCanvas.width, H = sparkCanvas.height;
@@ -1247,7 +1248,6 @@ document.addEventListener("DOMContentLoaded", function () {
             animFrame = requestAnimationFrame(animateLoop);
         }
 
-        // Transitions from tool placement to the interactive torch-dragging welding phase
         function startInteractiveWeldingPhase() {
             dragStage.style.display = 'none';
             weldStage.style.display = 'inline-block';
@@ -1271,7 +1271,6 @@ document.addEventListener("DOMContentLoaded", function () {
             animFrame = requestAnimationFrame(animateLoop);
         }
 
-        // Marks welding as complete and enables the next button
         function finishWeld() {
             phase2Dragging = true;
             if (isAudioPlaying) {
@@ -1312,7 +1311,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Plays a video that pauses at specific timestamps and shows clickable hotspots
     function renderInteractiveVideoStep(step, timestamp) {
         setInteractiveCompleted(step.id, false);
         if (nextButton) nextButton.disabled = true;
@@ -1331,14 +1329,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="play-stage">
-                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
-                            <button id="play-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
+                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -1358,19 +1356,21 @@ document.addEventListener("DOMContentLoaded", function () {
         let pausedForSegment = false;
 
         function layoutHotspot() {
-            const rect = { width: stage.offsetWidth, height: stage.offsetHeight };
+            if (!stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
             const cfg = cfgSeq[Math.min(segmentIndex, cfgSeq.length - 1)];
-            hotspot.style.left = (rect.width * cfg.hotspot.x) + 'px';
-            hotspot.style.top = (rect.height * cfg.hotspot.y) + 'px';
-            hotspot.style.width = (rect.width * cfg.hotspot.w) + 'px';
-            hotspot.style.height = (rect.height * cfg.hotspot.h) + 'px';
+            hotspot.style.left = (w * cfg.hotspot.x) + 'px';
+            hotspot.style.top = (h * cfg.hotspot.y) + 'px';
+            hotspot.style.width = (w * cfg.hotspot.w) + 'px';
+            hotspot.style.height = (h * cfg.hotspot.h) + 'px';
         }
 
         function showHotspot() {
             const cfg = cfgSeq[segmentIndex];
             instructionElem.textContent = `${cfg.instruction}`;
             layoutHotspot();
-            hotspot.style.display = 'flex';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -1410,7 +1410,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1430,13 +1430,9 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('ended', onEnded, { once: true });
         hotspot.addEventListener('click', onHotspotClick);
 
-        window.addEventListener('resize', () => {
-            layoutHotspot();
-            updateScaling();
-        });
+        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
-            updateScaling();
             video.play().catch(() => { });
         }, { once: true });
 
@@ -1458,7 +1454,325 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Plays a video with hotspots for setting gas pressure and opening the acetylene valve
+    function renderStep1DragDrop(step, timestamp) {
+        step1Completed = false;
+        if (nextButton) nextButton.disabled = true;
+
+        const videoSrc = 'images/simulation/1.mp4';
+        const bgPath = 'images/simulation/1.png';
+        const toolPath = 'images/simulation/1-tool.png';
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 10%;"/>
+                            <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: 445%;"></div>
+                        </div>
+
+                        <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
+            </div>
+        `;
+
+        const dragStage = document.getElementById('step1-drag-stage');
+        const fileTool = document.getElementById('draggable-file-1');
+        const dropZone = document.getElementById('step1-drop-zone');
+        const dragBg = dragStage.querySelector('.stage-bg');
+
+        const playStage = document.getElementById('step1-play-stage');
+        const video = document.getElementById('step1-video');
+        const instructionElem = document.getElementById('step1-instruction');
+
+        const targetRel = { x: 0.4, y: 0.55 };
+        const tolerancePx = 80;
+
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            const w = rect.width * 0.08;
+            const h = w;
+            const tx = rect.width * targetRel.x;
+            const ty = rect.height * targetRel.y;
+            dropZone.style.width = w + 'px';
+            dropZone.style.height = h + 'px';
+            dropZone.style.left = (tx - w / 2) + 'px';
+            dropZone.style.top = (ty - h / 2) + 'px';
+        }
+
+        if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
+        else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
+        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
+
+        let dragging = false;
+        let startX = 0, startY = 0;
+
+        function onPointerDown(e) {
+            dragging = true;
+            fileTool.classList.add('dragging');
+            dropZone.classList.add('dragging-active');
+            const rect = fileTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging) return;
+            const stageRect = dragStage.getBoundingClientRect();
+            const fileRect = fileTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - fileRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - fileRect.height));
+
+            fileTool.style.left = newLeft + 'px';
+            fileTool.style.top = newTop + 'px';
+        }
+
+        function onPointerUp() {
+            if (!dragging) return;
+            dragging = false;
+            fileTool.classList.remove('dragging');
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const fileRect = fileTool.getBoundingClientRect();
+            const fileCenter = {
+                x: fileRect.left - stageRect.left + fileRect.width / 2,
+                y: fileRect.top - stageRect.top + fileRect.height / 2
+            };
+
+            const dzRect = dropZone.getBoundingClientRect();
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(fileCenter.x - targetX, fileCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                dropZone.classList.add('success');
+                dropZone.style.display = 'none';
+                setTimeout(startVideoPhase, 500);
+            }
+        }
+
+        fileTool.addEventListener('mousedown', onPointerDown);
+        fileTool.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        function startVideoPhase() {
+            window.removeEventListener('resize', setDropZoneLayout);
+            window.removeEventListener('mousemove', onPointerMove);
+            window.removeEventListener('touchmove', onPointerMove);
+            window.removeEventListener('mouseup', onPointerUp);
+            window.removeEventListener('touchend', onPointerUp);
+
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+            instructionElem.textContent = "Cleaning plate edges...";
+
+            video.onended = () => {
+                instructionElem.innerHTML =
+                    "<b>Step complete.</b> Click next to: " +
+                    stepGuidance.step1.next;
+
+                step1Completed = true;
+                if (nextButton) nextButton.disabled = false;
+            };
+
+            video.play();
+        }
+
+        cleanupCurrent = () => {
+            try {
+                window.removeEventListener('resize', setDropZoneLayout);
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+            } catch (_) { }
+        };
+    }
+
+    function renderStep2_5DragDrop(step, timestamp) {
+        setInteractiveCompleted(step.id, false);
+        if (nextButton) nextButton.disabled = true;
+
+        const videoSrc = 'images/simulation/3_1.mp4';
+        const bgPath = 'images/simulation/3_1.png';
+        const toolPath = 'images/simulation/3_1-tool.png';
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="drag-stage" id="step2_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
+                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Coating Flux" style="width: 100%; height: auto; display: block;"/>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-flux" class="draggable" alt="Flux Tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+                            <div id="step2_5-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -290%; --arrow-left: 355%;"></div>
+                            <div id="step2_5-drag-text" style="position: absolute; z-index: 15; font-size: 33px; color: #333; top: 22%; left: 73%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; white-space: nowrap; transition: opacity 0.01s ease;font-family: sans-serif">Filler rod</div>
+                        </div>
+
+                        <div class="play-stage" id="step2_5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step2_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="step2_5-instruction" class="drag-instructions">Drag the flux to the plate joint.</div>
+            </div>
+        `;
+
+        const dragStage = document.getElementById('step2_5-drag-stage');
+        const fluxTool = document.getElementById('draggable-flux');
+        const dropZone = document.getElementById('step2_5-drop-zone');
+        const dragBg = dragStage.querySelector('.stage-bg');
+
+        const playStage = document.getElementById('step2_5-play-stage');
+        const video = document.getElementById('step2_5-video');
+        const instructionElem = document.getElementById('step2_5-instruction');
+
+        const targetRel = { x: 0.25, y: 0.5 };
+        const tolerancePx = 100;
+
+        function setDropZoneLayout() {
+            const rect = dragStage.getBoundingClientRect();
+            const w = rect.width * 0.15;
+            const h = w * 0.6;
+            const tx = rect.width * targetRel.x;
+            const ty = rect.height * targetRel.y;
+            dropZone.style.width = w + 'px';
+            dropZone.style.height = h + 'px';
+            dropZone.style.left = (tx - w / 2) + 'px';
+            dropZone.style.top = (ty - h / 2) + 'px';
+        }
+
+        if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
+        else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
+        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
+
+        let dragging = false;
+        let startX = 0, startY = 0;
+
+        function onPointerDown(e) {
+            dragging = true;
+            fluxTool.classList.add('dragging');
+            const dragText = document.getElementById('step2_5-drag-text');
+            if (dragText) {
+                dragText.style.opacity = '0';
+            }
+            dropZone.classList.add('dragging-active');
+            const rect = fluxTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+            startX = clientX - rect.left;
+            startY = clientY - rect.top;
+            e.preventDefault();
+        }
+
+        function onPointerMove(e) {
+            if (!dragging) return;
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = fluxTool.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
+            let newLeft = clientX - stageRect.left - startX;
+            let newTop = clientY - stageRect.top - startY;
+
+            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
+            newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
+
+            fluxTool.style.left = newLeft + 'px';
+            fluxTool.style.top = newTop + 'px';
+        }
+
+        function onPointerUp() {
+            if (!dragging) return;
+            dragging = false;
+            fluxTool.classList.remove('dragging');
+
+            const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = fluxTool.getBoundingClientRect();
+            const toolCenter = {
+                x: toolRect.left - stageRect.left + toolRect.width / 2,
+                y: toolRect.top - stageRect.top + toolRect.height / 2
+            };
+
+            const dzRect = dropZone.getBoundingClientRect();
+            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
+            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
+
+            const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
+
+            if (dist < tolerancePx) {
+                dropZone.classList.add('success');
+                dropZone.style.display = 'none';
+                setTimeout(startVideoPhase, 500);
+            }
+        }
+
+        fluxTool.addEventListener('mousedown', onPointerDown);
+        fluxTool.addEventListener('touchstart', onPointerDown);
+        window.addEventListener('mousemove', onPointerMove);
+        window.addEventListener('touchmove', onPointerMove);
+        window.addEventListener('mouseup', onPointerUp);
+        window.addEventListener('touchend', onPointerUp);
+
+        function startVideoPhase() {
+            window.removeEventListener('resize', setDropZoneLayout);
+            window.removeEventListener('mousemove', onPointerMove);
+            window.removeEventListener('touchmove', onPointerMove);
+            window.removeEventListener('mouseup', onPointerUp);
+            window.removeEventListener('touchend', onPointerUp);
+
+            dragStage.style.display = 'none';
+            playStage.style.display = 'block';
+            instructionElem.textContent = "Applying flux...";
+
+            video.onended = () => {
+                setInteractiveCompleted(step.id, true);
+                instructionElem.innerHTML =
+                    "<b>Step complete.</b> Click next to: " +
+                    stepGuidance.step2_5.next;
+
+                if (nextButton) nextButton.disabled = false;
+            };
+
+            video.play();
+        }
+
+        cleanupCurrent = () => {
+            try {
+                window.removeEventListener('resize', setDropZoneLayout);
+                window.removeEventListener('mousemove', onPointerMove);
+                window.removeEventListener('touchmove', onPointerMove);
+                window.removeEventListener('mouseup', onPointerUp);
+                window.removeEventListener('touchend', onPointerUp);
+            } catch (_) { }
+        };
+    }
+
     function renderStep3_1(step, timestamp) {
         setInteractiveCompleted(step.id, false);
         if (nextButton) nextButton.disabled = true;
@@ -1470,14 +1784,14 @@ document.addEventListener("DOMContentLoaded", function () {
         ];
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <div class="play-stage" id="step3_1-play-stage">
-                            <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" playsinline muted></video>
-                            <button id="step3_1-hotspot" class="play-hotspot" style="display:none;"></button>
+                        <div class="play-stage" id="play-stage">
+                            <video id="step3_1-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
+                            <button id="step3_1-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -1485,7 +1799,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
         `;
 
-        const stage = document.getElementById('step3_1-play-stage');
+        const stage = document.getElementById('play-stage');
         const video = document.getElementById('step3_1-video');
         const hotspot = document.getElementById('step3_1-hotspot');
         const instructionElem = document.getElementById('step3_1-instruction');
@@ -1497,19 +1811,21 @@ document.addEventListener("DOMContentLoaded", function () {
         let pausedForSegment = false;
 
         function layoutHotspot() {
-            const rect = { width: stage.offsetWidth, height: stage.offsetHeight };
+            if (!stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
             const cfg = phase1Cfg[Math.min(segmentIndex, phase1Cfg.length - 1)];
-            hotspot.style.left = (rect.width * cfg.hotspot.x) + 'px';
-            hotspot.style.top = (rect.height * cfg.hotspot.y) + 'px';
-            hotspot.style.width = (rect.width * cfg.hotspot.w) + 'px';
-            hotspot.style.height = (rect.height * cfg.hotspot.h) + 'px';
+            hotspot.style.left = (w * cfg.hotspot.x) + 'px';
+            hotspot.style.top = (h * cfg.hotspot.y) + 'px';
+            hotspot.style.width = (w * cfg.hotspot.w) + 'px';
+            hotspot.style.height = (h * cfg.hotspot.h) + 'px';
         }
 
         function showHotspot() {
             const cfg = phase1Cfg[segmentIndex];
             instructionElem.textContent = cfg.instruction;
             layoutHotspot();
-            hotspot.style.display = 'flex';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -1549,7 +1865,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1566,13 +1882,9 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('ended', onEnded, { once: true });
         hotspot.addEventListener('click', onHotspotClick);
 
-        window.addEventListener('resize', () => {
-            layoutHotspot();
-            updateScaling();
-        });
+        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
-            updateScaling();
             video.play().catch(() => { });
         }, { once: true });
 
@@ -1594,7 +1906,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Handles drag-and-drop of the ignitor to the torch, then plays the ignition video
     function renderStep3_2(step, timestamp) {
         setInteractiveCompleted(step.id, false);
         if (nextButton) nextButton.disabled = true;
@@ -1603,19 +1914,19 @@ document.addEventListener("DOMContentLoaded", function () {
         const tolerancePx = 80;
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="step indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="step3_2-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc('images/simulation/3.png', timestamp)}" class="stage-bg" alt="Background" style="width: 100%; height: auto; display: block;"/>
                             <img src="${formatSrc('images/simulation/3-tool.png', timestamp)}" id="step3_2-draggable" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 18%; top: 10%; right: 80%;"/>
-                            <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -340%; --arrow-left: -210%;"></div>
+                            <div id="step3_2-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -310%; --arrow-left: -175%;"></div>
                         </div>
 
-                        <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" playsinline></video>
+                        <div class="play-stage" id="step3_2-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step3_2-video" src="${formatSrc('images/simulation/3.1.5.mp4', timestamp)}" style="width: 100%; height: auto;" playsinline></video>
                         </div>
                     </div>
                 </div>
@@ -1634,7 +1945,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const video = document.getElementById('step3_2-video');
 
         function setDropZoneLayout() {
-            const rect = { width: dragStage.offsetWidth, height: dragStage.offsetHeight };
+            const rect = dragStage.getBoundingClientRect();
             const w = rect.width * 0.10;
             const h = w;
             const tx = rect.width * dragTarget.x;
@@ -1645,19 +1956,9 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone.style.top = (ty - h / 2) + 'px';
         }
 
-        if (dragBg.complete && dragBg.naturalWidth) {
-            setDropZoneLayout();
-            updateScaling();
-        } else {
-            dragBg.onload = () => {
-                setDropZoneLayout();
-                updateScaling();
-            };
-        }
-        window.addEventListener('resize', () => {
-            setDropZoneLayout();
-            updateScaling();
-        });
+        if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
+        else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
+        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
 
         let dragging = false;
         let startX = 0, startY = 0;
@@ -1768,7 +2069,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Plays a video with a hotspot for adjusting oxygen to obtain a neutral flame
     function renderStep3_3(step, timestamp) {
         setInteractiveCompleted(step.id, false);
         if (nextButton) nextButton.disabled = true;
@@ -1778,14 +2078,14 @@ document.addEventListener("DOMContentLoaded", function () {
         ];
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="play-stage" id="step3_3-play-stage">
-                            <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" playsinline></video>
-                            <button id="step3_3-hotspot" class="play-hotspot" style="display:none;"></button>
+                            <video id="step3_3-video" src="${formatSrc(step.src, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
+                            <button id="step3_3-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
                         </div>
                     </div>
                 </div>
@@ -1805,19 +2105,21 @@ document.addEventListener("DOMContentLoaded", function () {
         let pausedForSegment = false;
 
         function layoutHotspot() {
-            const rect = { width: stage.offsetWidth, height: stage.offsetHeight };
+            if (!stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
             const cfg = phase3Cfg[Math.min(segmentIndex, phase3Cfg.length - 1)];
-            hotspot.style.left = (rect.width * cfg.hotspot.x) + 'px';
-            hotspot.style.top = (rect.height * cfg.hotspot.y) + 'px';
-            hotspot.style.width = (rect.width * cfg.hotspot.w) + 'px';
-            hotspot.style.height = (rect.height * cfg.hotspot.h) + 'px';
+            hotspot.style.left = (w * cfg.hotspot.x) + 'px';
+            hotspot.style.top = (h * cfg.hotspot.y) + 'px';
+            hotspot.style.width = (w * cfg.hotspot.w) + 'px';
+            hotspot.style.height = (h * cfg.hotspot.h) + 'px';
         }
 
         function showHotspot() {
             const cfg = phase3Cfg[segmentIndex];
             instructionElem.textContent = cfg.instruction;
             layoutHotspot();
-            hotspot.style.display = 'flex';
+            hotspot.style.visibility = 'visible';
             hotspot.classList.add('debug-highlight');
         }
 
@@ -1857,7 +2159,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onHotspotClick() {
-            hotspot.style.display = 'none';
+            hotspot.style.visibility = 'hidden';
             pausedForSegment = false;
             segmentIndex++;
             video.play();
@@ -1874,13 +2176,9 @@ document.addEventListener("DOMContentLoaded", function () {
         video.addEventListener('ended', onEnded, { once: true });
         hotspot.addEventListener('click', onHotspotClick);
 
-        window.addEventListener('resize', () => {
-            layoutHotspot();
-            updateScaling();
-        });
+        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
         video.addEventListener('loadedmetadata', () => {
             layoutHotspot();
-            updateScaling();
             video.play().catch(() => { });
         }, { once: true });
 
@@ -1902,164 +2200,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Handles drag-and-drop of the file tool to the first plate edge, then plays cleaning video
-    function renderStep1DragDrop(step, timestamp) {
-        step1Completed = false;
-        if (nextButton) nextButton.disabled = true;
-
-        const videoSrc = 'images/simulation/1.mp4';
-        const bgPath = 'images/simulation/1.png';
-        const toolPath = 'images/simulation/1-tool.png';
-
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-
-                <div class="sim-media-container">
-                    <div class="scaling-wrapper">
-                        <div class="drag-stage" id="step1-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
-                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1" class="draggable" alt="File tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 20%;"/>
-                            <div id="step1-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: 345%;"></div>
-                        </div>
-
-                        <div class="play-stage" id="step1-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step1-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="step1-instruction" class="drag-instructions">Drag the file to the plate edge.</div>
-            </div>
-        `;
-
-        const dragStage = document.getElementById('step1-drag-stage');
-        const fileTool = document.getElementById('draggable-file-1');
-        const dropZone = document.getElementById('step1-drop-zone');
-        const dragBg = dragStage.querySelector('.stage-bg');
-
-        const playStage = document.getElementById('step1-play-stage');
-        const video = document.getElementById('step1-video');
-        const instructionElem = document.getElementById('step1-instruction');
-
-        const targetRel = { x: 0.4, y: 0.55 };
-        const tolerancePx = 80;
-
-        function setDropZoneLayout() {
-            const rect = dragStage.getBoundingClientRect();
-            const w = rect.width * 0.08;
-            const h = w;
-            const tx = rect.width * targetRel.x;
-            const ty = rect.height * targetRel.y;
-            dropZone.style.width = w + 'px';
-            dropZone.style.height = h + 'px';
-            dropZone.style.left = (tx - w / 2) + 'px';
-            dropZone.style.top = (ty - h / 2) + 'px';
-        }
-
-        if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
-        else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
-        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
-
-        let dragging = false;
-        let startX = 0, startY = 0;
-
-        function onPointerDown(e) {
-            dragging = true;
-            fileTool.classList.add('dragging');
-            dropZone.classList.add('dragging-active');
-            const rect = fileTool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-            startX = clientX - rect.left;
-            startY = clientY - rect.top;
-            e.preventDefault();
-        }
-
-        function onPointerMove(e) {
-            if (!dragging) return;
-            const stageRect = dragStage.getBoundingClientRect();
-            const fileRect = fileTool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-
-            let newLeft = clientX - stageRect.left - startX;
-            let newTop = clientY - stageRect.top - startY;
-
-            newLeft = Math.max(0, Math.min(newLeft, stageRect.width - fileRect.width));
-            newTop = Math.max(0, Math.min(newTop, stageRect.height - fileRect.height));
-
-            fileTool.style.left = newLeft + 'px';
-            fileTool.style.top = newTop + 'px';
-        }
-
-        function onPointerUp() {
-            if (!dragging) return;
-            dragging = false;
-            fileTool.classList.remove('dragging');
-
-            const stageRect = dragStage.getBoundingClientRect();
-            const fileRect = fileTool.getBoundingClientRect();
-            const fileCenter = {
-                x: fileRect.left - stageRect.left + fileRect.width / 2,
-                y: fileRect.top - stageRect.top + fileRect.height / 2
-            };
-
-            const dzRect = dropZone.getBoundingClientRect();
-            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
-            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
-
-            const dist = Math.hypot(fileCenter.x - targetX, fileCenter.y - targetY);
-
-            if (dist < tolerancePx) {
-                dropZone.classList.add('success');
-                setTimeout(startVideoPhase, 500);
-            }
-        }
-
-        fileTool.addEventListener('mousedown', onPointerDown);
-        fileTool.addEventListener('touchstart', onPointerDown);
-        window.addEventListener('mousemove', onPointerMove);
-        window.addEventListener('touchmove', onPointerMove);
-        window.addEventListener('mouseup', onPointerUp);
-        window.addEventListener('touchend', onPointerUp);
-
-        function startVideoPhase() {
-            window.removeEventListener('resize', setDropZoneLayout);
-            window.removeEventListener('mousemove', onPointerMove);
-            window.removeEventListener('touchmove', onPointerMove);
-            window.removeEventListener('mouseup', onPointerUp);
-            window.removeEventListener('touchend', onPointerUp);
-
-            dragStage.style.display = 'none';
-            playStage.style.display = 'block';
-            instructionElem.textContent = "Cleaning plate edges...";
-
-            video.onended = () => {
-                instructionElem.innerHTML =
-                    "<b>Step complete.</b> Click next to: " +
-                    stepGuidance.step1.next;
-
-                step1Completed = true;
-                if (nextButton) nextButton.disabled = false;
-            };
-
-            video.play();
-        }
-
-        cleanupCurrent = () => {
-            try {
-                window.removeEventListener('resize', setDropZoneLayout);
-                window.removeEventListener('mousemove', onPointerMove);
-                window.removeEventListener('touchmove', onPointerMove);
-                window.removeEventListener('mouseup', onPointerUp);
-                window.removeEventListener('touchend', onPointerUp);
-            } catch (_) { }
-        };
-    }
-
-    // Handles drag-and-drop of the file tool to the second plate edge, then plays cleaning video
     function renderStep1_5DragDrop(step, timestamp) {
         step1_5Completed = false;
         if (nextButton) nextButton.disabled = true;
@@ -2069,7 +2209,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const toolPath = 'images/simulation/1.5-tool.png';
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
 
@@ -2077,12 +2217,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="step1_5-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate edges" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 65%;"/>
-                            <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -255%; --arrow-left: -500%;"></div>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-file-1_5" class="draggable" alt="Tool" style="position: absolute; z-index: 20; cursor: grab; width: 30%; top: 10%; right: 60%;"/>
+                            <div id="step1_5-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: -445%;"></div>
                         </div>
 
-                        <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                        <div class="play-stage" id="step1_5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step1_5-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline ></video>
                         </div>
                     </div>
                 </div>
@@ -2171,6 +2311,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dist < tolerancePx) {
                 dropZone.classList.add('success');
+                dropZone.style.display = 'none';
                 setTimeout(startVideoPhase, 500);
             }
         }
@@ -2216,7 +2357,6 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Handles drag-and-drop of torch and filler rod for tack welding, then plays the tack weld video
     function renderStep4DragDrop(step, timestamp) {
         step4Completed = false;
         if (nextButton) nextButton.disabled = true;
@@ -2224,10 +2364,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const videoSrc = 'images/simulation/4.mp4';
         const bgPath = 'images/simulation/4.png';
         const tool1Path = 'images/simulation/4-tool1.png';
-        const tool2Path = 'images/simulation/4-tool2.png';
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
 
@@ -2235,46 +2374,34 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="step4-drag-stage" style="position: relative; width: 100%; overflow: hidden;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Plate for tack welding" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool 1" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
-                            <img src="${formatSrc(tool2Path, timestamp)}" id="draggable-tool2" class="draggable" style="position: absolute; z-index: 20; cursor: grab; width: 16%; top: 10%; left: 10%;"/>
+                            <img src="${formatSrc(tool1Path, timestamp)}" id="draggable-tool1" class="draggable" alt="Welding tool" style="position: absolute; z-index: 20; cursor: grab; width: 13%; top: 10%; right: 10%;"/>
 
-                            <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -398%; --arrow-left: 490%;"></div>
-                            <div id="step4-drop-zone2" class="drop-zone" aria-hidden="true" style="--arrow-top: -280%; --arrow-left: 470%;"></div>
+                            <div id="step4-drop-zone1" class="drop-zone" aria-hidden="true" style="--arrow-top: -405%; --arrow-left: 455%;"></div>
                         </div>
 
-                        <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                        <div class="play-stage" id="step4-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step4-video" src="${formatSrc(videoSrc, timestamp)}" style="width: 100%; height: auto;" playsinline></video>
                         </div>
                     </div>
                 </div>
 
                 <div id="step4-instruction" class="drag-instructions">
-                    Drag the torch to the highlighted starting position as shown.
+                    Drag the welding torch to the plate edge.
                 </div>
             </div>
         `;
 
         const dragStage = document.getElementById('step4-drag-stage');
         const tool1 = document.getElementById('draggable-tool1');
-        const tool2 = document.getElementById('draggable-tool2');
         const dropZone1 = document.getElementById('step4-drop-zone1');
-        const dropZone2 = document.getElementById('step4-drop-zone2');
         const dragBg = dragStage.querySelector('.stage-bg');
 
         const playStage = document.getElementById('step4-play-stage');
         const video = document.getElementById('step4-video');
         const instructionElem = document.getElementById('step4-instruction');
 
-        const target1Rel = { x: 0.5, y: 0.55 };
-        const target2Rel = { x: 0.36, y: 0.55 };
+        const target1Rel = { x: 0.5, y: 0.6 };
         const tolerancePx = 80;
-
-        let tool1Placed = false;
-        let tool2Placed = false;
-        let activeTool = null;
-
-        tool2.style.display = 'none';
-        dropZone2.style.display = 'none';
 
         function setDropZoneLayout() {
             const rect = dragStage.getBoundingClientRect();
@@ -2287,13 +2414,6 @@ document.addEventListener("DOMContentLoaded", function () {
             dropZone1.style.height = h + 'px';
             dropZone1.style.left = (tx1 - w / 2) + 'px';
             dropZone1.style.top = (ty1 - h / 2) + 'px';
-
-            const tx2 = rect.width * target2Rel.x;
-            const ty2 = rect.height * target2Rel.y;
-            dropZone2.style.width = w + 'px';
-            dropZone2.style.height = h + 'px';
-            dropZone2.style.left = (tx2 - w / 2) + 'px';
-            dropZone2.style.top = (ty2 - h / 2) + 'px';
         }
 
         if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
@@ -2304,17 +2424,13 @@ document.addEventListener("DOMContentLoaded", function () {
         let startX = 0, startY = 0;
 
         function onPointerDown(e) {
-            if (e.target !== tool1 && e.target !== tool2) return;
-
-            activeTool = e.target;
             dragging = true;
-            activeTool.classList.add('dragging');
+            tool1.classList.add('dragging');
             dropZone1.classList.add('dragging-active');
-            dropZone2.classList.add('dragging-active');
 
-            const rect = activeTool.getBoundingClientRect();
-            const clientX = e.clientX ?? e.touches[0].clientX;
-            const clientY = e.clientY ?? e.touches[0].clientY;
+            const rect = tool1.getBoundingClientRect();
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
 
             startX = clientX - rect.left;
             startY = clientY - rect.top;
@@ -2322,13 +2438,13 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function onPointerMove(e) {
-            if (!dragging || !activeTool) return;
+            if (!dragging) return;
 
             const stageRect = dragStage.getBoundingClientRect();
-            const toolRect = activeTool.getBoundingClientRect();
+            const toolRect = tool1.getBoundingClientRect();
 
-            const clientX = e.clientX ?? e.touches[0].clientX;
-            const clientY = e.clientY ?? e.touches[0].clientY;
+            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
 
             let newLeft = clientX - stageRect.left - startX;
             let newTop = clientY - stageRect.top - startY;
@@ -2336,64 +2452,38 @@ document.addEventListener("DOMContentLoaded", function () {
             newLeft = Math.max(0, Math.min(newLeft, stageRect.width - toolRect.width));
             newTop = Math.max(0, Math.min(newTop, stageRect.height - toolRect.height));
 
-            activeTool.style.left = newLeft + 'px';
-            activeTool.style.top = newTop + 'px';
+            tool1.style.left = newLeft + 'px';
+            tool1.style.top = newTop + 'px';
         }
 
         function onPointerUp() {
-            if (!dragging || !activeTool) return;
+            if (!dragging) return;
             dragging = false;
-            activeTool.classList.remove('dragging');
+            tool1.classList.remove('dragging');
 
             const stageRect = dragStage.getBoundingClientRect();
-            const toolRect = activeTool.getBoundingClientRect();
+            const toolRect = tool1.getBoundingClientRect();
 
             const toolCenter = {
                 x: toolRect.left - stageRect.left + toolRect.width / 2,
                 y: toolRect.top - stageRect.top + toolRect.height / 2
             };
 
-            const dropZone = (activeTool === tool1) ? dropZone1 : dropZone2;
-            const dzRect = dropZone.getBoundingClientRect();
-
+            const dzRect = dropZone1.getBoundingClientRect();
             const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
             const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
 
             const dist = Math.hypot(toolCenter.x - targetX, toolCenter.y - targetY);
 
             if (dist < tolerancePx) {
-                activeTool.style.left = (targetX - toolRect.width / 2) + 'px';
-                activeTool.style.top = (targetY - toolRect.height / 2) + 'px';
-
-                activeTool.style.pointerEvents = 'none';
-                activeTool.style.cursor = 'default';
-
-                dropZone.classList.add('success');
-
-                if (activeTool === tool1) {
-                    tool1Placed = true;
-                    dropZone1.style.display = 'none';
-                    tool2.style.display = 'block';
-                    dropZone2.style.display = 'flex';
-                    instructionElem.textContent = "Good! Now drag the filler rod to its position.";
-                }
-                if (activeTool === tool2) {
-                    tool2Placed = true;
-                    instructionElem.textContent = "Excellent! Now we are ready to start the process.";
-                }
-
-                if (tool1Placed && tool2Placed) {
-                    setTimeout(startVideoPhase, 500);
-                }
+                dropZone1.classList.add('success');
+                dropZone1.style.display = 'none';
+                setTimeout(startVideoPhase, 500);
             }
-
-            activeTool = null;
         }
 
         tool1.addEventListener('mousedown', onPointerDown);
         tool1.addEventListener('touchstart', onPointerDown);
-        tool2.addEventListener('mousedown', onPointerDown);
-        tool2.addEventListener('touchstart', onPointerDown);
         window.addEventListener('mousemove', onPointerMove);
         window.addEventListener('touchmove', onPointerMove);
         window.addEventListener('mouseup', onPointerUp);
@@ -2408,12 +2498,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             dragStage.style.display = 'none';
             playStage.style.display = 'block';
-            instructionElem.textContent = "Applying tack welds...";
+            instructionElem.textContent = "Preheating...";
 
             video.onended = () => {
+                const nextStepTitle = stepGuidance.step4 ? stepGuidance.step4.next : "Next Step";
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Click next to: " +
-                    stepGuidance.step4.next;
+                    "<b>Step complete.</b> Click next to: " + nextStepTitle;
 
                 step4Completed = true;
                 if (nextButton) nextButton.disabled = false;
@@ -2433,208 +2523,57 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Handles drag-and-drop of the chipping hammer to the weld, then plays slag removal video
-    function renderStep7DragDrop(step, timestamp) {
-        step7Completed = false;
+    function renderStep5DragDrop(step, timestamp) {
+        step5Completed = false;
         if (nextButton) nextButton.disabled = true;
 
-        const videoSrc = 'images/simulation/7.mp4';
-        const bgPath = 'images/simulation/7.png';
-        const toolPath = 'images/simulation/7-tool.png';
+        const videoSrc = 'images/simulation/5.mp4';
+        const bgPath = 'images/simulation/5.png';
+        const toolPath = 'images/simulation/5-tool.png';
 
         gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
+            <div class="gif-wrapper">
                 <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
 
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
-                        <div class="drag-stage" id="step7-drag-stage" style="position: relative; width: 100%;">
+                        <div class="drag-stage" id="step5-drag-stage" style="position: relative; width: 100%;">
                             <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-hammer-7" class="draggable" alt="Chipping hammer" style="position: absolute; z-index: 20; cursor: grab; width: 45%; top: 10%; right: 3%;"/>
-                            <div id="step7-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -480%; --arrow-left: 360%;"></div>
+                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool5" class="draggable" alt="filing tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
+
+                            <div id="step5-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -270%; --arrow-left: 235%;"></div>
                         </div>
 
-                        <div class="play-stage" id="step7-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step7-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="step7-instruction" class="drag-instructions">Drag the chipping hammer to the weld to remove slag.</div>
-            </div>
-        `;
-
-        const dragStage = document.getElementById('step7-drag-stage');
-        const hammerTool = document.getElementById('draggable-hammer-7');
-        const dropZone = document.getElementById('step7-drop-zone');
-        const dragBg = dragStage.querySelector('.stage-bg');
-
-        const playStage = document.getElementById('step7-play-stage');
-        const video = document.getElementById('step7-video');
-        const instructionElem = document.getElementById('step7-instruction');
-
-        const targetRel = { x: 0.5, y: 0.8 };
-        const tolerancePx = 120;
-
-        function setDropZoneLayout() {
-            const rect = dragStage.getBoundingClientRect();
-            const w = rect.width * 0.08;
-            const h = w;
-            const tx = rect.width * targetRel.x;
-            const ty = rect.height * targetRel.y;
-            dropZone.style.width = w + 'px';
-            dropZone.style.height = h + 'px';
-            dropZone.style.left = (tx - w / 2) + 'px';
-            dropZone.style.top = (ty - h / 2) + 'px';
-        }
-
-        if (dragBg.complete && dragBg.naturalWidth) { setDropZoneLayout(); updateScaling(); }
-        else dragBg.onload = () => { setDropZoneLayout(); updateScaling(); };
-        window.addEventListener('resize', () => { setDropZoneLayout(); updateScaling(); });
-
-        let dragging = false;
-        let startX = 0, startY = 0;
-
-        function onPointerDown(e) {
-            dragging = true;
-            hammerTool.classList.add('dragging');
-            dropZone.classList.add('dragging-active');
-            const rect = hammerTool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-            startX = clientX - rect.left;
-            startY = clientY - rect.top;
-            e.preventDefault();
-        }
-
-        function onPointerMove(e) {
-            if (!dragging) return;
-            const stageRect = dragStage.getBoundingClientRect();
-
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-
-            let newLeft = clientX - stageRect.left - startX;
-            let newTop = clientY - stageRect.top - startY;
-
-            hammerTool.style.left = newLeft + 'px';
-            hammerTool.style.top = newTop + 'px';
-        }
-
-        function onPointerUp() {
-            if (!dragging) return;
-            dragging = false;
-            hammerTool.classList.remove('dragging');
-
-            const stageRect = dragStage.getBoundingClientRect();
-            const hammerRect = hammerTool.getBoundingClientRect();
-            const hammerCenter = {
-                x: hammerRect.left - stageRect.left + hammerRect.width / 2,
-                y: hammerRect.top - stageRect.top + hammerRect.height / 2
-            };
-
-            const dzRect = dropZone.getBoundingClientRect();
-            const targetX = dzRect.left - stageRect.left + dzRect.width / 2;
-            const targetY = dzRect.top - stageRect.top + dzRect.height / 2;
-
-            const dist = Math.hypot(hammerCenter.x - targetX, hammerCenter.y - targetY);
-
-            if (dist < tolerancePx) {
-                dropZone.classList.add('success');
-                setTimeout(startVideoPhase, 500);
-            }
-        }
-
-        hammerTool.addEventListener('mousedown', onPointerDown);
-        hammerTool.addEventListener('touchstart', onPointerDown);
-        window.addEventListener('mousemove', onPointerMove);
-        window.addEventListener('touchmove', onPointerMove);
-        window.addEventListener('mouseup', onPointerUp);
-        window.addEventListener('touchend', onPointerUp);
-
-        function startVideoPhase() {
-            window.removeEventListener('resize', setDropZoneLayout);
-            window.removeEventListener('mousemove', onPointerMove);
-            window.removeEventListener('touchmove', onPointerMove);
-            window.removeEventListener('mouseup', onPointerUp);
-            window.removeEventListener('touchend', onPointerUp);
-
-            dragStage.style.display = 'none';
-            playStage.style.display = 'block';
-            instructionElem.textContent = "Removing slag from the weld...";
-
-            video.onended = () => {
-                instructionElem.innerHTML =
-                    "<b>Step complete.</b> Click next to: " +
-                    stepGuidance.step7.next;
-
-                step7Completed = true;
-                if (nextButton) nextButton.disabled = false;
-            };
-
-            video.play();
-        }
-
-        cleanupCurrent = () => {
-            try {
-                window.removeEventListener('resize', setDropZoneLayout);
-                window.removeEventListener('mousemove', onPointerMove);
-                window.removeEventListener('touchmove', onPointerMove);
-                window.removeEventListener('mouseup', onPointerUp);
-                window.removeEventListener('touchend', onPointerUp);
-            } catch (_) { }
-        };
-    }
-
-    // Handles drag-and-drop of the filing tool to the weld, then plays edge filing video
-    function renderStep8DragDrop(step, timestamp) {
-        step8Completed = false;
-        if (nextButton) nextButton.disabled = true;
-
-        const videoSrc = 'images/simulation/8.mp4';
-        const bgPath = 'images/simulation/8.png';
-        const toolPath = 'images/simulation/8-tool.png';
-
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper" style="width: 100%; height: 100%;">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-
-                <div class="sim-media-container">
-                    <div class="scaling-wrapper">
-                        <div class="drag-stage" id="step8-drag-stage" style="position: relative; width: 100%;">
-                            <img src="${formatSrc(bgPath, timestamp)}" class="stage-bg" alt="Welded joint for inspection" style="width: 100%; height: auto; display: block;"/>
-                            <img src="${formatSrc(toolPath, timestamp)}" id="draggable-tool-8" class="draggable" alt="Inspection tool" style="position: absolute; z-index: 20; cursor: grab; width: 35%; top: 10%; right: 10%;"/>
-                            <div id="step8-drop-zone" class="drop-zone" aria-hidden="true" style="--arrow-top: -430%; --arrow-left: 220%;"></div>
-                        </div>
-
-                        <div class="play-stage" id="step8-play-stage" style="position: relative; width: 100%; height: 100%; display: none;">
-                            <video id="step8-video" src="${formatSrc(videoSrc, timestamp)}" playsinline></video>
+                        <div class="play-stage" id="step5-play-stage" style="position: relative; width: 100%; height: auto; display: none;">
+                            <video id="step5-video" src="${formatSrc(videoSrc, timestamp)}" style="width:100%; height:auto;" playsinline ></video>
                         </div>
                     </div>
                 </div>
 
-                <div id="step8-instruction" class="drag-instructions">Drag the filing tool to its highlighted position for cleaning.</div>
+                <div id="step5-instruction" class="drag-instructions">
+                    Drag the filing tool to remove slag.
+                </div>
             </div>
         `;
 
-        const dragStage = document.getElementById('step8-drag-stage');
-        const tool = document.getElementById('draggable-tool-8');
-        const dropZone = document.getElementById('step8-drop-zone');
+        const dragStage = document.getElementById('step5-drag-stage');
+        const tool = document.getElementById('draggable-tool5');
+        const dropZone = document.getElementById('step5-drop-zone');
         const dragBg = dragStage.querySelector('.stage-bg');
 
-        const playStage = document.getElementById('step8-play-stage');
-        const video = document.getElementById('step8-video');
-        const instructionElem = document.getElementById('step8-instruction');
+        const playStage = document.getElementById('step5-play-stage');
+        const video = document.getElementById('step5-video');
+        const instructionElem = document.getElementById('step5-instruction');
 
-        const targetRel = { x: 0.55, y: 0.68 };
-        const tolerancePx = 120;
+        const targetRel = { x: 0.56, y: 0.57 };
+        const tolerancePx = 80;
 
         function setDropZoneLayout() {
             const rect = dragStage.getBoundingClientRect();
-            const w = rect.width * 0.08;
+            const w = rect.width * 0.1;
             const h = w;
+
             const tx = rect.width * targetRel.x;
             const ty = rect.height * targetRel.y;
             dropZone.style.width = w + 'px';
@@ -2654,9 +2593,11 @@ document.addEventListener("DOMContentLoaded", function () {
             dragging = true;
             tool.classList.add('dragging');
             dropZone.classList.add('dragging-active');
+
             const rect = tool.getBoundingClientRect();
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+
             startX = clientX - rect.left;
             startY = clientY - rect.top;
             e.preventDefault();
@@ -2664,7 +2605,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         function onPointerMove(e) {
             if (!dragging) return;
+
             const stageRect = dragStage.getBoundingClientRect();
+            const toolRect = tool.getBoundingClientRect();
 
             const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
             const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
@@ -2683,6 +2626,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const stageRect = dragStage.getBoundingClientRect();
             const toolRect = tool.getBoundingClientRect();
+
             const toolCenter = {
                 x: toolRect.left - stageRect.left + toolRect.width / 2,
                 y: toolRect.top - stageRect.top + toolRect.height / 2
@@ -2696,6 +2640,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (dist < tolerancePx) {
                 dropZone.classList.add('success');
+                dropZone.style.display = 'none';
                 setTimeout(startVideoPhase, 500);
             }
         }
@@ -2716,14 +2661,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
             dragStage.style.display = 'none';
             playStage.style.display = 'block';
-            instructionElem.textContent = "Filing edges...";
+            instructionElem.textContent = "Removing slag...";
 
             video.onended = () => {
+                const nextStepTitle = stepGuidance.step5 ? stepGuidance.step5.next : "Next Step";
                 instructionElem.innerHTML =
-                    "<b>Step complete.</b> Click next to: " +
-                    stepGuidance.step8.next;
+                    "<b>Step complete.</b> Click next to: " + nextStepTitle;
 
-                step8Completed = true;
+                step5Completed = true;
                 if (nextButton) nextButton.disabled = false;
             };
 
@@ -2741,83 +2686,91 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    // Shows the final result page with welding parameters table and a print button
     function renderResultStep() {
         document.body.classList.add('result-mode');
 
         gifContainer.innerHTML = `
-        <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-            <h2 style="text-align:center;">Experiment Result</h2>
-            <hr>
+            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+                <h2 style="text-align:center;">Experiment Result</h2>
+                <hr>
 
-            <div class="sim-media-container" style="height: auto; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div style="text-align:center; margin:20px 0; width: 100%;">
-                    <img src="${getAssetSrc('images/simulation/print .png')}" alt="Final Welded Butt Joint" style="max-width:90%; border:1px solid #ccc; border-radius:6px;">
-                    <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
+                <div class="sim-media-container" style="height: auto; min-height: 400px; padding: 20px;">
+                    <div class="scaling-wrapper" id="play-stage">
+                        <div style="text-align:center; margin:20px 0;">
+                            <img src="${getAssetSrc('images/simulation/print1.png')}" alt="Final Welded Butt Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
+                            <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
+                        </div>
+
+                        <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Sheet Material</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Brass</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Flux used</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Borax</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Joint quality</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Clean and leak-proof</td>
+                                </tr>
+                                <tr>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Notes</td>
+                                    <td style="border:1px solid #000; padding:10px 15px;">Smooth finish</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Welding Parameters</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Plate Material</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Mild Steel</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Filler Rod</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">ER70S-6</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Travel Speed</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">5 mm/s</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Flame Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Temperature (Neutral Flame)</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">3200°C – 3300°C</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Flame Type</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Neutral</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Pressure Settings</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">O₂ Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">250 kPa</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Acetylene Pressure</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">120 kPa</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold;">Result</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Joint Quality</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Proper fusion with smooth and clean weld bead</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
+                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
+                </div>
             </div>
-
-            <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">
-                    🖨 Print Results
-                </button>
-            </div>
-        </div>
         `;
+        updateScaling();
+        window.addEventListener('resize', updateScaling);
 
         if (nextButton) nextButton.disabled = true;
     }
 
-    // Navigation button event listeners for previous, next, and reset
     if (prevButton) {
         prevButton.addEventListener('click', function () {
             if (currentStepIndex > 0) {
@@ -2828,10 +2781,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (nextButton) {
         nextButton.addEventListener('click', function () {
-            if (typeof window.customNextHandler === 'function') {
-                window.customNextHandler();
-                return;
-            }
             if (currentStepIndex < totalSteps - 1) {
                 currentStepIndex++;
                 showCurrentStep();
