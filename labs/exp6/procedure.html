@@ -1,281 +1,341 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Virtual Labs</title>
-    <!-- Tell the browser to be responsive to screen width -->
-    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <!-- Bootstrap 3.3.6 -->
-    <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
-    <!-- AdminLTE Skins -->
-    <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title> Virtual Labs </title>
+        <!-- Tell the browser to be responsive to screen width -->
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+        <!-- Bootstrap 3.3.6 -->
+        <link rel="stylesheet" href="../../bootstrap/css/bootstrap.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+        <!-- Theme style -->
+        <link rel="stylesheet" href="../../dist/css/AdminLTE.css">
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <link rel="stylesheet" href="../../dist/css/skins/_all-skins.min.css">
 
-    <script>
-        window.onload = function () {
-            document.getElementById("procedure").className = "active treeview";
-        };
-    </script>
 
-    <style>
-        #toggle_nav:hover {
+        <script>
+            window.onload = function () {
+                document.getElementById("procedure").className = "active treeview";
+            }
+        </script>
+        <style>
+          #toggle_nav:hover{
             background-color: #1261A0;
-        }
-        #aim {
+          }
+          #aim{
             background-color: #009dff;
-        }
-        #aim:hover,
-        #theory:hover,
-        #pretest:hover,
-        #procedure:hover,
-        #simulation:hover,
-        #result:hover,
-        #posttest:hover,
-        #references:hover {
+          }
+          #aim:hover,#theory:hover,#pretest:hover,#procedure:hover,#simulation:hover,#result:hover,#posttest:hover,#references:hover{
             background-color: #009dff;
-        }
-
-        .procedure {
-    max-width: 100%;
-    margin: 0;              /* removes centering */
-    padding-left: 20px;     /* keeps it slightly away from edge */
+          }
+          
+  .procedure-step img {
+  width: 350px;
+  height: auto;
+  display: block;
+  margin: 10px 0 25px 0;   /* left aligned */
+  border-radius: 6px;
 }
 
-        .procedure h3 {
-            margin-top: 24px;
-        }
 
-        .procedure .step-img {
-    display: block;
-    width: 300px;      /* smaller width */
-    height: 180px;     /* smaller height */
-    object-fit: contain; /* shows full image without cropping */
-    margin: 8px 0 16px;
-    border-radius: 6px;
-}
+  .procedure-step p {
+    font-size: 130%;
+    margin-bottom: 8px;
+    text-align: left;
+  }
 
-    </style>
-</head>
+  .procedure-step h2 {
+    margin-top: 30px;
+  }
 
-<body class="hold-transition skin-blue sidebar-mini">
-<!-- Navigation Bar -->
+
+        </style>
+    </head>
+
+    <body class="hold-transition skin-blue sidebar-mini">
+        <!--Navigation Bar-->
 <div class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="http://iitb.ac.in">
-                <span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width:400px;"></span>
-            </a>
-        </div>
-        <div class="collapse navbar-collapse" id="navbar-ex-collapse">
-        </div>
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-ex-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="http://iitb.ac.in"><span><img src="images/iitrLogo.png" style="margin-top:-15px;height:50px;width: 400px;"></span></a>
     </div>
+    <div class="collapse navbar-collapse" id="navbar-ex-collapse">
+     
+    </div>
+  </div>
 </div>
-
-<div class="wrapper">
-    <header class="main-header">
+        
+        <div class="wrapper">
+        	<header class="main-header">
         <!-- Logo -->
-        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color:#1261A0;">
-            <p align="center" style="font-size:1em;"><b>Manufacturing Process Lab</b></p>
-        </a>
-        <!-- Header Navbar -->
+        <a href="../index.html" class="logo" style="background-color:#009dff; border-right:solid;border-right-color: #1261A0;">
+        <p align="center" style="font-size:1em;"><b>Manufacturing Process Lab</b></p>
+    </a>
+        <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" style="background-color:#009dff;">
-            <!-- Sidebar toggle button-->
-            <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
-                <span class="sr-only">Toggle navigation</span>
-            </a>
-            <section class="content-header">
-                <ol class="breadcrumb">
-                    <li>
-                        <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
-                    </li>
-                    <li>
-                        <a href="#">Oxy-Acetylene Welding</a>
-                    </li>
-                    <li class="active">Procedure</li>
-                </ol>
-            </section>
+          <!-- Sidebar toggle button-->
+          <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button" id="toggle_nav">
+        <span class="sr-only">Toggle navigation</span>
+      </a>
+          <section class="content-header" >
+            <ol class="breadcrumb" >
+              <li>
+                <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
+              </li>
+              <li>
+                <a href="#">Butt joint Welding</a>
+              </li>
+              <li class="active">Procedure</li>
+            </ol>
+          </section>
         </nav>
-    </header>
-
-    <!-- Left side column. contains the logo and sidebar -->
-    <aside class="main-sidebar" style="background-color:#1261A0;">
+      </header>
+            
+      <!-- Left side column. contains the logo and sidebar -->
+      <aside class="main-sidebar" style="background-color:#1261A0;">
+        <!-- sidebar: style can be found in sidebar.less -->
         <section class="sidebar">
-            <!-- search form -->
-            <form action="#" method="get" class="sidebar-form">
-                <div class="input-group"></div>
-            </form>
-            <!-- sidebar menu -->
+          <!-- search form -->
+          <form action="#" method="get" class="sidebar-form">
+            <div class="input-group"></div>
+          </form>
+          <!-- /.sear ch form -->
+          <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" style="background-color:#1261A0;">
                 <li class="treeview" id="aim">
                     <a href="index.html" id="aim">
-                        <i class="fa fa-files-o" style="color:white;"></i>
-                        <span style="color:white;">Aim</span>
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Aim</span>
+
                     </a>
                 </li>
                 <li class="treeview" id="theory">
-                    <a href="theory.html" id="theory">
+                    <a href="theory.html" id="theory" >
                         <i class="fa fa-files-o" style="color:white;"></i>
                         <span style="color:white;">Theory</span>
                     </a>
                 </li>
-                <li class="treeview" id="pretest">
-                    <a href="pretest.html" id="pretest">
-                        <i class="fa fa-files-o" style="color:white;"></i>
-                        <span style="color:white;">Pre Test</span>
+             <!--   <li class="treeview" id="numerical">
+                    <a href="numerical.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Numerical</span>
+                        <span class="pull-right-container">
+                        </span>
                     </a>
                 </li>
+                <li class="treeview" id="program">
+                    <a href="program.php">
+                        <i class="fa fa-laptop"></i>
+                        <span>Program</span>
+                        <span class="pull-right-container">
+                        </span>
+                    </a>
+                </li> -->
+                <li class="treeview" id="pretest">
+                    <a href="pretest.html" id="pretest">
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Pre Test</span>
+
+                    </a>
+                </li>
+                
                 <li class="treeview" id="procedure">
                     <a href="procedure.html" id="procedure">
-                        <i class="fa fa-files-o" style="color:white;"></i>
-                        <span style="color:white;">Procedure</span>
+                        <i class="fa fa-files-o" style="color:white;"></i> <span style="color:white;">Procedure</span>
                     </a>
                 </li>
                 <li class="treeview" id="simulation">
                     <a href="simulation.html" id="simulation">
                         <i class="fa fa-laptop" style="color:white;"></i>
                         <span style="color:white;">Simulation</span>
+                        <span class="pull-right-container">
+                        </span>
                     </a>
                 </li>
+
+                
                 <li class="treeview" id="posttest">
-                    <a href="posttest.html" id="posttest">
-                        <i class="fa fa-files-o" style="color:white;"></i>
-                        <span style="color:white;">Post Test</span>
+                    <a href=" posttest.html" id="posttest">
+                        <i class=" fa fa-files-o" style="color:white;">
+                    </i>
+                    <span style="color:white;">Post Test</span>
+                    <span class="pull-right-container">
+                    </span>
                     </a>
                 </li>
                 <li class="treeview" id="ref">
                     <a href="references.html" id="references">
                         <i class="fa fa-files-o" style="color:white;"></i>
                         <span style="color:white;">References</span>
+                        <span class="pull-right-container">
+                        </span>
                     </a>
                 </li>
             </ul>
         </section>
-    </aside>
+        <!-- /.sidebar -->
+      </aside>
 
-    <div class="content-wrapper">
-        <!-- Page header -->
-        <section class="content-header">
-            <h1 align="center">
-                Study and identification of various types of flames generated in oxyacetylene gas welding.
-            </h1>
-        </section>
+   
+            <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+                <section class="content-header">
+                <h1 align="center">
+                    To study butt joint welding using gas oxy-acetylene method
+                </h1>
+                </section>
+                    <!-- Main content -->
+                    <section class="content">
+                    <h3 style="margin-top:5%"> Procedure </h3>
+                    <p style="font-size:130%; margin-top:2%">
 
-        <!-- Main content -->
-        <section class="content">
-            <h3 style="margin-top:5%">Procedure</h3>
+                   
+ 
 
-            <div class="procedure" style="font-size:130%; margin-top:2%">
-                
-                <!-- Step 2 -->
-                <h3>Step 1: Open oxygen valve</h3>
-                <p>
-                    Turn the torch’s purple knob to <strong>open</strong> the oxygen valve before setting
-                    cylinder pressure.
-                </p>
-                <img src="images/procedure/2].png" alt="Turn on oxygen valve" class="step-img">
 
-                <!-- Step 3 -->
-                <h3>Step 2: Set oxygen pressure</h3>
-                <p>
-                    Rotate the regulator handle and set the oxygen cylinder to <strong>15&nbsp;PSI</strong> on the gauge.
-                </p>
-                <img src="images/procedure/3].png" alt="Set oxygen 15 PSI" class="step-img">
+<section id="step-1" class="procedure-step">
+  <h2>Step 1(i): Cleaning of first plate edge</h2>
+  <p>Drag the file tool along the bevelled edge of the first plate to remove rust, dirt, and oxide layers.</p>
+  <img src="images/PROCEDURE/A.png" alt="Cleaning first plate edge" />
+</section>
 
-                <!-- Step 4 -->
-                <h3>Step 3: Close oxygen valve at torch</h3>
-                <p>
-                    Close the oxygen control on the torch to <strong>stop</strong> flow after the cylinder
-                    pressure is adjusted.
-                </p>
-                <img src="images/procedure/4].png" alt="Close oxygen valve" class="step-img">
+<section id="step-2" class="procedure-step">
+  <h2>Step 1(ii): First plate edge cleaned</h2>
+  <p>The bevel edge of the first plate is now clean and ready for welding.</p>
+  <img src="images/PROCEDURE/B.png" alt="First plate cleaned" />
+</section>
 
-                <!-- Step 5 -->
-                <h3>Step 4: Open acetylene valve</h3>
-                <p>
-                    Turn the red knob on the torch to <strong>open</strong> the acetylene valve before setting
-                    its pressure.
-                </p>
-                <img src="images/procedure/5].png" alt="Open acetylene valve" class="step-img">
+<section id="step-3" class="procedure-step">
+  <h2>Step 2(i): Preparation for second plate cleaning</h2>
+  <p>Place the file tool at the highlighted area on the bevelled edge of the second plate.</p>
+  <img src="images/PROCEDURE/C.png" alt="Second plate cleaning preparation" />
+</section>
 
-                <!-- Step 6 -->
-                <h3>Step 5: Set acetylene pressure</h3>
-                <p>
-                    Adjust the acetylene regulator so the gauge reads <strong>3&nbsp;PSI</strong> for safe operation.
-                </p>
-                <img src="images/procedure/6].png" alt="Set acetylene 3 PSI" class="step-img">
+<section id="step-4" class="procedure-step">
+  <h2>Step 2(ii): Cleaning of second plate edge</h2>
+  <p>Drag the file tool along the bevel edge to clean the second plate surface.</p>
+  <img src="images/PROCEDURE/D.png" alt="Cleaning second plate edge" />
+</section>
 
-                <!-- Step 7 -->
-                <h3>Step 6: Bring lighter near tip</h3>
-                <p>
-                    Drag the spark lighter close to the torch <strong>tip</strong> to prepare for ignition.
-                </p>
-                <img src="images/procedure/7].png" alt="Drag lighter to tip" class="step-img">
+<section id="step-5" class="procedure-step">
+  <h2>Step 3(i): Aligning first plate</h2>
+  <p>Click on the red marked area to slide and position the first plate on the worktable.</p>
+  <img src="images/PROCEDURE/E.png" alt="Align first plate" />
+</section>
 
-                <!-- Step 8 -->
-                <h3>Step 7: Ignite the torch</h3>
-                <p>
-                    Click on the lighter to produce a <strong>spark</strong> and ignite the acetylene gas.
-                </p>
-                <img src="images/procedure/8].png" alt="Click lighter to ignite" class="step-img">
+<section id="step-6" class="procedure-step">
+  <h2>Step 3(ii): Aligning second plate</h2>
+  <p>Click on the red marked area to align the second plate and form a proper V-groove.</p>
+  <img src="images/PROCEDURE/F.png" alt="Align second plate" />
+</section>
 
-                <!-- Step 9 -->
-                <h3>Step 8: Carburizing flame</h3>
-                <p>
-                    With more acetylene and less oxygen, a reddish <strong>carburizing</strong> flame is
-                    obtained at the tip.
-                </p>
-                <img src="images/procedure/9].png" alt="Carburizing flame" class="step-img">
+<section id="step-7" class="procedure-step">
+  <h2>Step 4(i): Setting acetylene gas pressure</h2>
+  <p>Adjust the acetylene regulator until the pressure gauge reads 120 psi.</p>
+  <img src="images/PROCEDURE/n1.png" alt="Acetylene pressure setting" />
+</section>
 
-                <!-- Step 10 -->
-                <h3>Step 9: Neutral flame</h3>
-                <p>
-                    Increase the oxygen slightly until a well‑defined inner cone shows a <strong>neutral</strong>
-                    flame.
-                </p>
-                <img src="images/procedure/10].png" alt="Neutral flame" class="step-img">
+<section id="step-8" class="procedure-step">
+  <h2>Step 4(ii): Setting oxygen gas pressure</h2>
+  <p>Adjust the oxygen regulator until the pressure gauge reads 250 psi.</p>
+  <img src="images/PROCEDURE/n2.png" alt="Oxygen pressure setting" />
+</section>
 
-                <!-- Step 11 -->
-                <h3>Step 10: Oxidizing flame</h3>
-                <p>
-                    Further increase oxygen to get a shorter, sharper <strong>oxidizing</strong> flame suitable
-                    for specific operations.
-                </p>
-                <img src="images/procedure/11].png" alt="Oxidizing flame" class="step-img">
+<section id="step-9" class="procedure-step">
+  <h2>Step 4(iii): Opening acetylene valve</h2>
+  <p>Slowly open the acetylene valve on the torch handle to allow gas flow.</p>
+  <img src="images/PROCEDURE/n3.png" alt="Open acetylene valve" />
+</section>
 
-                <!-- Step 13 -->
-                <h3>Step 11: Close oxygen valve</h3>
-                <p>
-                    Finally, close the oxygen <strong>valve</strong> on the torch and cylinders to make the
-                    setup safe.
-                </p>
-                <img src="images/procedure/13].png" alt="Close oxygen valve" class="step-img">
+<section id="step-10" class="procedure-step">
+  <h2>Step 5: Ignition of flame</h2>
+  <p>Use a spark lighter to ignite the acetylene gas and produce a yellow flame.</p>
+  <img src="images/PROCEDURE/ignition.png" alt="Ignite flame" />
+</section>
 
-                <!-- Step 12 -->
-                <h3>Step 12: Close acetylene valve</h3>
-                <p>
-                    To shut down, first close the acetylene <strong>valve</strong> on the torch to extinguish
-                    the flame.
-                </p>
-                <img src="images/procedure/12.png" alt="Close acetylene valve" class="step-img">
+<section id="step-11" class="procedure-step">
+  <h2>Step 6: Add oxygen to the flame</h2>
+  <p>Gradually open the oxygen control valve to adjust the flame characteristics.</p>
+  <img src="images/PROCEDURE/n5.png" alt="Adding oxygen to the flame" />
+</section>
+
+<section id="step-12" class="procedure-step">
+  <h2>Step 7: Achieve neutral flame</h2>
+  <p>Continue adjusting the oxygen valve until a stable blue neutral flame is obtained, indicating proper gas balance.</p>
+  <img src="images/PROCEDURE/n6.png" alt="Neutral flame achieved" />
+</section>
+
+
+<section id="step-13" class="procedure-step">
+  <h2>Step 8(i): Positioning for first tack weld</h2>
+  <p>Position the torch at the highlighted location for the first tack weld.</p>
+  <img src="images/PROCEDURE/P.png" alt="First tack weld position" />
+</section>
+
+<section id="step-14" class="procedure-step">
+  <h2>Step 8(ii): First tack welding</h2>
+  <p>Apply heat until molten metal forms a tack weld at one end of the joint.</p>
+  <img src="images/PROCEDURE/Q.png" alt="First tack welding" />
+</section>
+
+<section id="step-15" class="procedure-step">
+  <h2>Step 8(iii): Second tack weld positioning</h2>
+  <p>Move the torch to the opposite end of the joint.</p>
+  <img src="images/PROCEDURE/R.png" alt="Second tack weld position" />
+</section>
+
+<section id="step-16" class="procedure-step">
+  <h2>Step 8(iv): Second tack welding</h2>
+  <p>Form the second tack weld to firmly hold both plates.</p>
+  <img src="images/PROCEDURE/S.png" alt="Second tack welding" />
+</section>
+
+<section id="step-17" class="procedure-step">
+  <h2>Step 9: Performing continuous welding</h2>
+  <p>Move the torch steadily along the V-groove to produce a uniform weld bead.</p>
+  <img src="images/PROCEDURE/T.png" alt="Continuous welding" />
+</section>
+
+<section id="step-18" class="procedure-step">
+  <h2>Step 10: Slag removal</h2>
+  <p>Use a chipping hammer to gently remove slag from the weld.</p>
+  <img src="images/PROCEDURE/n7.png" alt="Slag removal" />
+</section>
+
+<section id="step-19" class="procedure-step">
+  <h2>Step 11: Dressing of weld bead</h2>
+  <p>File the weld bead to improve surface finish.</p>
+  <img src="images/PROCEDURE/n8.png" alt="Weld bead dressing" />
+</section>
+
+
+
+
+</body>
+</html>
+
+
+</body>
+</html>
+
+                </section>
+            <!-- /.content -->
             </div>
-        </section>
-    </div>
+            <footer class="main-footer">
+                <h4 align="center">Lab contributed by Galgotia University </h4>
+            </footer>
+        </div>
+        
+    </body>
+</html>
 
-    <footer class="main-footer">
-        <h4 align="center">Lab contributed by Galgotia University</h4>
-    </footer>
-</div>
-
+<!-- ./wrapper -->
 <!-- jQuery 2.2.3 -->
 <script src="../../plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -288,5 +348,3 @@
 <script src="../../plugins/fastclick/fastclick.js"></script>
 <!-- AdminLTE App -->
 <script src="../../dist/js/app.min.js"></script>
-</body>
-</html>

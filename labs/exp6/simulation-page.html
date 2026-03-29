@@ -53,14 +53,16 @@
         .play-stage {
             position: relative;
             width: 100%;
-            border-radius: 8px;
+            /*border-radius: 8px;*/
             overflow: hidden;
         }
 
         .play-stage video {
             display: block;
-            width: 100%;
+            width: 99.9%;
             height: auto;
+            background-color: transparent;
+            object-fit: cover;
         }
 
         .play-hotspot {
@@ -156,7 +158,7 @@
 
 
         .play-hotspot.debug-highlight {
-            background: rgba(255, 0, 0, 0.4);
+            background: rgba(255, 100, 100, 0.4);
             border: 3px solid red;
             animation: none;
         }
@@ -224,36 +226,25 @@
             box-shadow: -1px 0 0 #ddd;
         }
 
-        .step-item {
-            padding: 10px;
-            cursor: default;
-            border-left: 4px solid transparent;
-            margin-bottom: 8px;
+        .sim-media-container {
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            position: relative;
+            background-color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
         }
 
-        .step-item.active {
-            background-color: #eafbea;
-            border-left-color: #4CAF50;
-        }
-
-        .step-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .step-item-title h3 {
-            margin: 0;
-            font-size: 16px;
-        }
-
-        .wood-hotspot {
-            background-color: transparent !important;
-            border: none !important;
-            opacity: 0 !important;
-            pointer-events: auto;
-        }
-
-        .wood-hotspot:hover {
-            background-color: transparent !important;
+        .scaling-wrapper {
+            width: 100%;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+            position: relative;
         }
     </style>
     <style>
@@ -274,12 +265,6 @@
             object-fit: contain;
         }
 
-        .play-stage video {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
-        }
-
         .button-container {
             position: sticky;
             bottom: 0;
@@ -291,11 +276,6 @@
         /* Ensure generic media wrapper boxes auto-size and avoid clipping */
         .gif-wrapper>div[style*="height: 400px"] {
             height: auto !important;
-        }
-
-        .gif-wrapper video {
-            width: 100%;
-            height: auto;
         }
 
         /* Ensure drag stage also scales properly */
@@ -312,6 +292,7 @@
         }
 
         /* Draggable tool styling */
+        /* Draggable item */
         .draggable {
             position: absolute;
             cursor: grab;
@@ -338,6 +319,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
+            box-sizing: border-box;
 
             font-size: 12px;
             font-weight: bold;
@@ -361,7 +344,7 @@
             font-size: 15PX;
             font-weight: bold;
             text-align: center;
-            color: #0f0f0e;
+            color: black;
             width: 100%;
             height: 100%;
             display: flex;
@@ -383,187 +366,16 @@
             animation: bounceArrow 1s infinite;
         }
 
-        @keyframes pulseHotspot {
-            0% {
-                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
-            }
-
-            50% {
-                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
-            }
-
-            100% {
-                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
-            }
-        }
-
-
-        @keyframes bounceArrow {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(8px);
-            }
+        .drop-zone.dragging-active::before {
+            display: none !important;
+            content: "";
+            animation: none;
         }
 
         .drop-zone.debug-highlight {
             background: rgba(255, 0, 0, 0.281);
             border: 3px solid red;
             animation: none;
-        }
-
-
-        /* Hide only the arrow (not the whole hotspot) when dragging starts */
-        .drop-zone.dragging-active::before {
-            display: none !important;
-        }
-
-
-        /* Material and Thickness Selection Styles */
-        .selection-container {
-            padding: 20px;
-            background: #f9f9f9;
-            border-radius: 8px;
-        }
-
-        .selection-section {
-            margin-bottom: 25px;
-        }
-
-        .selection-section h4 {
-            margin: 0 0 12px 0;
-            color: #333;
-            font-size: 18px;
-        }
-
-        .material-options {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .material-card {
-            flex: 1;
-            min-width: 200px;
-            max-width: 280px;
-            padding: 20px;
-            background: white;
-            border: 3px solid #ddd;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-        }
-
-        .material-card:hover {
-            border-color: #2196F3;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .material-card.selected {
-            border-color: #4CAF50;
-            background-color: #e8f5e9;
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
-        }
-
-        .material-card h5 {
-            margin: 10px 0 5px 0;
-            color: #333;
-            font-size: 20px;
-        }
-
-        .material-card p {
-            margin: 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        .material-icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-        }
-
-        .thickness-options {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .thickness-btn {
-            padding: 12px 30px;
-            font-size: 16px;
-            font-weight: 600;
-            background: white;
-            border: 3px solid #ddd;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            min-width: 120px;
-        }
-
-        .thickness-btn:hover {
-            border-color: #2196F3;
-            background-color: #e3f2fd;
-        }
-
-        .thickness-btn.selected {
-            border-color: #4CAF50;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .selection-summary {
-            margin-top: 20px;
-            padding: 15px;
-            background: #fff3e0;
-            border-left: 4px solid #ff9800;
-            border-radius: 4px;
-            font-size: 16px;
-            color: #e65100;
-        }
-
-        .selection-summary.complete {
-            background: #e8f5e9;
-            border-left-color: #4CAF50;
-            color: #2e7d32;
-        }
-
-        /* Fixed-height simulation container */
-        .sim-media-container {
-            width: 100%;
-            height: 600px;
-            /* Fixed height for the simulation area */
-            overflow: hidden;
-            position: relative;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .scaling-wrapper {
-            width: 100%;
-            transform-origin: center center;
-            transition: transform 0.2s ease-out;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .play-stage {
-            border-radius: 0 !important;
-            /* Managed by parent container */
         }
         body {
     background: url('bg.png') no-repeat center center fixed;

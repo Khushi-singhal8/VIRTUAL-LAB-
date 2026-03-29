@@ -12,32 +12,29 @@
         background: #fff;
     }
 
-    /* ⭐ ONLY CONTAINER FIX (no cutting) */
+    /* ⭐ ONLY CONTAINER FIX */
     .print-area,
     .gif-wrapper {
         height: auto !important;          /* allow full height */
-        overflow: visible !important;     /* remove scroll clipping */
+        overflow: visible !important;    /* remove scroll clipping */
         width: 100% !important;
         max-width: 100% !important;
-        box-sizing: border-box !important;
+        box-sizing: border-box !important; /* include padding inside width */
 
         margin: 0 !important;
         padding: 10px !important;
     }
 
-    /* remove top gap */
-    .print-area h2 {
+    h2 {
         margin-top: 0 !important;
     }
 
-    /* 🔥 STRONGER HIDE RULES (title fix) */
-    h1,
-    h2.simulation-title,
-    .simulation-title,
+    /* hide non-print UI */
+    .no-print,
     .button-container,
     .step-indicator,
     .drag-instructions,
-    .no-print,
+    .simulation-title,
     button {
         display: none !important;
     }
