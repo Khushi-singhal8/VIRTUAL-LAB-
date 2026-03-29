@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Virtual Labs </title>
+    <title>Virtual Labs</title>
     <style>
         /* Simulation Styles */
         .container {
@@ -98,13 +98,14 @@
 
 
         .play-hotspot::before {
-            content: "⬇";
+            content: var(--arrow-content, "⬇");
             position: absolute;
-            top: -80px;
-            left: 50%;
+            top: var(--arrow-top, -80px);
+            left: var(--arrow-left, 50%);
+            width: var(--arrow-width, auto);
             font-size: 58px;
             color: #0a0a0a;
-            transform: translateX(-50%);
+            transform: var(--arrow-transform, translateX(-50%));
             animation: bounceArrowPlayHotspot 1s infinite;
         }
 
@@ -142,6 +143,23 @@
             }
         }
 
+        /* Sideways arrow animation for step2 */
+        .play-hotspot.step2-arrow::before {
+            animation: bounceArrowSideways 1s infinite;
+        }
+
+        @keyframes bounceArrowSideways {
+
+            0%,
+            100% {
+                transform: var(--arrow-transform, translateX(-50%)) translateX(0);
+            }
+
+            50% {
+                transform: var(--arrow-transform, translateX(-50%)) translateX(8px);
+            }
+        }
+
         @keyframes bounceArrowPlayHotspot {
 
             0%,
@@ -151,22 +169,6 @@
 
             50% {
                 transform: translateX(-50%) translateY(8px);
-            }
-        }
-
-        /* Sideways arrow animation for step3 */
-        .play-hotspot.step3-arrow::before {
-            animation: bounceArrowSideways 1s infinite;
-        }
-
-        @keyframes bounceArrowSideways {
-            0%,
-            100% {
-                transform: translateX(-50%) translateX(0);
-            }
-
-            50% {
-                transform: translateX(-50%) translateX(8px);
             }
         }
 
@@ -284,7 +286,7 @@
         .button-container {
             position: sticky;
             bottom: 0;
-           
+            
             padding: 10px 0;
             z-index: 100;
         }
@@ -419,6 +421,7 @@
     background: url('bg.png') no-repeat center center fixed;
     background-size: cover;
 }
+
     </style>
 
     <!-- Print Styles -->
