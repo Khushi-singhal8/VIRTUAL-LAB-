@@ -156,7 +156,7 @@
 
 
         .play-hotspot.debug-highlight {
-            background: rgba(255, 100, 100, 0.4);
+            background: rgba(255, 0, 0, 0.4);
             border: 3px solid red;
             animation: none;
         }
@@ -338,8 +338,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            box-sizing: border-box;
 
             font-size: 12px;
             font-weight: bold;
@@ -363,7 +361,7 @@
             font-size: 15PX;
             font-weight: bold;
             text-align: center;
-            color: black;
+            color: #0f0f0e;
             width: 100%;
             height: 100%;
             display: flex;
@@ -385,10 +383,31 @@
             animation: bounceArrow 1s infinite;
         }
 
-        .drop-zone.dragging-active::before {
-            display: none !important;
-            content: "";
-            animation: none;
+        @keyframes pulseHotspot {
+            0% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+
+            50% {
+                box-shadow: 0 0 25px rgba(255, 152, 0, 1);
+            }
+
+            100% {
+                box-shadow: 0 0 10px rgba(255, 152, 0, 0.6);
+            }
+        }
+
+
+        @keyframes bounceArrow {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(8px);
+            }
         }
 
         .drop-zone.debug-highlight {
@@ -396,6 +415,13 @@
             border: 3px solid red;
             animation: none;
         }
+
+
+        /* Hide only the arrow (not the whole hotspot) when dragging starts */
+        .drop-zone.dragging-active::before {
+            display: none !important;
+        }
+
 
         /* Material and Thickness Selection Styles */
         .selection-container {
@@ -530,6 +556,9 @@
             transform-origin: center center;
             transition: transform 0.2s ease-out;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .play-stage {

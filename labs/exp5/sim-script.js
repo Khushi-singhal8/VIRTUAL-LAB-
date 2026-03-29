@@ -1,84 +1,72 @@
-'use strict';
-
 document.addEventListener("DOMContentLoaded", function () {
+    const style = document.createElement('style');
+    style.innerHTML = `
+.apparatus-img-box {
+    width: 100%;
+    height: 150px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #f8f9fa;
+}
+
+.apparatus-img-box img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+`;
+    document.head.appendChild(style);
+
+    const printLink = document.createElement('link');
+    printLink.rel = 'stylesheet';
+    printLink.href = 'print.css';
+    document.head.appendChild(printLink);
+
+    const resetButton = document.getElementById('reset-btn');
+    const prevButton = document.getElementById('prev-btn');
+    const nextButton = document.getElementById('next-btn');
+    const gifContainer = document.getElementById('gif-container');
+    const currentStepElement = document.getElementById('current-step');
+    const totalStepsElement = document.getElementById('total-steps');
+    const stepsList = document.getElementById('steps-list');
+
+    let cleanupCurrent = null;
+
+    let audioCtx = null;
+    let hissBuffer = null;
 
     const assetList = [
-        "images/simulation/0.5.mp4",
-        "images/simulation/1.png",
-        "images/simulation/1-tool.png",
-        "images/simulation/2.png",
-        "images/simulation/2-tool.png",
+        "images/simulation/torch.png",
+        "images/simulation/oxygen cylinder.png",
+        "images/simulation/acetylene cylinderr.png",
+        "images/simulation/regulator.png",
+        "images/simulation/striker.png",
+
+        "images/simulation/1.mp4",
+        "images/simulation/2.mp4",
         "images/simulation/3.mp4",
         "images/simulation/4.mp4",
-        "images/simulation/1mm.png",
-        "images/simulation/5mm.png",
-        "images/simulation/protractor.png",
+        "images/simulation/5.mp4",
+        "images/simulation/7.mp4",
+        "images/simulation/8.mp4",
+        "images/simulation/9.mp4",
+        "images/simulation/10.mp4",
+        "images/simulation/11.mp4",
 
-        "images/simulation/aluminium-1mm/0.5.mp4",
-        "images/simulation/aluminium-1mm/1.png",
-        "images/simulation/aluminium-1mm/1-tool.png",
-        "images/simulation/aluminium-1mm/2.png",
-        "images/simulation/aluminium-1mm/2-tool.png",
-        "images/simulation/aluminium-1mm/3.mp4",
-        "images/simulation/aluminium-1mm/3.5.png",
-        "images/simulation/aluminium-1mm/4.mp4",
-        "images/simulation/aluminium-1mm/4.5.png",
-        "images/simulation/aluminium-1mm/1mm.png",
+        "images/simulation/6.png",
+        "images/simulation/6-tool.png",
+        "images/simulation/6.1.png",
 
-        "images/simulation/aluminium-5mm/0.5.mp4",
-        "images/simulation/aluminium-5mm/1.png",
-        "images/simulation/aluminium-5mm/1-tool.png",
-        "images/simulation/aluminium-5mm/2.png",
-        "images/simulation/aluminium-5mm/2-tool.png",
-        "images/simulation/aluminium-5mm/3.mp4",
-        "images/simulation/aluminium-5mm/3.5.png",
-        "images/simulation/aluminium-5mm/4.mp4",
-        "images/simulation/aluminium-5mm/4.5.png",
-        "images/simulation/aluminium-5mm/5mm.png",
+        "images/carbrizing flame.png",
+        "images/neutral flame.png",
+        "images/oxidising flame.png",
 
-        "images/simulation/brass-1mm/0.5.mp4",
-        "images/simulation/brass-1mm/1.png",
-        "images/simulation/brass-1mm/1-tool.png",
-        "images/simulation/brass-1mm/2.png",
-        "images/simulation/brass-1mm/2-tool.png",
-        "images/simulation/brass-1mm/3.mp4",
-        "images/simulation/brass-1mm/3.5.png",
-        "images/simulation/brass-1mm/4.mp4",
-        "images/simulation/brass-1mm/4.5.png",
-        "images/simulation/brass-1mm/1mm.png",
-
-        "images/simulation/brass-5mm/0.5.mp4",
-        "images/simulation/brass-5mm/1.png",
-        "images/simulation/brass-5mm/1-tool.png",
-        "images/simulation/brass-5mm/2.png",
-        "images/simulation/brass-5mm/2-tool.png",
-        "images/simulation/brass-5mm/3.mp4",
-        "images/simulation/brass-5mm/3.5.png",
-        "images/simulation/brass-5mm/4.mp4",
-        "images/simulation/brass-5mm/4.5.png",
-        "images/simulation/brass-5mm/5mm.png",
-
-        "images/simulation/steel-1mm/0.5.mp4",
-        "images/simulation/steel-1mm/1.png",
-        "images/simulation/steel-1mm/1-tool.png",
-        "images/simulation/steel-1mm/2.png",
-        "images/simulation/steel-1mm/2-tool.png",
-        "images/simulation/steel-1mm/3.mp4",
-        "images/simulation/steel-1mm/3.5.png",
-        "images/simulation/steel-1mm/4.mp4",
-        "images/simulation/steel-1mm/4.5.png",
-        "images/simulation/steel-1mm/1mm.png",
-
-        "images/simulation/steel-5mm/0.5.mp4",
-        "images/simulation/steel-5mm/1.png",
-        "images/simulation/steel-5mm/1-tool.png",
-        "images/simulation/steel-5mm/2.png",
-        "images/simulation/steel-5mm/2-tool.png",
-        "images/simulation/steel-5mm/3.mp4",
-        "images/simulation/steel-5mm/3.5.png",
-        "images/simulation/steel-5mm/4.mp4",
-        "images/simulation/steel-5mm/4.5.png",
-        "images/simulation/steel-5mm/5mm.png"
+        "images/simulation/hiss.mp3"
     ];
 
     const assetCache = {};
@@ -88,8 +76,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function formatSrc(url, timestamp) {
-        if (url.startsWith('blob:')) return url;
-        return `${url}?t=${timestamp}`;
+        const src = getAssetSrc(url);
+        if (src.startsWith('blob:')) return src;
+        return `${src}?t=${timestamp}`;
     }
 
     async function preloadAssets() {
@@ -147,130 +136,154 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 500);
     }
 
-    const prevButton = document.getElementById('prev-btn');
-    const nextButton = document.getElementById('next-btn');
-    const resetButton = document.getElementById('reset-btn');
-    const gifContainer = document.getElementById('gif-container');
-    const currentStepElement = document.getElementById('current-step');
-    const totalStepsElement = document.getElementById('total-steps');
-    const stepsList = document.getElementById('steps-list');
+    async function initAudio() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+            await audioCtx.resume();
+        }
+        if (!hissBuffer) {
+            try {
+                const src = getAssetSrc('images/simulation/hiss.mp3');
+                const response = await fetch(src);
+                const arrayBuffer = await response.arrayBuffer();
+                hissBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+            } catch (e) {
+            }
+        }
+    }
 
-    let cleanupCurrent = null;
-    let selectedMaterial = null;
-    let selectedThickness = null;
+    let step1Completed = false;
+    let step3Completed = false;
+    let step5Completed = false;
+    let step5_5Completed = false;
+    let step7Completed = false;
+
+    const stepGuidance = {
+        apparatus: {
+            now: "Identify the apparatus used in gas welding flame types.",
+            next: "Begin the gas welding simulation."
+        }
+    };
 
     const steps = [
         {
             id: 'step0',
-            mode: 'selection',
-            title: 'Select Material and Thickness',
-            isSelectionStep: true
-        },
-        {
-            id: 'step0_5',
-            mode: 'schematic',
-            title: 'Schematic Diagram',
-            instruction: 'Review the schematic diagram for the selected thickness.'
+            title: 'Apparatus Identification',
+            type: 'apparatus'
         },
         {
             id: 'step1',
-            mode: 'autoplay',
-            title: 'Marking Step',
-            src: 'images/simulation/0.5.mp4'
+            title: 'Setup',
+            src: 'images/simulation/1 (1).mp4',
+            type: 'video',
+            initialInstruction: 'Turn on the oxygen valve before setting the oxygen cylinder\u2019s pressure',
+            finalInstruction: 'Click on next to set the pressure',
+            interaction: { pauseAt: 1.4, hotspot: { x: 0.4504105207511871, y: 0.42994331737492386, w: 0.07249351389399054, h: 0.12887735803376096 }, instruction: 'Turn on the oxygen valve before setting the oxygen cylinder\u2019s pressure' }
         },
         {
-            id: 'step2', mode: 'drag', title: 'Place workpiece on apparatus (drag & drop).',
-            background: 'images/simulation/1.png', tool: 'images/simulation/1-tool.png',
-            target: { mode: 'rel', x: 0.48, y: 0.7 },
-            init: { mode: 'rel', x: 0.82, y: 0.30 },
-            anchor: { x: 0.5, y: 0.5 },
-            toolSize: { widthRel: 0.2 },
-            tolerance: 55,
-            arrow: { top: '-374%', left: '637%' },
-            instruction: 'Drag the workpiece onto the marked location on the apparatus.'
+            id: 'step2',
+            title: 'Setup',
+            src: 'images/simulation/2 (2).mp4',
+            type: 'video',
+            initialInstruction: 'Set the pressure of oxygen cylinder to 15 PSI',
+            finalInstruction: 'Click on next to close the oxygen valve',
+            interaction: { pauseAt: 1.55, hotspot: { x: 0.34345287730103713, y: 0.2598674596418459, w: 0.21985737820308607, h: 0.13732833233105676 }, instruction: 'Set the pressure of oxygen cylinder to 15 PSI' }
         },
         {
-            id: 'step3', mode: 'drag', title: 'Setup handle on apparatus (drag & drop).',
-            background: 'images/simulation/2.png', tool: 'images/simulation/2-tool.png',
-            target: { mode: 'rel', x: 0.46, y: 0.45 },
-            init: { mode: 'rel', x: 0.80, y: 0.25 },
-            anchor: { x: 0.25, y: 0.2 },
-            toolSize: { widthRel: 0.30 },
-            tolerance: 55,
-            arrow: { top: '-150%', left: '690%' },
-            instruction: 'Drag the handle so its hinge (top-left) snaps into place.'
+            id: 'step3',
+            title: 'Setup',
+            src: 'images/simulation/3 (1).mp4',
+            type: 'video',
+            initialInstruction: 'Close the oxygen valve to continue.',
+            finalInstruction: 'Click next to turn on the acetylene valve',
+            interaction: { pauseAt: 1.9, hotspot: { x: 0.44354027478690583, y: 0.4376252530111657, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Close the oxygen valve to continue.' }
         },
-        { id: 'step4', mode: 'hotspot', title: 'Start operation and measure angle', src: 'images/simulation/3.mp4' },
         {
-            id: 'step4_5', mode: 'drag', title: 'Measure Angle with Protractor',
-            background: 'images/simulation/3.5.png', tool: 'protractor.png',
-            target: { mode: 'rel', x: 0.5, y: 0.55 },
-            init: { mode: 'rel', x: 0.52, y: 0.50 },
-            anchor: { x: 0.477, y: 0.85 },
-            toolSize: { widthRel: 0.6 },
-            snapRotation: 323,
-            tolerance: 120,
-            arrow: { top: '-114%', left: '410%' },
-            instruction: 'Drag the protractor to measure the angle.'
+            id: 'step4',
+            title: 'Setup',
+            src: 'images/simulation/4 (1).mp4',
+            type: 'video',
+            initialInstruction: 'Turn on the acetylene valve before setting the acetylene cylinder\u2019s pressure',
+            finalInstruction: 'Click on next to set the pressure of acetylene',
+            interaction: { pauseAt: 1.7, hotspot: { x: 0.4744391495613936, y: 0.4333997658625178, w: 0.09626187910513498, h: 0.17113222952023996 }, instruction: 'Turn on the acetylene valve before setting the acetylene cylinder\u2019s pressure' }
         },
-        { id: 'step5', mode: 'hotspot', title: 'Remove punch and measure angle', src: 'images/simulation/4.mp4' },
         {
-            id: 'step5_5', mode: 'drag', title: 'Measure Final Angle with Protractor',
-            background: 'images/simulation/4.5.png', tool: 'protractor.png',
-            target: { mode: 'rel', x: 0.515, y: 0.68 },
-            init: { mode: 'rel', x: 0.52, y: 0.50 },
-            anchor: { x: 0.477, y: 0.85 },
-            toolSize: { widthRel: 0.6 },
-            snapRotation: 324,
-            tolerance: 120,
-            arrow: { top: '-234%', left: '388%' },
-            instruction: 'Drag the protractor to measure the final angle after spring back.'
+            id: 'step5',
+            title: 'Setup',
+            src: 'images/simulation/5.mp4',
+            type: 'video',
+            initialInstruction: 'Set the pressure of acetylene cylinder to 3 PSI',
+            finalInstruction: 'Click on next to ignite the flame',
+            interaction: { pauseAt: 1.6, hotspot: { x: 0.36484440599106716, y: 0.2239508188783387, w: 0.21985737820308607, h: 0.15423028092564836 }, instruction: 'Set the pressure of acetylene cylinder to 3 PSI' }
         },
-        { id: 'step7', mode: 'print', title: 'Observation & Result (Print)' }
-    ];
-
-    const stepGuidance = {
-        step0_5: {
-            now: "Review the schematic diagram.",
-            next: "Start marking process."
+        {
+            id: 'step5_5',
+            title: 'Ignition of flame',
+            type: 'drag',
+            src: 'images/simulation/6.png',
+            tool: 'images/simulation/6-tool.png',
+            initialInstruction: 'Drag the spark lighter to the torch tip.',
+            finalInstruction: 'Now we will observe the different types of flames.',
+            interaction: {
+                target: { x: 0.408297138221516, y: 0.447313881310034, w: 0.2, h: 0.2 },
+                anchor: { x: 0.8, y: 0.15 },
+                initialPos: { x: 0.1, y: 0.15 },
+                tolerance: 80
+            }
         },
-        step1: {
-            now: "Follow the marking process.",
-            next: "Place workpiece on apparatus."
+        {
+            id: 'step7',
+            title: 'Observation of flames',
+            src: 'images/simulation/7.mp4',
+            type: 'video',
+            initialInstruction: 'Introduce oxygen to obtain carburizing flame',
+            finalInstruction: 'Carburizing flame\nThis flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal and is suitable for welding high-carbon steels, lead, and aluminum where oxidation must be avoided.\n\nClick next to obtain and study neutral flame.',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Introduce oxygen to obtain carburizing flame' }
         },
-        step2: {
-            now: "Drag the workpiece onto the marked location on the apparatus.",
-            next: "Attach handle to the tool."
+        {
+            id: 'step8',
+            title: 'Observation of flames',
+            src: 'images/simulation/8.mp4',
+            type: 'video',
+            initialInstruction: 'Increase oxygen to obtain neutral flame',
+            finalInstruction: 'Neutral flame\nThis flame has a well-defined inner luminous cone and an outer envelope. It has a temperature around 3300\u00B0C and does not oxidize or carburize the metal. It is ideal for welding steels and cast iron.\n\nClick next to obtain and study oxidizing flame.',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain neutral flame' }
         },
-        step3: {
-            now: "Drag the handle so its hinge (top-left) snaps into place.",
-            next: "Start operation and measure angle."
+        {
+            id: 'step9',
+            title: 'Observation of flames',
+            src: 'images/simulation/9.mp4',
+            type: 'video',
+            initialInstruction: 'Increase oxygen to obtain oxidizing flame',
+            finalInstruction: 'Oxidizing flame\nThis flame has a shorter, sharp inner cone and a loud hissing sound. It is hotter than the neutral flame and is used for cutting and welding metals like brass or bronze that require oxidation.\n\nClick on next to extinguish the flame',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Increase oxygen to obtain oxidizing flame' }
         },
-        step4: {
-            now: "Click on the handle to start the bending operation.",
-            next: "Measure angle."
+        {
+            id: 'step10',
+            title: 'Cleanup',
+            src: 'images/simulation/10.mp4',
+            type: 'video',
+            initialInstruction: 'Close oxygen valve',
+            finalInstruction: 'Click on next to close the acetylene valve.',
+            interaction: { pauseAt: 0, hotspot: { x: 0.7463266676299354, y: 0.6095265211924596, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close oxygen valve' }
         },
-        step4_5: {
-            now: "Drag the protractor to measure the angle.",
-            next: "Remove punch."
+        {
+            id: 'step11',
+            title: 'Cleanup',
+            src: 'images/simulation/11.mp4',
+            type: 'video',
+            initialInstruction: 'Close acetylene valve',
+            finalInstruction: 'Click on next to view result.',
+            interaction: { pauseAt: 0, hotspot: { x: 0.8342696189111698, y: 0.67396520020934, w: 0.043971475640617215, h: 0.07817151224998616 }, instruction: 'Close acetylene valve' }
         },
-        step5: {
-            now: "Click on the handle to remove the punch.",
-            next: "Measure final angle."
-        },
-        step5_5: {
-            now: "Drag the protractor to measure the final angle after spring back.",
-            next: "View results."
+        {
+            id: 'step12',
+            title: 'Result',
+            type: 'result'
         }
-    };
-
-    const angleTextByStep = {
-        step4: 'Angle: 106°',
-        step5: 'Angle: 112°'
-    };
-
-    const hotspotSteps = new Set(['step4', 'step5']);
-    const stepCompleted = Object.fromEntries(steps.map(s => [s.id, s.mode !== 'drag' && s.mode !== 'autoplay' && !hotspotSteps.has(s.id)]));
+    ];
 
     let currentStepIndex = 0;
     const totalSteps = steps.length;
@@ -285,9 +298,10 @@ document.addEventListener("DOMContentLoaded", function () {
             titleDiv.className = 'step-item-title';
             titleDiv.innerHTML = `<h4 style="margin:0">${index + 1}. ${step.title}</h4>`;
             item.appendChild(titleDiv);
-            item.setAttribute('aria-disabled', 'true');
-            item.style.cursor = 'default';
-            item.title = 'Use Previous/Next to navigate';
+            item.addEventListener('click', () => {
+                currentStepIndex = index;
+                showCurrentStep();
+            });
             stepsList.appendChild(item);
         });
     }
@@ -305,13 +319,11 @@ document.addEventListener("DOMContentLoaded", function () {
     function updateScaling() {
         const container = document.querySelector('.sim-media-container');
         const wrapper = document.querySelector('.scaling-wrapper');
-        const stage = document.getElementById('play-stage') || document.getElementById('schematic-stage') || document.getElementById('drag-stage');
+        const stage = document.getElementById('play-stage') || document.getElementById('drag-stage');
 
         if (!container || !wrapper || !stage) return;
 
         wrapper.style.transform = 'scale(1)';
-        wrapper.style.width = '100%';
-        wrapper.style.marginLeft = '0';
 
         const containerHeight = container.offsetHeight;
         const stageHeight = stage.offsetHeight;
@@ -320,414 +332,178 @@ document.addEventListener("DOMContentLoaded", function () {
             const scale = containerHeight / stageHeight;
             if (scale < 1) {
                 wrapper.style.transform = `scale(${scale})`;
-                wrapper.style.width = `${(1 / scale) * 100}%`;
-                wrapper.style.transformOrigin = 'center center';
-                wrapper.style.marginLeft = '0';
-            } else {
-                wrapper.style.transformOrigin = 'center center';
             }
         }
     }
 
-    function isHotspotStep(step) { return step.mode === 'hotspot' && hotspotSteps.has(step.id); }
-    function isHotspotDone(step) { return stepCompleted[step.id]; }
-    function setStepDone(stepId) { if (stepCompleted.hasOwnProperty(stepId)) stepCompleted[stepId] = true; }
-
-    function getSimulationPath(src) {
-        if (!src) return src;
-
-        if (src === 'protractor.png') {
-            const protractorPath = 'images/simulation/' + src;
-            return getAssetSrc(protractorPath);
-        }
-
-        if (selectedMaterial && selectedThickness) {
-            const folderName = `${selectedMaterial}-${selectedThickness}`;
-            const folderPath = src.replace('images/simulation/', `images/simulation/${folderName}/`);
-            return getAssetSrc(folderPath);
-        }
-
-        return getAssetSrc(src);
+    function isInteractiveStep(stepId) {
+        return stepId === 'step1' || stepId === 'step3' || stepId === 'step5' || stepId === 'step5_5' || stepId === 'step7';
     }
+
+    function isInteractiveCompleted(stepId) {
+        switch (stepId) {
+            case 'step1': return step1Completed;
+            case 'step3': return step3Completed;
+            case 'step5': return step5Completed;
+            case 'step5_5': return step5_5Completed;
+            case 'step7': return step7Completed;
+            default: return true;
+        }
+    }
+
+    function setInteractiveCompleted(stepId, done) {
+        switch (stepId) {
+            case 'step1': step1Completed = done; break;
+            case 'step3': step3Completed = done; break;
+            case 'step5': step5Completed = done; break;
+            case 'step5_5': step5_5Completed = done; break;
+            case 'step7': step7Completed = done; break;
+        }
+    }
+
+    const apparatusData = [
+        {
+            name: "Oxy-acetylene welding torch",
+            img: "images/simulation/torch.png",
+            desc: "Used to mix oxygen and acetylene in controlled proportions to produce different welding flames."
+        },
+        {
+            name: "Oxygen cylinder",
+            img: "images/simulation/oxygen cylinder.png",
+            desc: "Supplies pure oxygen at high pressure to support combustion."
+        },
+        {
+            name: "Acetylene cylinderr",
+            img: "images/simulation/acetylene cylinderr.png",
+            desc: "Provides acetylene fuel gas for flame generation, stored safely in dissolved form."
+        },
+        {
+            name: "Pressure regulator",
+            img: "images/simulation/regulator.png",
+            desc: "Reduces and maintains safe working pressure of gases supplied from cylinders."
+        },
+        {
+            name: "Spark lighter (striker)",
+            img: "images/simulation/striker.png",
+            desc: "Used to ignite acetylene gas safely without an open flame."
+        }
+    ];
 
     function showCurrentStep() {
         if (!gifContainer) return;
-        document.body.classList.remove('result-mode');
         const step = steps[currentStepIndex];
         const timestamp = Date.now();
+
         clearCleanup();
 
         if (nextButton) nextButton.disabled = true;
 
-        if (step.isSelectionStep) {
-            renderSelectionStep();
-        } else if (step.mode === 'schematic') {
-            renderSchematicStep(step, timestamp);
-        } else if (step.mode === 'drag') {
+        if (step.type === 'apparatus') {
+            renderApparatusStep();
+        } else if (step.type === 'gif') {
+            renderGifStep(step, timestamp);
+        } else if (step.type === 'drag') {
             renderDragStep(step, timestamp);
-        } else if (isHotspotStep(step)) {
-            renderHotspotFirstFrame(step, timestamp);
-        } else if (step.mode === 'print') {
+        } else if (step.type === 'result') {
             renderResultStep();
         } else {
-            renderAutoplayStep(step, timestamp);
+            renderInteractiveVideoStep(step, timestamp);
         }
 
         if (currentStepElement) currentStepElement.textContent = currentStepIndex + 1;
         if (prevButton) prevButton.disabled = currentStepIndex === 0;
 
-        if (nextButton && currentStepIndex === totalSteps - 1) {
-            nextButton.disabled = true;
-        }
-
         if (stepsList) {
             const items = stepsList.querySelectorAll('.step-item');
             items.forEach((itm, idx) => {
-                if (idx === currentStepIndex) itm.classList.add('active'); else itm.classList.remove('active');
+                if (idx === currentStepIndex) itm.classList.add('active');
+                else itm.classList.remove('active');
             });
         }
     }
 
-    function renderSelectionStep() {
+    function renderGifStep(step, timestamp) {
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
-                <h3>Select Material and Thickness</h3>
+                <h3>${step.title}</h3>
                 <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-
-                <div class="selection-container">
-                    <div class="selection-section">
-                        <h4>Choose Material:</h4>
-                        <div class="material-options">
-                            <div class="material-card" data-material="aluminium" id="material-aluminium">
-                                <div class="material-icon">
-                                    <img src="images/simulation/aluminium-5mm/1-tool.png" alt="Aluminium workpiece" style="max-width: 150px; height: auto;">
-                                </div>
-                                <h5>Aluminium</h5>
-                                <p>Lightweight metal</p>
-                            </div>
-                            <div class="material-card" data-material="brass" id="material-brass">
-                                <div class="material-icon">
-                                    <img src="images/simulation/brass-5mm/1-tool.png" alt="Brass workpiece" style="max-width: 150px; height: auto;">
-                                </div>
-                                <h5>Brass</h5>
-                                <p>Copper-zinc alloy</p>
-                            </div>
-                            <div class="material-card" data-material="steel" id="material-steel">
-                                <div class="material-icon">
-                                    <img src="images/simulation/steel-5mm/1-tool.png" alt="Steel workpiece" style="max-width: 150px; height: auto;">
-                                </div>
-                                <h5>Mild Steel</h5>
-                                <p>Corrosion-resistant alloy</p>
-                            </div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div id="play-stage" style="display: flex; align-items: center; justify-content: center;">
+                            <img id="step-gif" src="${formatSrc(step.src, timestamp)}" class="step-gif" alt="${step.title}" style="width: 100%; height: auto;">
                         </div>
                     </div>
+                </div>
+                <div class="drag-instructions">${step.initialInstruction}</div>
+            </div>
+        `;
+        const gif = document.getElementById('step-gif');
+        gif.addEventListener('load', () => {
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+            if (nextButton) nextButton.disabled = false;
+        });
+    }
 
-                    <div class="selection-section">
-                        <h4>Choose Thickness:</h4>
-                        <div class="thickness-options">
-                            <button class="thickness-btn" data-thickness="1mm" id="thickness-1mm">1mm</button>
-                            <button class="thickness-btn" data-thickness="5mm" id="thickness-5mm">5mm</button>
-                        </div>
-                    </div>
+    function renderApparatusStep() {
+        if (nextButton) nextButton.disabled = false;
 
-                    <div class="selection-summary" id="selection-summary">
-                        Please select both material and thickness to proceed.
+        let apparatusHTML = '';
+
+        apparatusData.forEach((item, index) => {
+            apparatusHTML += `
+            <div style="
+                background:#f5f5f5;
+                border-radius:12px;
+                padding:15px;
+                text-align:center;
+                width: calc(33.33% - 20px);
+                min-width: 250px;
+                flex: 0 1 auto;
+                box-sizing: border-box;
+            ">
+                <div class="apparatus-img-box">
+                    <img src="${getAssetSrc(item.img)}" alt="${item.name}">
+                </div>
+                <h4 style="margin: 10px 0 6px;">${index + 1}. ${item.name}</h4>
+                <p style="font-size: 14px;">${item.desc}</p>
+            </div>
+        `;
+        });
+
+        gifContainer.innerHTML = `
+        <div class="gif-wrapper">
+            <h3>Apparatus Used</h3>
+            <div class="step-indicator">Step 1 of ${totalSteps}</div>
+
+            <div class="sim-media-container">
+                <div class="scaling-wrapper">
+                    <div id="play-stage" style="
+                        display: flex;
+                        flex-wrap: wrap;
+                        justify-content: center;
+                        gap: 20px;
+                        margin-top: 20px;
+                        padding: 20px;
+                    ">
+                        ${apparatusHTML}
                     </div>
                 </div>
             </div>
-        `;
 
-        const materialCards = gifContainer.querySelectorAll('.material-card');
-        materialCards.forEach(card => {
-            if (selectedMaterial && card.dataset.material === selectedMaterial) {
-                card.classList.add('selected');
-            }
-            card.addEventListener('click', () => {
-                selectedMaterial = card.dataset.material;
-                materialCards.forEach(c => c.classList.remove('selected'));
-                card.classList.add('selected');
-                updateSelectionSummary();
-            });
-        });
-
-        const thicknessButtons = gifContainer.querySelectorAll('.thickness-btn');
-        thicknessButtons.forEach(btn => {
-            if (selectedThickness && btn.dataset.thickness === selectedThickness) {
-                btn.classList.add('selected');
-            }
-            btn.addEventListener('click', () => {
-                selectedThickness = btn.dataset.thickness;
-                thicknessButtons.forEach(b => b.classList.remove('selected'));
-                btn.classList.add('selected');
-                updateSelectionSummary();
-            });
-        });
-
-        updateSelectionSummary();
-
-        function updateSelectionSummary() {
-            const summary = document.getElementById('selection-summary');
-            if (!summary) return;
-
-            if (selectedMaterial && selectedThickness) {
-                let materialName = 'Aluminium';
-                if (selectedMaterial === 'brass') materialName = 'Brass';
-                if (selectedMaterial === 'steel') materialName = 'Stainless Steel';
-                summary.textContent = `Selected: ${materialName}, ${selectedThickness}`;
-                summary.classList.add('complete');
-                if (nextButton) nextButton.disabled = false;
-            } else {
-                const parts = [];
-                if (!selectedMaterial) parts.push('material');
-                if (!selectedThickness) parts.push('thickness');
-                summary.textContent = `Please select ${parts.join(' and ')} to proceed.`;
-                summary.classList.remove('complete');
-                if (nextButton) nextButton.disabled = true;
-            }
-        }
-    }
-
-    function renderSchematicStep(step, timestamp) {
-        const schematicImage = selectedThickness === '5mm' ? '5mm.png' : '1mm.png';
-        const imagePath = getSimulationPath(`images/simulation/${schematicImage}`);
-        const formattedPath = formatSrc(imagePath, timestamp);
-
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="sim-media-container">
-                    <div class="scaling-wrapper">
-                        <div class="play-stage" id="schematic-stage" style="display: flex; align-items: center; justify-content: center;">
-                            <img id="schematic-img" src="${formattedPath}" alt="Schematic Diagram" style="width: 100%; height: auto; object-fit: contain;" />
-                        </div>
-                    </div>
-                </div>
-                <div class="drag-instructions">
-                    ${step.instruction}<br>
-                    Click next to: ${stepGuidance.step0_5.next}
-                </div>
+            <div class="drag-instructions" style="margin-top:20px; line-height: 15px">
+                ${stepGuidance.apparatus.now}\n
+                Click next to: ${stepGuidance.apparatus.next}
             </div>
-        `;
-
-        const img = document.getElementById('schematic-img');
-        img.addEventListener('load', () => {
-            updateScaling();
-            window.addEventListener('resize', updateScaling);
-        });
-
-        if (nextButton) nextButton.disabled = (currentStepIndex === totalSteps - 1);
-    }
-
-    function getDynamicInstruction(stepId) {
-        if (stepId === 'step4_5') {
-            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
-                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
-                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-            if (selectedMaterial == 'brass' && selectedThickness == '1mm')
-                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-            if (selectedMaterial == 'brass' && selectedThickness == '5mm')
-                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-            if (selectedMaterial == 'steel' && selectedThickness == '1mm')
-                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-            if (selectedMaterial == 'steel' && selectedThickness == '5mm')
-                return `Measurement on protractor: 106°\nBend Angle before release: 180° - 106° = 74°`;
-        } else if (stepId === 'step5') {
-            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
-                return `Measurement on protractor: 114°\nFinal bend angle after release : 180° - 114 = 66°\n
-Spring Back angle = 74° - 66° = 8°`;
-            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
-                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
-Spring Back angle = 74° - 70° = 4°`;
-            if (selectedMaterial == 'brass' && selectedThickness == '1mm')
-                return `Measurement on protractor: 112°\nFinal bend angle after release : 180° - 112 = 68°\n
-Spring Back angle = 74° - 68° = 6°`;
-            if (selectedMaterial == 'brass' && selectedThickness == '5mm')
-                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
-Spring Back angle = 74° - 70° = 4°`;
-            if (selectedMaterial == 'steel' && selectedThickness == '1mm')
-                return `Measurement on protractor: 126°\nFinal bend angle after release : 180° - 126 = 54°\n
-Spring Back angle = 74° - 54° = 20°`;
-            if (selectedMaterial == 'steel' && selectedThickness == '5mm')
-                return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
-Spring Back angle = 74° - 64° = 10°`;
-        } else if (stepId === 'step5_5') {
-            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm')
-                return `Measurement on protractor: 114°\nFinal bend angle after release : 180° - 114 = 66°\n
-Spring Back angle = 74° - 66° = 8°`;
-            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm')
-                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
-Spring Back angle = 74° - 70° = 4°`;
-            if (selectedMaterial == 'brass' && selectedThickness == '1mm')
-                return `Measurement on protractor: 112°\nFinal bend angle after release : 180° - 112 = 68°\n
-Spring Back angle = 74° - 68° = 6°`;
-            if (selectedMaterial == 'brass' && selectedThickness == '5mm')
-                return `Measurement on protractor: 110°\nFinal bend angle after release : 180° - 110 = 70°\n
-Spring Back angle = 74° - 70° = 4°`;
-            if (selectedMaterial == 'steel' && selectedThickness == '1mm')
-                return `Measurement on protractor: 126°\nFinal bend angle after release : 180° - 126 = 54°\n
-Spring Back angle = 74° - 54° = 20°`;
-            if (selectedMaterial == 'steel' && selectedThickness == '5mm')
-                return `Measurement on protractor: 116°\nFinal bend angle after release : 180° - 116 = 64°\n
-Spring Back angle = 74° - 64° = 10°`;
-        }
-        return 'Click to continue.';
-    }
-
-    function getSnapRotation(stepId) {
-        if (stepId === 'step4_5') {
-            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 323;
-            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 323;
-            if (selectedMaterial == 'brass' && selectedThickness == '1mm') return 323;
-            if (selectedMaterial == 'brass' && selectedThickness == '5mm') return 323;
-            if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 323;
-            if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 323;
-        } else if (stepId === 'step5_5') {
-            if (selectedMaterial == 'aluminium' && selectedThickness == '1mm') return 326;
-            if (selectedMaterial == 'aluminium' && selectedThickness == '5mm') return 326;
-            if (selectedMaterial == 'brass' && selectedThickness == '1mm') return 327;
-            if (selectedMaterial == 'brass' && selectedThickness == '5mm') return 324;
-            if (selectedMaterial == 'steel' && selectedThickness == '1mm') return 333;
-            if (selectedMaterial == 'steel' && selectedThickness == '5mm') return 328;
-        }
-        return 0;
-    }
-
-    function renderHotspotFirstFrame(step, timestamp) {
-        function getInitialInstruction(stepId) {
-            if (stepId === 'step1') {
-                return 'Click to start the marking step.';
-            } else if (stepId === 'step4') {
-                return 'Click on the handle to start the bending operation.';
-            } else if (stepId === 'step5') {
-                return 'Click on the handle to remove the punch and measure the final angle.';
-            }
-            return 'Click to continue.';
-        }
-
-        const hotspotMap = {
-            step1: { x: 0.5, y: 0.5, w: 0.15, h: 0.15 },
-            step4: { x: 0.5347906403940886, y: 0.5697624521072796, w: 0.07376974935177183, h: 0.12618494945713216 },
-            step5: { x: 0.5410837438423646, y: 0.5721948549534757, w: 0.07376974935177183, h: 0.12618494945713216 }
-        };
-        const cfg = hotspotMap[step.id] || { x: 0.45, y: 0.45, w: 0.15, h: 0.15 };
-        const initialInstruction = getInitialInstruction(step.id);
-        const dynamicInstruction = getDynamicInstruction(step.id);
-        const videoSrc = getSimulationPath(step.src);
-        const formattedVideoSrc = formatSrc(videoSrc, timestamp);
-
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="sim-media-container">
-                    <div class="scaling-wrapper">
-                        <div class="play-stage" id="play-stage">
-                            <video id="step-video" src="${formattedVideoSrc}" style="width:100%;height:auto;" preload="auto" playsinline muted></video>
-                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
-                        </div>
-                    </div>
-                </div>
-                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
-            </div>`;
-
-        const stage = document.getElementById('play-stage');
-        const video = document.getElementById('step-video');
-        const hotspot = document.getElementById('play-hotspot');
-        const instructionElem = document.getElementById('play-instruction');
-
-        function layoutHotspot() {
-            if (!stage) return;
-            const w = stage.offsetWidth;
-            const h = stage.offsetHeight;
-            hotspot.style.left = (w * cfg.x) + 'px';
-            hotspot.style.top = (h * cfg.y) + 'px';
-            hotspot.style.width = (w * cfg.w) + 'px';
-            hotspot.style.height = (h * cfg.h) + 'px';
-        }
-
-        function showHotspot() {
-            instructionElem.textContent = initialInstruction;
-            layoutHotspot();
-            hotspot.style.visibility = 'visible';
-            hotspot.classList.add('debug-highlight');
-        }
-
-        video.addEventListener('loadedmetadata', () => {
-            video.currentTime = 0.01;
-            video.pause();
-            showHotspot();
-            updateScaling();
-            window.addEventListener('resize', updateScaling);
-        }, { once: true });
-
-        hotspot.addEventListener('click', () => {
-            hotspot.style.visibility = 'hidden';
-            instructionElem.textContent = '  ';
-            video.play().catch(() => { });
-        }, { once: true });
-
-        video.addEventListener('ended', () => {
-            instructionElem.innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
-            if (nextButton) nextButton.disabled = false;
-            setStepDone(step.id);
-        }, { once: true });
-
-        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
-
-        cleanupCurrent = function () {
-        };
-    }
-
-    function renderAutoplayStep(step, timestamp) {
-        const videoSrc = getSimulationPath(step.src);
-        const formattedVideoSrc = formatSrc(videoSrc, timestamp);
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper">
-                <h3>${step.title}</h3>
-                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
-                <div class="sim-media-container">
-                    <div class="scaling-wrapper">
-                        <div class="play-stage" id="play-stage">
-                            <video id="step-video" src="${formattedVideoSrc}" style="width:100%;height:auto;" playsinline muted></video>
-                        </div>
-                    </div>
-                </div>
-                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;"></div>
-            </div>`;
-
-        const video = document.getElementById('step-video');
-        video.addEventListener('loadedmetadata', () => {
-            video.play().catch(() => { });
-            updateScaling();
-            window.addEventListener('resize', updateScaling);
-        }, { once: true });
-
-        video.addEventListener('ended', () => {
-            if (document.getElementById('play-instruction')) {
-                document.getElementById('play-instruction').innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
-            }
-            if (nextButton) nextButton.disabled = false;
-            setStepDone(step.id);
-        }, { once: true });
-
-        cleanupCurrent = function () {
-            try { video.pause(); video.removeAttribute('src'); video.load(); } catch (_) { }
-        };
+        </div>
+    `;
+        updateScaling();
+        window.addEventListener('resize', updateScaling);
     }
 
     function renderDragStep(step, timestamp) {
-        stepCompleted[step.id] = false;
-
-        const backgroundPng = getSimulationPath(step.background);
-        const toolPng = getSimulationPath(step.tool);
-        const formattedBgSrc = formatSrc(backgroundPng, timestamp);
-        const formattedToolSrc = formatSrc(toolPng, timestamp);
-        const tolerancePx = step.tolerance || 50;
-
-        const arrowTop = step.arrow?.top || '-370%';
-        const arrowLeft = step.arrow?.left || '643%';
+        setInteractiveCompleted(step.id, false);
+        if (nextButton) nextButton.disabled = true;
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper">
@@ -736,346 +512,290 @@ Spring Back angle = 74° - 64° = 10°`;
                 <div class="sim-media-container">
                     <div class="scaling-wrapper">
                         <div class="drag-stage" id="drag-stage">
-                            <img src="${formattedBgSrc}" alt="Background" class="stage-bg" id="drag-bg"/>
-                            <img src="${formattedToolSrc}" alt="Tool" id="draggable-tool" class="draggable"/>
-                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="visibility:hidden; --arrow-top: ${arrowTop}; --arrow-left: ${arrowLeft};"></div>
+                            <img src="${formatSrc(step.src, timestamp)}" alt="Background" class="stage-bg" id="drag-bg"/>
+                            <img src="${formatSrc(step.tool, timestamp)}" alt="Tool" id="draggable-tool" class="draggable" style="width: 20%; cursor:grab;"/>
+                            <div id="drop-zone" class="drop-zone" aria-hidden="true" style="visibility:hidden; --arrow-top: -210%; --arrow-left: -140%;"></div>
                         </div>
                     </div>
                 </div>
-                <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.instruction || 'Drag the tool to the highlighted target.'}</div>
+                <div class="drag-instructions" id="drag-instruction" style="white-space: pre-line;">${step.initialInstruction}</div>
             </div>`;
 
         const stage = document.getElementById('drag-stage');
         const tool = document.getElementById('draggable-tool');
         const dropZone = document.getElementById('drop-zone');
-        const stageBg = document.getElementById('drag-bg');
-
-        let toolPlacedInitially = false;
-        let toolMovedByUser = false;
-
-        function getRect() { return stage.getBoundingClientRect(); }
-
-        function getTargetPoint(rect) {
-            if (!step.target) return { x: rect.width * 0.5, y: rect.height * 0.5 };
-            if (step.target.mode === 'px') return { x: step.target.x, y: step.target.y };
-            return { x: rect.width * step.target.x, y: rect.height * step.target.y };
-        }
-
-        function placeToolInitial() {
-            const rect = getRect();
-            let left, top;
-            if (step.init && step.init.mode === 'px') { left = step.init.x; top = step.init.y; }
-            else if (step.init) { left = rect.width * step.init.x; top = rect.height * step.init.y; }
-            else { left = rect.width * 0.8; top = rect.height * 0.2; }
-            tool.style.left = left + 'px';
-            tool.style.top = top + 'px';
-            toolPlacedInitially = true;
-        }
+        const instructionElem = document.getElementById('drag-instruction');
 
         function layoutDropZone() {
-            const rect = getRect();
-            const target = getTargetPoint(rect);
-            const dzSize = Math.max(60, Math.min(rect.width, rect.height) * 0.12);
+            if (!stage) return;
+            const tx = stage.offsetWidth * step.interaction.target.x;
+            const ty = stage.offsetHeight * step.interaction.target.y;
+            const dzSize = 80;
             dropZone.style.width = dzSize + 'px';
             dropZone.style.height = dzSize + 'px';
-            dropZone.style.left = (target.x - dzSize / 2) + 'px';
-            dropZone.style.top = (target.y - dzSize / 2) + 'px';
+            dropZone.style.left = (tx - dzSize / 2) + 'px';
+            dropZone.style.top = (ty - dzSize / 2) + 'px';
         }
 
-        function resizeStageToImage() {
-            const naturalW = stageBg.naturalWidth;
-            const naturalH = stageBg.naturalHeight;
-            if (!naturalW || !naturalH) return;
-            const stageW = stage.clientWidth;
-            const newH = Math.round(stageW * (naturalH / naturalW));
-            stage.style.height = newH + 'px';
+        const dragBg = document.getElementById('drag-bg');
+        dragBg.addEventListener('load', () => {
             layoutDropZone();
             dropZone.style.visibility = 'visible';
-            applyToolSize();
-            if (!toolMovedByUser && !toolPlacedInitially) placeToolInitial();
+            updateScaling();
+            window.addEventListener('resize', updateScaling);
+        });
+        if (dragBg.complete) {
+            layoutDropZone();
+            dropZone.style.visibility = 'visible';
             updateScaling();
             window.addEventListener('resize', updateScaling);
         }
 
-        function applyToolSize() {
-            if (!step.toolSize) return;
-            const rect = getRect();
-            if (step.toolSize.widthPx) {
-                tool.style.width = step.toolSize.widthPx + 'px';
-            } else if (step.toolSize.widthRel) {
-                tool.style.width = (rect.width * step.toolSize.widthRel) + 'px';
-            }
-            tool.style.height = 'auto';
-        }
+        let dragging = false;
+        let startX, startY, initialLeft, initialTop;
 
-        tool.style.visibility = 'hidden';
+        tool.onmousedown = dragStart;
+        tool.ontouchstart = dragStart;
 
-        if (stageBg.complete && stageBg.naturalWidth) {
-            resizeStageToImage();
-            tool.style.visibility = 'visible';
+        if (step.interaction && step.interaction.initialPos) {
+            tool.style.left = (step.interaction.initialPos.x * 100) + '%';
+            tool.style.top = (step.interaction.initialPos.y * 100) + '%';
         } else {
-            stageBg.addEventListener('load', () => {
-                resizeStageToImage();
-                tool.style.visibility = 'visible';
-            }, { once: true });
+            tool.style.left = '80%';
+            tool.style.top = '20%';
         }
 
-        applyToolSize();
-
-        window.addEventListener('resize', resizeStageToImage, { passive: true });
-
-        let dragging = false; let offsetX = 0; let offsetY = 0;
-        function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
-
-        function pointerDown(e) {
-            if (stepCompleted[step.id]) return;
-            const toolRect = tool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-            offsetX = clientX - toolRect.left;
-            offsetY = clientY - toolRect.top;
-            dragging = true;
-            toolMovedByUser = true;
-            tool.classList.add('dragging');
-            if (dropZone && dropZone.parentNode) {
-                dropZone.classList.add('dragging-active');
-            }
+        function dragStart(e) {
             e.preventDefault();
+            dragging = true;
+            startX = e.clientX || e.touches[0].clientX;
+            startY = e.clientY || e.touches[0].clientY;
+            initialLeft = tool.offsetLeft;
+            initialTop = tool.offsetTop;
+            document.onmousemove = dragMove;
+            document.ontouchmove = dragMove;
+            document.onmouseup = dragEnd;
+            document.ontouchend = dragEnd;
+            tool.style.cursor = 'grabbing';
+            dropZone.classList.add('dragging-active');
         }
-        function pointerMove(e) {
-            if (!dragging || stepCompleted[step.id]) return;
-            const rect = getRect();
-            const toolRect = tool.getBoundingClientRect();
-            const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
-            const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
-            let left = clientX - rect.left - offsetX;
-            let top = clientY - rect.top - offsetY;
-            left = clamp(left, 0, rect.width - toolRect.width);
-            top = clamp(top, 0, rect.height - toolRect.height);
-            tool.style.left = left + 'px';
-            tool.style.top = top + 'px';
-        }
-        function pointerUp() {
+
+        function dragMove(e) {
             if (!dragging) return;
+            const clientX = e.clientX || e.touches[0].clientX;
+            const clientY = e.clientY || e.touches[0].clientY;
+            const dx = clientX - startX;
+            const dy = clientY - startY;
+            tool.style.left = (initialLeft + dx) + 'px';
+            tool.style.top = (initialTop + dy) + 'px';
+        }
+
+        function dragEnd() {
             dragging = false;
-            tool.classList.remove('dragging');
+            document.onmousemove = null;
+            document.ontouchmove = null;
+            document.onmouseup = null;
+            document.ontouchend = null;
+            tool.style.cursor = 'grab';
             checkDrop();
         }
 
-        function centerDistance(a, b) { const dx = a.x - b.x, dy = a.y - b.y; return Math.hypot(dx, dy); }
         function checkDrop() {
-            const rect = getRect();
             const toolRect = tool.getBoundingClientRect();
-            const anchor = step.anchor || { x: 0.5, y: 0.5 };
-            const toolAnchorPoint = {
-                x: toolRect.left - rect.left + toolRect.width * anchor.x,
-                y: toolRect.top - rect.top + toolRect.height * anchor.y
-            };
-            const target = getTargetPoint(rect);
-            if (centerDistance(toolAnchorPoint, target) <= tolerancePx) snapToTarget(target, anchor);
-        }
-        function snapToTarget(target, anchor) {
-            const toolRect = tool.getBoundingClientRect();
-            const rect = getRect();
-            anchor = anchor || (step.anchor || { x: 0.5, y: 0.5 });
-            const left = target.x - toolRect.width * anchor.x;
-            const top = target.y - toolRect.height * anchor.y;
-            tool.style.transition = 'left 0.18s ease, top 0.18s ease, transform 0.3s ease';
-            tool.style.left = left + 'px';
-            tool.style.top = top + 'px';
+            const zoneRect = dropZone.getBoundingClientRect();
+            const anchor = step.interaction.anchor || { x: 0.5, y: 0.5 };
 
-            dropZone.remove();
+            const toolAx = toolRect.left + toolRect.width * anchor.x;
+            const toolAy = toolRect.top + toolRect.height * anchor.y;
 
-            const rotation = getSnapRotation(step.id);
+            const zoneCx = zoneRect.left + zoneRect.width / 2;
+            const zoneCy = zoneRect.top + zoneRect.height / 2;
 
-            const onComplete = () => {
-                stepCompleted[step.id] = true;
-                setStepDone(step.id);
+            const dist = Math.hypot(toolAx - zoneCx, toolAy - zoneCy);
 
-                if (step.id !== 'step4_5' && step.id !== 'step5_5') {
-                    const ok = document.createElement('div');
-                    ok.className = 'drag-success';
-                    ok.textContent = 'Placed correctly!';
-                    stage.appendChild(ok);
-                    setTimeout(() => ok.remove(), 1200);
-                }
+            if (dist < (step.interaction.tolerance || 80)) {
+                const zoneCenterRelX = dropZone.offsetLeft + dropZone.offsetWidth / 2;
+                const zoneCenterRelY = dropZone.offsetTop + dropZone.offsetHeight / 2;
 
-                const dynInst = getDynamicInstruction(step.id);
-                if (step.id !== 'step4_5' && step.id !== 'step5_5') {
-                    document.getElementById('drag-instruction').innerHTML = '<b>Step complete.</b> Click next to: ' + stepGuidance[step.id].next;
-                } else if (dynInst && dynInst !== 'Click to continue.') {
-                    document.getElementById('drag-instruction').textContent = dynInst + '\n\nClick next to: ' + stepGuidance[step.id].next;
-                }
+                tool.style.left = (zoneCenterRelX - tool.offsetWidth * anchor.x) + 'px';
+                tool.style.top = (zoneCenterRelY - tool.offsetHeight * anchor.y) + 'px';
 
-                if (nextButton) nextButton.disabled = false;
-            };
-
-            if (rotation) {
-                const anchorPercentX = (anchor.x * 100).toFixed(1);
-                const anchorPercentY = (anchor.y * 100).toFixed(1);
-
-                document.getElementById('drag-instruction').textContent = "Click on the protractor to align it.";
-
+                tool.onmousedown = null;
+                tool.ontouchstart = null;
                 tool.style.cursor = 'pointer';
-                const rotateOnClick = () => {
-                    tool.style.cursor = 'default';
-                    tool.style.transformOrigin = `${anchorPercentX}% ${anchorPercentY}%`;
-                    tool.style.transform = `rotate(${rotation - 360}deg)`;
+                dropZone.style.display = 'none';
 
-                    setTimeout(onComplete, 350);
-                };
+                instructionElem.textContent = 'Click the lighter to ignite.';
+
                 setTimeout(() => {
-                    tool.addEventListener('click', rotateOnClick, { once: true });
-                    tool.addEventListener('touchend', (e) => {
-                        e.preventDefault();
-                        rotateOnClick();
-                    }, { once: true });
+                    tool.onclick = function () {
+                        tool.style.display = 'none';
+                        document.getElementById('drag-bg').src = getAssetSrc('images/simulation/6.1.png');
+                        instructionElem.textContent = step.finalInstruction;
+                        setInteractiveCompleted(step.id, true);
+                        if (nextButton) nextButton.disabled = false;
+                        tool.onclick = null;
+                        tool.style.cursor = 'default';
+                    };
                 }, 100);
-
-            } else {
-                onComplete();
             }
         }
 
-        tool.addEventListener('mousedown', pointerDown);
-        tool.addEventListener('touchstart', pointerDown, { passive: false });
-        window.addEventListener('mousemove', pointerMove, { passive: true });
-        window.addEventListener('touchmove', pointerMove, { passive: false });
-        window.addEventListener('mouseup', pointerUp, { passive: true });
-        window.addEventListener('touchend', pointerUp, { passive: true });
-
         cleanupCurrent = function () {
-            try {
-                window.removeEventListener('mousemove', pointerMove);
-                window.removeEventListener('touchmove', pointerMove);
-                window.removeEventListener('mouseup', pointerUp);
-                window.removeEventListener('touchend', pointerUp);
-                tool.removeEventListener('mousedown', pointerDown);
-                tool.removeEventListener('touchstart', pointerDown);
-            } catch (_) { }
         };
     }
 
-    function renderResultStep() {
-        if (!selectedMaterial || !selectedThickness) return;
+    function renderInteractiveVideoStep(step, timestamp) {
+        setInteractiveCompleted(step.id, false);
+        if (nextButton) nextButton.disabled = true;
 
-        let step3Angle, step4Angle, springBack;
-        let matName = 'Aluminium';
-        if (selectedMaterial === 'brass') matName = 'Brass';
-        if (selectedMaterial === 'steel') matName = 'Mild Steel';
+        const cfg = step.interaction || { pauseAt: 2.0, hotspot: { x: 0.45, y: 0.45, w: 0.30, h: 0.30 } };
 
-        if (selectedMaterial == 'aluminium') {
-            if (selectedThickness == '1mm') {
-                step3Angle = 106;
-                step4Angle = 114;
-            } else {
-                step3Angle = 106;
-                step4Angle = 110;
-            }
-        } else if (selectedMaterial == 'brass') {
-            if (selectedThickness == '1mm') {
-                step3Angle = 106;
-                step4Angle = 112;
-            } else {
-                step3Angle = 106;
-                step4Angle = 110;
-            }
-        } else {
-            if (selectedThickness == '1mm') {
-                step3Angle = 106;
-                step4Angle = 126;
-            } else {
-                step3Angle = 106;
-                step4Angle = 116;
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper">
+                <h3>${step.title}</h3>
+                <div class="step-indicator">Step ${currentStepIndex + 1} of ${totalSteps}</div>
+                <div class="sim-media-container">
+                    <div class="scaling-wrapper">
+                        <div class="play-stage" id="play-stage">
+                            <video id="step-video" src="${formatSrc(step.src, timestamp)}" style="width:100%; height:auto;" playsinline muted></video>
+                            <button id="play-hotspot" class="play-hotspot" style="visibility:hidden;"></button>
+                        </div>
+                    </div>
+                </div>
+                <div id="play-instruction" class="drag-instructions" style="white-space: pre-line;">${step.initialInstruction}</div>
+            </div>
+        `;
+
+        const stage = document.getElementById('play-stage');
+        const video = document.getElementById('step-video');
+        const hotspot = document.getElementById('play-hotspot');
+        const instructionElem = document.getElementById('play-instruction');
+
+        let hissSource = null;
+
+        if (step.id === 'step9') {
+            initAudio().catch(() => {});
+        }
+
+        function layoutHotspot() {
+            if (!stage) return;
+            const w = stage.offsetWidth;
+            const h = stage.offsetHeight;
+            hotspot.style.left = (w * cfg.hotspot.x) + 'px';
+            hotspot.style.top = (h * cfg.hotspot.y) + 'px';
+            hotspot.style.width = (w * cfg.hotspot.w) + 'px';
+            hotspot.style.height = (h * cfg.hotspot.h) + 'px';
+        }
+
+        let rafId = null;
+        let intervalId = null;
+        const EPS = 0.01;
+        let pausedOnce = false;
+
+        function maybePause() {
+            if (pausedOnce) return;
+            if (video.currentTime + EPS >= cfg.pauseAt) {
+                pausedOnce = true;
+                video.pause();
+                instructionElem.textContent = cfg.instruction;
+                layoutHotspot();
+                hotspot.style.visibility = 'visible';
+                hotspot.classList.add('debug-highlight');
             }
         }
 
-        const bendAngle = 180 - step3Angle;
-        const finalAngle = 180 - step4Angle;
-        springBack = bendAngle - finalAngle;
+        function frameCallback() {
+            maybePause();
+            if (!video.paused && !video.ended) {
+                rafId = video.requestVideoFrameCallback ? video.requestVideoFrameCallback(frameCallback) : null;
+            }
+        }
 
-        document.body.classList.add('result-mode');
+        function onPlay() {
+            if (typeof video.requestVideoFrameCallback === 'function') {
+                rafId = video.requestVideoFrameCallback(frameCallback);
+            } else {
+                intervalId = setInterval(maybePause, 16);
+            }
+        }
 
-        const resultImagePath = getSimulationPath('images/simulation/1-tool.png');
-        const formattedResultImageSrc = formatSrc(resultImagePath, Date.now());
+        function onPause() {
+            if (rafId && typeof video.cancelVideoFrameCallback === 'function') {
+                video.cancelVideoFrameCallback(rafId);
+                rafId = null;
+            }
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+        }
 
-        gifContainer.innerHTML = `
-            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
-                <hr>
+        function onEnded() {
+            setInteractiveCompleted(step.id, true);
+            instructionElem.textContent = step.finalInstruction;
+            if (nextButton) nextButton.disabled = false;
 
-                <div style="text-align:center; margin:20px 0;">
-                    <img src="${formattedResultImageSrc}" alt="${matName} ${selectedThickness}" style="max-width:400px; border:1px solid #ccc; border-radius:6px;">
-                    <p style="font-size:14px; margin-top:6px;">Spring Back Effect Analysis for ${matName} (${selectedThickness})</p>
-                </div>
+            if (step.id === 'step9' && audioCtx && hissBuffer) {
+                try {
+                    if (audioCtx.state === 'suspended') {
+                        audioCtx.resume();
+                    }
+                    hissSource = audioCtx.createBufferSource();
+                    hissSource.buffer = hissBuffer;
+                    hissSource.loop = true;
+                    hissSource.connect(audioCtx.destination);
+                    hissSource.start(0);
+                } catch (e) {
+                }
+            }
+        }
 
-                <table style="border-collapse:collapse; margin-top:20px; width:100%; max-width:700px; margin-left:auto; margin-right:auto; border:1px solid #000; font-family: sans-serif">
-                    <tbody>
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Experiment Details</td>
-                        </tr>
-                         <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Experiment</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">Spring Back Effect Analysis</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Material Used</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">${matName}</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Thickness</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">${selectedThickness}</td>
-                        </tr>
+        video.addEventListener('play', onPlay);
+        video.addEventListener('pause', onPause);
+        video.addEventListener('ended', onEnded, { once: true });
+        hotspot.addEventListener('click', () => {
+            hotspot.style.visibility = 'hidden';
+            video.play();
+        }, { once: true });
 
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Loaded State Measurements</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Protractor Reading</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">${step3Angle}°</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Bend Angle (180° - Reading)</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">${bendAngle}°</td>
-                        </tr>
+        window.addEventListener('resize', () => { layoutHotspot(); updateScaling(); });
+        video.addEventListener('loadedmetadata', () => {
+            layoutHotspot();
 
-                        <tr>
-                            <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Unloaded State Measurements</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Protractor Reading</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">${step4Angle}°</td>
-                        </tr>
-                         <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;">Final Bend Angle (180° - Reading)</td>
-                            <td style="border:1px solid #000; padding:10px 15px;">${finalAngle}°</td>
-                        </tr>
+            if (step.id === 'step9') {
+                initAudio();
+            }
 
-                        <tr>
-                             <td colspan="2" style="border:1px solid #000; padding:10px 15px; font-weight:bold; background-color: #f0f0f0;">Result</td>
-                        </tr>
-                        <tr>
-                            <td style="border:1px solid #000; padding:10px 15px;"><strong>Spring Back Angle</strong></td>
-                            <td style="border:1px solid #000; padding:10px 15px;"><strong>${springBack}°</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
+            video.play().catch(() => { });
+        }, { once: true });
 
-                <h3 style="margin-top:20px;">Conclusion</h3>
-                <p>
-                    The spring back effect was observed for ${matName} with ${selectedThickness} thickness.
-                    The difference between the loaded bend angle and the final unloaded angle indicates the elastic recovery of the material.
-                </p>
-
-                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
-                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Observation Sheet</button>
-                </div>
-            </div>
-        `;
+        cleanupCurrent = function () {
+            try {
+                video.removeEventListener('play', onPlay);
+                video.removeEventListener('pause', onPause);
+            } catch (_) { }
+            if (rafId && typeof video.cancelVideoFrameCallback === 'function') {
+                video.cancelVideoFrameCallback(rafId);
+                rafId = null;
+            }
+            if (intervalId) {
+                clearInterval(intervalId);
+                intervalId = null;
+            }
+            if (hissSource) {
+                try {
+                    hissSource.stop();
+                    hissSource.disconnect();
+                    hissSource = null;
+                } catch (e) {
+                }
+            }
+        };
     }
 
     if (prevButton) {
-        prevButton.addEventListener('click', () => {
+        prevButton.addEventListener('click', function () {
             if (currentStepIndex > 0) {
                 currentStepIndex--;
                 showCurrentStep();
@@ -1083,7 +803,7 @@ Spring Back angle = 74° - 64° = 10°`;
         });
     }
     if (nextButton) {
-        nextButton.addEventListener('click', () => {
+        nextButton.addEventListener('click', function () {
             if (currentStepIndex < totalSteps - 1) {
                 currentStepIndex++;
                 showCurrentStep();
@@ -1097,4 +817,72 @@ Spring Back angle = 74° - 64° = 10°`;
     }
 
     preloadAssets();
+
+    function renderResultStep() {
+        if (nextButton) nextButton.disabled = true;
+
+        const flames = [
+            {
+                name: 'Carburizing Flame',
+                img: 'images/carbrizing flame.png',
+                desc: 'This flame has a longer, brighter inner cone and a feathery middle cone. It adds carbon to the metal.',
+                app: 'Welding high-carbon steels, lead, and aluminum where oxidation must be avoided.'
+            },
+            {
+                name: 'Neutral Flame',
+                img: 'images/neutral flame.png',
+                desc: 'This flame has a well-defined inner luminous cone and an outer envelope. Temperature around 3300\u00B0C.',
+                app: 'Ideal for welding steels and cast iron. Does not oxidize or carburize the metal.'
+            },
+            {
+                name: 'Oxidizing Flame',
+                img: 'images/oxidising flame.png',
+                desc: 'This flame has a shorter, sharp inner cone and a loud hissing sound. It is hotter than the neutral flame.',
+                app: 'Used for cutting and welding metals like brass or bronze that require oxidation.'
+            }
+        ];
+
+        let tableRows = '';
+        flames.forEach(f => {
+            tableRows += `
+                <tr>
+                    <td style="text-align:center;">
+                        <strong>${f.name}</strong><br>
+                        <img src="${getAssetSrc(f.img)}" style="width:235px;">
+                    </td>
+                    <td>${f.desc}</td>
+                    <td>${f.app}</td>
+                </tr>
+            `;
+        });
+
+        gifContainer.innerHTML = `
+            <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
+                <h2 style="text-align:center;">Experiment Result: Types of Flames</h2>
+                <hr>
+
+                <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse; margin-top:20px;">
+                    <thead>
+                        <tr style="background:#f0f0f0;">
+                            <th width="30%">Flame Type</th>
+                            <th width="40%">Description</th>
+                            <th width="30%">Applications</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${tableRows}
+                    </tbody>
+                </table>
+
+                <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom: 20px;">
+                    <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>
+                </div>
+            </div>
+        `;
+        if (resetButton) {
+            resetButton.onclick = () => {
+                location.reload();
+            };
+        }
+    }
 });
