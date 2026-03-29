@@ -61,8 +61,6 @@
             display: block;
             width: 99.9%;
             height: auto;
-            background-color: transparent;
-            object-fit: cover;
         }
 
         .play-hotspot {
@@ -156,6 +154,21 @@
             }
         }
 
+        /* Sideways arrow animation for step3 */
+        .play-hotspot.step3-arrow::before {
+            animation: bounceArrowSideways 1s infinite;
+        }
+
+        @keyframes bounceArrowSideways {
+            0%,
+            100% {
+                transform: translateX(-50%) translateX(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateX(8px);
+            }
+        }
 
         .play-hotspot.debug-highlight {
             background: rgba(255, 0, 0, 0.4);
@@ -225,6 +238,30 @@
             padding-left: 20px;
             box-shadow: -1px 0 0 #ddd;
         }
+
+        /* Fixed-height container for simulation media */
+        .sim-media-container {
+            position: relative;
+            width: 100%;
+            height: 600px;
+            overflow: hidden;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        /* Wrapper for scaling content */
+        .scaling-wrapper {
+            position: relative;
+            width: 100%;
+            transform-origin: center center;
+            transition: transform 0.2s ease-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     </style>
     <style>
         /* Overrides: larger media like exp1/exp2 and keep controls visible */
@@ -247,6 +284,7 @@
         .button-container {
             position: sticky;
             bottom: 0;
+           
             padding: 10px 0;
             z-index: 100;
         }
@@ -376,37 +414,6 @@
             background: rgba(255, 0, 0, 0.281);
             border: 3px solid red;
             animation: none;
-        }
-
-        /* Fixed-height simulation container */
-        .sim-media-container {
-            width: 100%;
-            height: 600px;
-            /* Fixed height for the simulation area */
-            overflow: hidden;
-            position: relative;
-            background-color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
-
-        .scaling-wrapper {
-            width: 100%;
-            transform-origin: center center;
-            transition: transform 0.2s ease-out;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .play-stage {
-            border-radius: 0 !important;
-            /* Managed by parent container */
         }
         body {
     background: url('bg.png') no-repeat center center fixed;
