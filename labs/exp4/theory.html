@@ -33,11 +33,14 @@
               margin: 25px 0;
           }
           .figure img {
-              width: 350px; 
-              height: auto;
-              display: block;
-              margin: 0 auto;
-          }
+    width: 450px;
+    height: 300px;          /* same height for all images */
+    object-fit: contain;   /* prevents stretching */
+    display: block;
+    margin: 0 auto;
+}
+
+
           .caption {
               font-weight: bold;
               margin-top: 8px;
@@ -83,9 +86,9 @@
                 <a href="../index.html"><i class="fa fa-dashboard"></i>Manufacturing Process Lab</a>
               </li>
               <li>
-                <a href="#">Sine Bar</a>
+                <a href="#">Springback Effect</a>
               </li>
-              <li class="active">Aim</li>
+              <li class="active">Theory</li>
             </ol>
           </section>
         </nav>
@@ -180,71 +183,191 @@
             <!-- Content Header (Page header) -->
                 <section class="content-header">
                 <h1 align="center">
-                     Measure the tapered angle using a Sine Bar
+                     To study the bending process of a metal specimen and evaluate spring back effect.
                 </h1>
                 </section>
                     <!-- Main content -->
                     <section class="content">
                     <h3 style="margin-top:5%"> Theory </h3>
                     <p style="font-size:130%; margin-top:2%">
-                
-                   <p>A sine bar is a precision measurement tool used to set or measure small angles accurately by converting angular values into linear heights using the trigonometric sine function. The sine bar consists of a hardened and ground bar having two precision cylindrical rollers fixed at its ends; the distance between the centers of these rollers is a known length (commonly 100 mm or 200 mm). When one end of the sine bar is raised by a known height (usually by stacking gauge blocks under that end), the bar forms an angle θ with the horizontal such that the relation sin θ = h / L holds, where h is the height difference between the roller centers and L is the center-to-center distance of the rollers. By measuring h precisely with gauge blocks and knowing L, one can calculate θ = sin-1(h/L). This principle allows accurate measurement of small angles without needing direct protractors or optical equipment. </p>
 
-            <p>Measuring a tapered angle (or taper per unit length) generally involves placing the tapered workpiece on a sine bar aligned so that the taper axis is parallel to the rollers. The sine bar is adjusted until the contacting surface (often a reference flat on the workpiece) is level with a datum or gauge; the height required to achieve this level condition corresponds to the taper angle. From the measured angle θ and the known length over which the taper occurs, the taper per unit length (for example, mm per 100 mm or mm per inch) can be computed. Accuracy depends on the precision of gauge blocks, the flatness and cleanliness of contact surfaces, the exactness of the sine bar’s center distance, and elimination of sources of error such as parallax when reading scales or imperfect seating of blocks. In modern virtual-lab implementations, the same physical principles are simulated: users choose a sine-bar length, add gauge blocks from a calibrated set, and the system computes h, θ, and taper per length — while visually illustrating alignment, errors from sloppy setup, and the sensitivity of angle to small height changes. </p>
+                        <p><b>Bending</b> is a fundamental metal forming process in which an external force is applied to a workpiece to produce a permanent change in shape, usually in the form of an angular bend or curvature. It is extensively used in sheet metal fabrication, structural components, brackets, frames, and piping systems. During bending, the material undergoes both elastic deformation (temporary and recoverable) and plastic deformation (permanent).</p>
 
-            <p><b>Apparatus & Materials:</b></p>
+                        <p>In bending, the material is subjected to a combination of tensile, compressive, and shear stresses. The outer surface of the bend experiences tensile stress and elongation, while the inner surface undergoes compressive stress and shortening. The magnitude of these stresses depends on the applied load, material properties, bend radius, and thickness of the workpiece. If the applied stress remains below the yield strength of the material, the deformation is purely elastic and the material returns to its original shape after unloading. However, when the applied stress exceeds the yield strength, plastic deformation occurs, resulting in a permanent bend.</p>
 
-            <ul>
+                        <p>Common bending methods used in industry include V-bending, U-bending, air bending, bottoming, and coining. Among these, V-bending and air bending are commonly employed in laboratory experiments and sheet metal fabrication due to their simplicity and flexibility. Understanding the mechanics of bending is essential for analyzing defects such as spring back, thinning, and cracking, and for achieving dimensional accuracy in formed components.</p>
+             
+            <div class="figure">
+          <img src="images/a.png" alt="springback">
+          <div class="caption">Fig (1): spring back Test Apparatus</div>
+      </div>
+            <p>When a bending load is applied, the outer fibers of the material are subjected to tensile stress, while the inner fibers experience compressive stress. Between these two regions lies the neutral axis, where the stress and strain are theoretically zero. As the applied stress exceeds the yield strength of the material, plastic deformation begins. Due to non-uniform stress distribution across the thickness, the neutral axis shifts toward the inner surface of the bend. In most ductile metals, the neutral axis is located approximately between 0.3t and 0.5t from the inner surface, where t is the thickness of the specimen. </p>
 
-            <li>Sine bar (center-to-center distance L = 100 mm or 200 mm). </li>
-
-            <li>Slip gauge (gauge block) set (calibrated) to build required heights.</li> 
-
-            <li>Surface plate (granite) — clean and level.</li>
-
-            <li>V-blocks or parallels (to support cylindrical or irregular components).</li> 
-
-            <li>Dial gauge or height gauge (optional, for verifying gauge-block stack).</li> 
-
-            <li>Spirit level (precision) — optional for coarse leveling. </li>
-
-            <li>Workpiece with taper (or a tapered test specimen).</li> 
-
-            <li>Engineer’s square and cleaning tissue/solvent for removing dust/oil.</li> 
-
-            <li>Vernier caliper or micrometer (to measure taper length if needed).</li> 
-
-            <li>Marker or scribe for datum lines.</li> 
-
-            <li>Safety gloves and goggles (for handling heavy blocks). </li>
-            
-        </ul>
-
-<div class="figure">
-          <img src="images/WORKPIECE.png" alt="workpiece">
-          <div class="caption">Fig (a): Workpiece</div>
+             <div class="figure">
+          <img src="images/springback effect - Copy.png" alt="spring back effect">
+          <div class="caption">Fig (2): spring back effect</div>
       </div>
 
-        <p><b>Worked example</b></p>
-        <p>Suppose you use L = 100.000 mm and you stack gauge blocks to get h = 1.745 mm. Then: </p>
+         
+            <p>After removal of the bending force, the elastic portion of deformation is recovered. This elastic recovery causes the bent component to partially return toward its original shape, resulting in an increase in the bend angle or bend radius compared to the condition under load. Spring back is particularly significant in cold working operations such as V-bending, air bending, and roll bending.</p>
+        
+           <div class="figure">
+          <img src="images/c.png" alt="spring back effect">
+          <div class="caption">Fig (3): spring back effect schematic diagram</div>
+      </div>
 
-        <ul>
-            <li>Calculate sin θ = h / L = 1.745 / 100.000 = 0.01745 </li>
-            <li>Find θ = sin-1(0.01745) ≈ 1.000° </li>
-            <li>tan θ ≈ 0.01746 mm/mm, so taper per 100 mm = 0.01746 × 100 ≈ 1.746 mm/100 mm. </li>
-        </ul>
-        <p>This means over 100 mm length the diameter/height would change by ≈1.746 mm according to that angle.</p>
 
-        <p><b>Precautions:</b></p>
+        <p>
+            <b>R<sub>0</sub></b> = Bend radius before springback<br>
+            <b>R<sub>1</sub></b> = Bend radius after springback<br>
+            <b>&alpha;<sub>0</sub></b> = Bending angle before springback<br>
+            <b>&alpha;<sub>1</sub></b> = Bending angle after springback
+        </p><br>
 
-        <ul>
-            <li>Ensure the surface plate and roller seating surfaces are clean and free of dust or burrs; a tiny particle can introduce significant error. </li>
-            <li>Use calibrated gauge blocks and wring them properly (in a physical lab). In simulation, ensure “wringing quality” is set to good for best accuracy. </li>
-            <li>Keep the sine bar center distance L known precisely (use its certified value). </li>
-            <li>Align the workpiece so the taper axis is exactly parallel to the roller axis — any misalignment introduces cosine/sine projection errors. </li>
-            <li>Avoid parallax when reading scales; use a dial gauge or digital readout where possible. </li>
-            <li>Repeat the measurement and average multiple trials to reduce random error.</li>
-        </ul>
+        <p>
+            <b>Spring Back Angle</b> = Bend angle before release (&alpha;<sub>0</sub>) − 
+            Final bend angle after release (&alpha;<sub>1</sub>)
+        </p><br>
+
+
+        <b><p>Parameters Affecting Spring Back</p></b>
+
+<ol>
+    <li>
+        <b>Material Properties</b><br>
+        Spring back is strongly influenced by the modulus of elasticity (E) and yield strength 
+        (&sigma;<sub>y</sub>) of the material. Materials with high yield strength and low modulus 
+        of elasticity exhibit greater spring back. The ratio 
+        (&sigma;<sub>y</sub>/E) is commonly used as an indicator of spring back tendency; 
+        a higher ratio leads to greater elastic recovery.
+    </li>
+
+    <li>
+        <b>Sheet Thickness</b><br>
+        Thinner sheets generally show more spring back than thicker sheets because they undergo 
+        lower plastic deformation relative to elastic deformation.
+    </li>
+
+    <li>
+        <b>Bend Radius</b><br>
+        An increase in bend radius increases spring back. Smaller bend radii produce higher 
+        plastic strain, which reduces elastic recovery after unloading.
+    </li>
+
+    <li>
+        <b>Bend Angle</b><br>
+        Larger bend angles tend to increase spring back due to higher elastic strain energy 
+        stored in the material.
+    </li>
+
+    <li>
+        <b>Bending Method</b><br>
+        Air bending results in more spring back compared to bottoming and coining because the 
+        material is not fully constrained and experiences lower plastic deformation.
+    </li>
+</ol><br>
+
+<b><p>Effect of Different Materials on Spring Back</p></b>
+<ol>
+<li>
+    <b>Mild Steel</b><br>
+    Mild steel exhibits moderate spring back due to its relatively low yield strength and 
+    moderate modulus of elasticity. Its predictable behavior makes it suitable for general 
+    bending operations.
+</li>
+
+<li>
+    <b>Stainless Steel</b><br>
+    Stainless steel shows significantly higher spring back compared to mild steel. This is due 
+    to its high yield strength, strong strain hardening behavior, and high elastic recovery. 
+    Austenitic stainless steels require greater over-bending or specialized tooling to achieve 
+    accurate final angles.
+</li>
+
+<li>
+    <b>Brass</b><br>
+    Brass generally exhibits lower spring back than stainless steel and is easier to form. Its 
+    good ductility and relatively lower yield strength help reduce elastic recovery, making it 
+    suitable for precision bending applications.
+</li>
+
+<li>
+    <b>Aluminum</b><br>
+    Aluminum alloys exhibit higher spring back than steels mainly due to their low modulus of 
+    elasticity. Even with lower yield strength, aluminum shows significant elastic recovery, 
+    making spring back compensation critical.
+</li>
+</ol><br>
+
+<p>There is no universal spring back value for any material because spring back is not a fixed material constant. It depends on a combination of factors including material properties, thickness, bend radius, bending method, tooling geometry, heat treatment, rolling direction, and strain history. Even the same material can exhibit different spring back values under different processing conditions. Therefore, spring back is usually predicted using empirical relations, numerical simulations, or experimental trial-and-error methods.</P>
+
+<P>To compensate for spring back, practical techniques such as over-bending, bottoming, coining, and optimized die design are commonly employed. Accurate understanding and control of spring back are essential for achieving dimensional accuracy in bending operations.</P><br>
+
+<b><p>Applications of Bending and Spring Back Knowledge</p></b>
+
+<p>
+Understanding bending and spring back is critical in many engineering and manufacturing applications. 
+Accurate prediction and compensation of spring back help in achieving dimensional accuracy, improving product quality, 
+and reducing material wastage.
+</p>
+
+<ul>
+    <li>
+        <b>Automotive Industry</b><br>
+        Bending and spring back knowledge is essential in the manufacturing of automobile body panels, brackets, 
+        chassis components, and structural frames. Proper spring back compensation ensures correct panel fit, 
+        dimensional accuracy, and aesthetic quality.
+    </li><br>
+
+    <li>
+        <b>Aerospace Industry</b><br>
+        In aerospace applications, bending is used to form thin-walled components, structural sheets, and stiffeners. 
+        Precise control of spring back is crucial to maintain tight tolerances and ensure safety and performance 
+        of aircraft structures.
+    </li><br>
+
+    <li>
+        <b>Piping and Tubing</b><br>
+        Bending of pipes and tubes is widely used in fluid transport systems, heat exchangers, and hydraulic lines. 
+        Accurate prediction of spring back helps achieve precise bend angles without compromising structural 
+        integrity or flow characteristics.
+    </li><br>
+
+    <li>
+        <b>Construction and Structural Engineering</b><br>
+        Bending processes are used to form metal supports, beams, reinforcements, and frames. Proper understanding 
+        of spring back ensures correct alignment, load-bearing capability, and structural safety.
+    </li><br>
+
+    <li>
+        <b>Sheet Metal Fabrication</b><br>
+        In the production of enclosures, cabinets, ducts, and panels, dimensional accuracy is vital. Controlling 
+        spring back improves assembly accuracy and reduces rework and scrap.
+    </li><br>
+
+    <li>
+        <b>Consumer Products</b><br>
+        Many household appliances, metal furniture, and product frames are manufactured using bending operations. 
+        Effective spring back control enhances product appearance, strength, and consistency.
+    </li>
+</ul>
+
+<p>
+Accurate prediction and compensation for spring back are essential to achieve dimensional precision, 
+reduce wastage, and ensure reliable performance of components across these applications.
+</p>
+
+
+<b><p>Apparatus Required</p></b>
+
+<ol>
+    <li>Manual bending fixture</li>
+    <li>Mild steel strip or rod</li>
+    <li>Protractor</li>
+    <li>Clamps and holding jig</li>
+    <li>Bending die</li>
+</ol>
+
 
                 </section>
             <!-- /.content -->
