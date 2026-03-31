@@ -1497,8 +1497,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <h2 style="text-align:center;">Experiment Result</h2>
             <hr>
 
-            <div class="sim-media-container" style="height: auto; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div style="text-align:center; margin:20px 0; width: 100%;">
+            <div class="sim-media-container" style="height: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="text-align:center; width: 100%;">
                     <img src="${getAssetSrc('images/simulation/result.png')}"
                          alt="Final Welded Joint"
                          style="max-width:55%; border:1px solid #ccc; border-radius:6px;">

@@ -805,7 +805,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <div style="display:flex; align-items:center; gap:10px;">
                         <span style="font-size:13px; color:#555; white-space:nowrap;">Weld Progress:</span>
                         <div style="flex:1; height:12px; background:#ddd; border-radius:6px; overflow:hidden;">
-                            <div id="step4_6-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg,#ff6600,#ffcc00); border-radius:6px; transition:width 0.15s linear;"></div>
+                            <div id="step4_6-progress-bar" style="height:100%; width:0%; background:linear-gradient(90deg,#ff6600,#ffcc00); border-radius:6px; transition:width 0.15s linear, background 0.2s ease;"></div>
                         </div>
                         <span id="step4_6-progress-text" style="font-size:13px; color:#555; width:36px; text-align:right;">0%</span>
                     </div>
@@ -1278,6 +1278,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 weldingAudio.pause();
                 isAudioPlaying = false;
             }
+            progressBar.style.width = '100%';
+            progressTxt.textContent = '100%';
+            progressBar.style.background = 'linear-gradient(90deg,#28a745,#20c997)';
             arcGlow.setAttribute('opacity', '0');
             instructionElem.innerHTML = "<b>Step complete.</b> Click next to: " + stepGuidance["step4_6"].next;
             step4_6Completed = true;
