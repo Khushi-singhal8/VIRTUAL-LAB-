@@ -1001,7 +1001,8 @@ Spring Back angle = 74° - 64° = 10°`;
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>
+                <h2 style="text-align:center;">EXPERIMENT OBSERVATION SHEET</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To determine the angle of a given workpiece using a sine bar.</p>
+
                 <hr>
 
                 <div style="text-align:center; margin:20px 0;">

@@ -338,7 +338,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function renderResultStep() {
         gifContainer.innerHTML = `
         <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-            <h2 style="text-align:center;">Experiment Result</h2>
+            <h2 style="text-align:center;">Experiment Result</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To study the welding process of a butt joint with V-groove using Metal Inert Gas (MIG) welding and understand its process parameters, equipment, gas selection, and weld quality characteristics.</p>
+
             <hr>
 
             <div style="text-align:center; margin:20px 0;">

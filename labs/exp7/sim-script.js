@@ -2694,12 +2694,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">Experiment Result</h2>
+                <h2 style="text-align:center;">Experiment Result</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To join two metal sheets using the brazing process and learn how it works, what equipment is needed, and where it's used in real-world applications.</p>
+
                 <hr>
 
-                <div class="sim-media-container" style="border: none; padding-bottom: 15px">
-                    <div class="scaling-wrapper" id="play-stage">
-                        <div style="text-align:center; margin:20px 0;">
+                <div style="text-align:center; margin:20px 0;">
                             <img src="${getAssetSrc('images/simulation/print1.png')}" alt="Final Welded Butt Joint" style="max-width:55%; border:1px solid #ccc; border-radius:6px;">
                             <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>
                         </div>
@@ -2760,8 +2759,6 @@ document.addEventListener("DOMContentLoaded", function () {
                                 </tr>
                             </tbody>
                         </table>
-                    </div>
-                </div>
 
                 <div class="no-print" style="text-align:center; margin-top:30px; margin-bottom:20px;">
                     <button onclick="window.print()" style="padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 4px;">🖨 Print Results</button>

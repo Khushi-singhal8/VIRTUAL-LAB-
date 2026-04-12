@@ -2750,10 +2750,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         gifContainer.innerHTML = `
         <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-            <h2 style="text-align:center;">Experiment Result</h2>
+            <h2 style="text-align:center;">Experiment Result</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To perform and study a butt joint weld on mild steel plates using the oxy-acetylene welding process.</p>
+
             <hr>
 
-            <div class="sim-media-container" style="height: auto; min-height: 400px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; margin: 20px 0;">
                 <div style="text-align:center; margin:20px 0; width: 100%;">
                     <img src="${getAssetSrc('images/simulation/print .png')}" alt="Final Welded Butt Joint" style="max-width:90%; border:1px solid #ccc; border-radius:6px;">
                     <p style="font-size:14px; margin-top:6px;">Final welded butt joint after dressing</p>

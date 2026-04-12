@@ -189,7 +189,8 @@ document.addEventListener("DOMContentLoaded", function () {
             action: 'print',
             content: `
         <div style="overflow-y:auto; padding:20px; font-family:Arial, sans-serif;">
-            <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
+            <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To understand the construction and working of a Vernier Caliper and to perform accurate measurements.</p>
+
             <hr style="margin-bottom:30px;">
 
             <div style="text-align:center; margin-bottom:20px;">

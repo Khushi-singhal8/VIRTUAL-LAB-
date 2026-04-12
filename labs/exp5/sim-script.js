@@ -858,7 +858,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         gifContainer.innerHTML = `
             <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-                <h2 style="text-align:center;">Experiment Result: Types of Flames</h2>
+                <h2 style="text-align:center;">Experiment Result: Types of Flames</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To study and identify various types of flames generated in oxyacetylene gas welding.</p>
+
                 <hr>
 
                 <table border="1" width="100%" cellpadding="8" style="border-collapse:collapse; margin-top:20px;">

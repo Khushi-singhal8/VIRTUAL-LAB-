@@ -171,7 +171,8 @@ document.addEventListener("DOMContentLoaded", function () {
             action: 'print',
             content: `
         <div style="padding:20px; font-family:Arial, sans-serif;">
-            <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>
+            <h2 style="text-align:center; margin-bottom:20px;">Measurement Results</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To understand the construction and working of a micrometer screw gauge and perform precise measurements.</p>
+
             <hr style="margin-bottom:30px;">
             <div style="text-align:center; margin-bottom:20px;">
             <div class="row" style="display:flex; gap:20px; justify-content:center; align-items:stretch;">

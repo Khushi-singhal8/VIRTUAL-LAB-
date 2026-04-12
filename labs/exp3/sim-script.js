@@ -427,7 +427,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         gifContainer.innerHTML = `
         <div class="gif-wrapper print-area" style="overflow-y:auto; height:100%; display:block;">
-            <h2 style="text-align:center;">Experiment Result</h2>
+            <h2 style="text-align:center;">Experiment Result</h2>\n            <p style="text-align:center; margin-top:10px;"><b>Aim:</b> To measure the dimensions of a given model using a height gauge and compare them with standard values.</p>
+
             <hr>
 
             <div style="text-align:center; margin:20px 0;">
